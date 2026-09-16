@@ -5,10 +5,10 @@
   "private": true,
   "scripts": {
     "start": "expo start",
-    "android": "expo start --android",
-    "ios": "expo start --ios",
+    "start:android": "expo start --android",
+    "start:ios": "expo start --ios",
     "lint": "expo lint",
-    "reset-project": "node ./scripts/reset-project.js"
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "@spendspot/core-logic": "workspace:*",
@@ -34,10 +34,6 @@
   },
   "devDependencies": {
     "@types/react": "~19.2.2",
-    "expo-doctor": "^1.20.4",
-    "typescript": "~6.0.3"
-  },
-  "trustedDependencies": [
-    "expo-modules-autolinking"
-  ]
+    "expo-doctor": "^1.20.4"
+  }
 }
