@@ -1,0 +1,23 @@
+{
+  "name": "@spendspot/edge-api",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Supabase edge functions with Gemini AI finance backend",
+  "main": "supabase/functions/finance-ai/index.ts",
+  "scripts": {
+    "build": "tsc --noEmit",
+    "dev": "supabase functions serve",
+    "lint": "eslint .",
+    "start": "supabase start",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@google/genai": "^2.22.0",
+    "@supabase/supabase-js": "^2.116.0"
+  },
+  "devDependencies": {
+    "@supabase/functions-js": "^2.116.0",
+    "@supabase/server": "^1.7.0",
+    "supabase": "^2.117.0"
+  }
+}

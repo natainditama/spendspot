@@ -2,8 +2,13 @@
   "name": "@spendspot/mobile-app",
   "version": "1.0.0",
   "private": true,
+  "description": "Smart expense and budget tracker with AI geofencing",
   "main": "expo-router/entry",
   "scripts": {
+    "build": "eas build --platform all",
+    "build:android": "eas build --platform android",
+    "build:ios": "eas build --platform ios",
+    "dev": "expo start --go",
     "lint": "expo lint",
     "start": "expo start",
     "start:android": "expo start --android",
