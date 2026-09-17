@@ -1,8 +1,21 @@
 {
-  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["config:base"],
-  "labels": ["dependencies"],
+  "$schema": "https://json.schemastore.org/renovate.json",
+  "baseBranchPatterns": ["develop"],
+  "extends": ["config:recommended"],
+  "packageRules": [
+    {
+      "automerge": true,
+      "automergeType": "pr",
+      "description": "Automatically merge minor and patch updates to develop",
+      "matchUpdateTypes": ["minor", "patch"],
+      "platformAutomerge": true
+    },
+    {
+      "description": "Require manual review for major updates",
+      "matchUpdateTypes": ["major"],
+      "automerge": false
+    }
+  ],
   "prCreation": "not-pending",
-  "semanticCommits": "enabled",
-  "automerge": true
+  "semanticCommits": "enabled"
 }

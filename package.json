@@ -3,6 +3,11 @@
   "version": "1.0.0",
   "private": true,
   "description": "Smart location expense and commute budget tracker with AI",
+  "keywords": [
+    "expense",
+    "budget",
+    "tracker"
+  ],
   "homepage": "https://github.com/natainditama/spendspot",
   "bugs": {
     "url": "https://github.com/natainditama/spendspot/issues",
@@ -12,17 +17,12 @@
     "type": "git",
     "url": "https://github.com/natainditama/spendspot"
   },
+  "license": "MIT",
   "author": {
     "name": "natainditama",
     "email": "natainditama.dev@gmail.com",
     "url": "https://github.com/natainditama"
   },
-  "license": "MIT",
-  "keywords": [
-    "expense",
-    "budget",
-    "tracker"
-  ],
   "workspaces": [
     "apps/*",
     "packages/*"
@@ -42,28 +42,29 @@
     "typecheck": "bun --filter \"*\" typecheck"
   },
   "lint-staged": {
-    "./src/**/*.{ts,js,jsx,tsx}": [
-      "prettier --ignore-path .gitignore --write"
+    "*.{js,jsx,ts,tsx}": [
+      "eslint --no-warn-ignored --fix",
+      "prettier --write"
+    ],
+    "!(*.{js,jsx,ts,tsx})": [
+      "prettier --write --ignore-unknown"
     ]
   },
   "devDependencies": {
     "@commitlint/cli": "^21.2.2",
     "@commitlint/config-conventional": "^21.2.2",
+    "@ianvs/prettier-plugin-sort-imports": "^4.7.1",
+    "@lebedevna/prettier-plugin-sql": "^0.3.2",
     "@types/node": "^26.5.1",
+    "eslint": "^9.0.0",
+    "eslint-config-expo": "~57.0.2",
     "husky": "^9.1.7",
     "lint-staged": "^17.5.1",
     "prettier": "^3.9.6",
+    "prettier-plugin-jsdoc": "^1.8.1",
+    "prettier-plugin-packagejson": "^3.0.2",
     "prettier-plugin-sort-json": "^4.2.0",
-    "typescript": "^7.0.2"
-  },
-  "prettier": {
-    "plugins": [
-      "prettier-plugin-sort-json"
-    ],
-    "printWidth": 120,
-    "trailingComma": "es5",
-    "singleQuote": true,
-    "tabWidth": 2,
-    "endOfLine": "auto"
+    "typescript": "~6.0.3",
+    "typescript-eslint": "^8.0.0"
   }
 }

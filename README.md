@@ -29,7 +29,7 @@
     <img src="https://img.shields.io/github/last-commit/natainditama/genie" alt="last update" />
   </a>
 </p>
-   
+
   <h4>
     <a href="https://github.com/natainditama/genie/">View Demo</a>
     <span> · </span>
@@ -50,9 +50,11 @@
 <br />
 
 <!-- About the Project -->
+
 ## 📝 About the Project
 
 <!-- Features -->
+
 ### 🌟 Features
 
 This project includes the following features:
@@ -62,6 +64,7 @@ This project includes the following features:
 - Feature 3
 
 <!-- Color Reference -->
+
 ### 🎨 Color Reference
 
 | Color            | Hex                                                              |
@@ -72,9 +75,11 @@ This project includes the following features:
 | Text Color       | ![#EEEEEE](https://via.placeholder.com/10/EEEEEE?text=+) #EEEEEE |
 
 <!-- Getting Started -->
+
 ## 🚀 Getting Started
 
 <!-- Usage -->
+
 ### 🔍 Usage
 
 1. Create your repository [here](https://github.com/new?template_name=genie&template_owner=natainditama).
@@ -83,6 +88,7 @@ This project includes the following features:
 4. Customize the project based on your needs.
 
 <!-- Prerequisites -->
+
 ### 🔧 Prerequisites
 
 - Prerequisite 1
@@ -90,6 +96,7 @@ This project includes the following features:
 - Prerequisite 3
 
 <!-- Run Locally -->
+
 ### 🏃 Run Locally
 
 Clone the project
@@ -117,6 +124,7 @@ Start the server
 ```
 
 <!-- Contributing -->
+
 ## 👋 Contributing
 
 <a href="https://github.com/natainditama/genie/graphs/contributors">
@@ -128,17 +136,21 @@ Contributions are always welcome!
 See [contributing.md](https://github.com/natainditama/genie/blob/main/.github/CONTRIBUTING.md) for ways to get started.
 
 <!-- License -->
+
 ## ⚠️ License
 
 This project is licensed under the MIT License. See the [LICENSE](https://github.com/natainditama/genie/blob/main/LICENSE) file for details
 
 <!-- Contact -->
+
 ## 🤝 Contact
+
 Nata Inditama - [natainditama](https://linkedin.com/in/natainditama/) - natainditama.dev@gmail.com
 
 Project Link: [https://github.com/natainditama/genie](https://github.com/natainditama/genie)
 
 <!-- Resources -->
+
 ## 📚 Resources
 
 - [Project 1](https://project/)
