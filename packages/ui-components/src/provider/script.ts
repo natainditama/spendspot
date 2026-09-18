@@ -1,3 +1,7 @@
+/**
+ * Inline DOM script updating root document class list and color schemes.
+ * Applies system theme or designated mode to prevent hydration flashes.
+ */
 export const script = (mode: string) => {
   const documentElement = document.documentElement;
 

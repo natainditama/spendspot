@@ -6,18 +6,27 @@ import enUSCommon from "./en-US/common.json";
 import idIDAuth from "./id-ID/auth.json";
 import idIDCommon from "./id-ID/common.json";
 
-/** BCP 47 locale codes supported by SpendSpot. */
+/**
+ * BCP 47 locale code identifiers supported by the SpendSpot platform. Restricts
+ * supported application languages to English and Indonesian.
+ */
 export type SupportedLocale = "en-US" | "id-ID";
 
-/** Default locale when no preference is set. */
+/**
+ * Default locale identifier applied when no user preference is configured.
+ * Establishes Bahasa Indonesia as primary target regional setting.
+ */
 export const DEFAULT_LOCALE: SupportedLocale = "id-ID";
 
-/** Fallback locale used when a translation key is missing in the active locale. */
+/**
+ * Secondary fallback locale applied when missing translations occur. Guarantees
+ * content availability by reverting missing keys to US English.
+ */
 export const FALLBACK_LOCALE: SupportedLocale = "en-US";
 
 /**
- * I18next resource bundle. Each locale maps to a record of { [namespace]: translationObject }. Add new namespaces here
- * as the app grows (e.g. "auth", "settings").
+ * Static i18next translation resource catalog grouped by locale and namespace.
+ * Aggregates localized authentication and common interface messaging.
  */
 export const resources = {
   "en-US": {
@@ -30,12 +39,15 @@ export const resources = {
   },
 } as const satisfies Record<SupportedLocale, Record<string, unknown>>;
 
-/** Default namespace used when no namespace is specified in t() calls. */
+/**
+ * Default translation namespace accessed during standard lookup calls. Targets
+ * shared common interface strings when explicit scope is omitted.
+ */
 export const defaultNS = "common" as const;
 
 /**
- * Initializes the i18next instance with React integration. Call this once at app startup before rendering any
- * component.
+ * Bootstraps the i18next localization engine with React framework bindings.
+ * Initializes language detection, fallback chains, and default namespaces.
  */
 export function initializeI18n(locale: SupportedLocale = DEFAULT_LOCALE) {
   i18n.use(initReactI18next).init({

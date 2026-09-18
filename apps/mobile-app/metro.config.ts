@@ -41,4 +41,8 @@ if (nativewindConfig.resolver) {
   };
 }
 
+/**
+ * Customized Metro bundler configuration for SpendSpot monorepo workspace.
+ * Resolves shared dependencies and handles cross-package module requests.
+ */
 export default nativewindConfig;

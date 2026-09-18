@@ -2,8 +2,8 @@ import rootConfig from "../../eslint.config.mjs";
 import { defineConfig } from "eslint/config";
 
 /**
- * Core Logic ESLint configuration extending the SpendSpot monorepo root config. Workspace-specific overrides and
- * exclusions can be defined here.
+ * Core logic ESLint configuration extending the root config. Enforces shared
+ * linting standards while ignoring build artifacts.
  */
 export default defineConfig([
   ...rootConfig,

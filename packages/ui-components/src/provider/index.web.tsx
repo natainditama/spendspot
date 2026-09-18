@@ -5,10 +5,22 @@ import { OverlayProvider } from "@gluestack-ui/core/overlay/creator";
 import { ToastProvider } from "@gluestack-ui/core/toast/creator";
 import { script } from "./script";
 
+/**
+ * Color appearance theme modes supported by the UI component library. Supports
+ * light, dark, or automated operating system preference.
+ */
 export type ModeType = "light" | "dark" | "system";
 
+/**
+ * SSR-safe isomorphic layout effect resolving to useEffect in node runtime.
+ * Avoids React hydration warnings while executing synchronously on client.
+ */
 export const useSafeLayoutEffect = typeof window !== "undefined" ? useLayoutEffect : useEffect;
 
+/**
+ * Web platform theme provider managing DOM styling and media queries. Injects
+ * color-scheme scripts to eliminate client hydration flashes.
+ */
 export function Provider({ mode = "light", ...props }: { mode?: ModeType; children?: React.ReactNode }) {
   const handleMediaQuery = useCallback((e: MediaQueryListEvent) => {
     script(e.matches ? "dark" : "light");

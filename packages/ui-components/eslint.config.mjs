@@ -2,8 +2,8 @@ import rootConfig from "../../eslint.config.mjs";
 import { defineConfig } from "eslint/config";
 
 /**
- * UI Components ESLint configuration extending the SpendSpot monorepo root config. Workspace-specific overrides and
- * exclusions can be defined here.
+ * UI components ESLint configuration extending the root config. Applies shared
+ * linting rules while excluding build directories.
  */
 export default defineConfig([
   ...rootConfig,

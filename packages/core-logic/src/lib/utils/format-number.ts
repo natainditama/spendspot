@@ -1,4 +1,7 @@
-/** Formats a raw number using standard decimal notation based on the provided or default locale. */
+/**
+ * Formats numeric values into localized decimal strings with separators. Falls
+ * back to system locale defaults when formatting operation fails.
+ */
 export function formatNumber(value: number, locale: string = "id-ID", options?: Intl.NumberFormatOptions): string {
   if (typeof value !== "number" || isNaN(value)) {
     return "0";
@@ -11,7 +14,10 @@ export function formatNumber(value: number, locale: string = "id-ID", options?: 
   }
 }
 
-/** Formats a decimal ratio as a localized percentage string. */
+/**
+ * Formats decimal ratio values into localized percentage strings. Applies
+ * specified decimal fraction precision to scaled values.
+ */
 export function formatPercent(value: number, locale: string = "id-ID", fractionDigits: number = 0): string {
   if (typeof value !== "number" || isNaN(value)) {
     return "0%";
@@ -28,7 +34,10 @@ export function formatPercent(value: number, locale: string = "id-ID", fractionD
   }
 }
 
-/** Formats large numbers into short human-readable representations. */
+/**
+ * Formats numbers into compact notations with short unit suffixes. Optimizes
+ * numeric display for metric widgets and summary tables.
+ */
 export function formatCompactNumber(value: number, locale: string = "id-ID"): string {
   if (typeof value !== "number" || isNaN(value)) {
     return "0";

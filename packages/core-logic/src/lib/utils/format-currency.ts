@@ -1,8 +1,15 @@
 import { SUPPORTED_CURRENCIES } from "../../constants/supported-currencies";
 
+/**
+ * Unique ISO currency code identifiers configured in the application.
+ * Constrains supported monetary currency keys to predefined standards.
+ */
 export type CurrencyCode = keyof typeof SUPPORTED_CURRENCIES;
 
-/** Formats a numeric amount as a localized currency string based on the given currency code. */
+/**
+ * Formats numeric currency amounts into localized monetary strings. Applies
+ * currency decimal precisions and standard regional symbols.
+ */
 export function formatCurrency(amount: number, currencyCode: CurrencyCode = "IDR"): string {
   const config = SUPPORTED_CURRENCIES[currencyCode] || SUPPORTED_CURRENCIES.IDR;
 
@@ -19,8 +26,8 @@ export function formatCurrency(amount: number, currencyCode: CurrencyCode = "IDR
 }
 
 /**
- * Formats a currency amount into a compact human-readable representation. Ideal for dashboard KPI cards, summary
- * charts, and mobile constrained spaces.
+ * Formats monetary values into compact notations for compact views. Abbreviates
+ * large numbers for financial dashboards and metric cards.
  */
 export function formatCompactCurrency(amount: number, currencyCode: CurrencyCode = "IDR"): string {
   const config = SUPPORTED_CURRENCIES[currencyCode] || SUPPORTED_CURRENCIES.IDR;
@@ -39,8 +46,8 @@ export function formatCompactCurrency(amount: number, currencyCode: CurrencyCode
 }
 
 /**
- * Parses a user-typed or formatted currency string back into a clean numeric value. Strips non-numeric characters,
- * currency symbols, and normalizes decimal separators.
+ * Parses localized currency and numeric text strings into raw numbers. Removes
+ * currency symbols and normalizes varied decimal separators.
  */
 export function parseCurrencyToNumber(formattedAmount: string): number {
   if (!formattedAmount || typeof formattedAmount !== "string") {

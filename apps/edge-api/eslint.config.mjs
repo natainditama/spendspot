@@ -2,8 +2,8 @@ import rootConfig from "../../eslint.config.mjs";
 import { defineConfig } from "eslint/config";
 
 /**
- * Edge API ESLint configuration extending the SpendSpot monorepo root config. Removes the global apps/edge-api/**
- * ignore from root so files in this workspace are linted.
+ * Filters monorepo root ESLint rules for the edge-api workspace. Strips out
+ * workspace exclusion patterns and frontend React plugins.
  */
 const filteredRootConfig = rootConfig.filter(
   (entry) =>
@@ -13,6 +13,10 @@ const filteredRootConfig = rootConfig.filter(
     !entry.settings?.react
 );
 
+/**
+ * Edge API ESLint configuration integrating Deno and Supabase runtime rules.
+ * Defines environment-specific linting standards and workspace exclusions.
+ */
 export default defineConfig([
   ...filteredRootConfig,
   // Deno + Supabase Edge Runtime overrides

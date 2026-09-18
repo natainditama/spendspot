@@ -1,5 +1,9 @@
 import type { ConfigContext, ExpoConfig } from "expo/config";
 
+/**
+ * Generates dynamic Expo application configuration for SpendSpot mobile app.
+ * Configures platform identifiers, themes, asset paths, and compiler flags.
+ */
 export default ({ config }: ConfigContext): ExpoConfig => ({
   ...config,
   name: "SpendSpot",

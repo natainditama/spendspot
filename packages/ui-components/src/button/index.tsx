@@ -125,6 +125,10 @@ const buttonGroupStyle = tva({
 type IButtonProps = Omit<React.ComponentPropsWithoutRef<typeof UIButton>, "context"> &
   VariantProps<typeof buttonStyle> & { className?: string };
 
+/**
+ * Primary interactive button component with variant and size styling. Provides
+ * accessible state control and NativeWind theme tokens.
+ */
 const Button = React.forwardRef<React.ComponentRef<typeof UIButton>, IButtonProps>(
   ({ className, variant = "default", size = "default", ...props }, ref) => {
     return (
@@ -141,6 +145,10 @@ const Button = React.forwardRef<React.ComponentRef<typeof UIButton>, IButtonProp
 type IButtonTextProps = React.ComponentPropsWithoutRef<typeof UIButton.Text> &
   VariantProps<typeof buttonTextStyle> & { className?: string };
 
+/**
+ * Typography element displaying label content inside a Button container.
+ * Inherits contextual variant and sizing styles from parent button context.
+ */
 const ButtonText = React.forwardRef<React.ComponentRef<typeof UIButton.Text>, IButtonTextProps>(
   ({ className, size, ...props }, ref) => {
     const { size: parentSize, variant: parentVariant } = useStyleContext(SCOPE);
@@ -162,6 +170,10 @@ const ButtonText = React.forwardRef<React.ComponentRef<typeof UIButton.Text>, IB
   }
 );
 
+/**
+ * Loading spinner indicator rendered inside buttons during async actions.
+ * Dynamically adjusts visual dimensions based on parent button sizing.
+ */
 const ButtonSpinner = React.forwardRef<
   React.ComponentRef<typeof UIButton.Spinner>,
   React.ComponentPropsWithoutRef<typeof UIButton.Spinner>
@@ -188,6 +200,10 @@ type IButtonIcon = React.ComponentPropsWithoutRef<typeof UIButton.Icon> &
     width?: number;
   };
 
+/**
+ * Icon wrapper component rendered inside buttons alongside or without labels.
+ * Synchronizes icon color schemes and dimensions with button style variants.
+ */
 const ButtonIcon = React.forwardRef<React.ComponentRef<typeof UIButton.Icon>, IButtonIcon>(
   ({ className, size, ...props }, ref) => {
     const { size: parentSize, variant: parentVariant } = useStyleContext(SCOPE);
@@ -217,6 +233,10 @@ const ButtonIcon = React.forwardRef<React.ComponentRef<typeof UIButton.Icon>, IB
 
 type IButtonGroupProps = React.ComponentPropsWithoutRef<typeof UIButton.Group> & VariantProps<typeof buttonGroupStyle>;
 
+/**
+ * Layout container managing multiple adjacent or attached buttons. Controls
+ * orientation and consistent spacing across grouped buttons.
+ */
 const ButtonGroup = React.forwardRef<React.ComponentRef<typeof UIButton.Group>, IButtonGroupProps>(
   ({ className, space = "md", isAttached = false, flexDirection = "column", ...props }, ref) => {
     return (

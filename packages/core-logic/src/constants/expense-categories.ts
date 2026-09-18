@@ -1,5 +1,9 @@
 import { ExpenseCategoryType } from "../types/database";
 
+/**
+ * Visual and linguistic properties defining an expense category. Associates
+ * category codes with translation keys, colors, and icons.
+ */
 export interface CategoryMetadata {
   id: ExpenseCategoryType;
   translationKey: string;
@@ -8,6 +12,10 @@ export interface CategoryMetadata {
   bgColor: string;
 }
 
+/**
+ * Predefined registry of expense categories and visual attributes. Supplies
+ * default color schemes, icons, and localization keys.
+ */
 export const CATEGORY_LIST: Record<ExpenseCategoryType, CategoryMetadata> = {
   FOOD_AND_BEVERAGE: {
     id: "FOOD_AND_BEVERAGE",

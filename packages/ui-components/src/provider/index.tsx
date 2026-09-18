@@ -4,8 +4,16 @@ import { OverlayProvider } from "@gluestack-ui/core/overlay/creator";
 import { ToastProvider } from "@gluestack-ui/core/toast/creator";
 import { config } from "./config";
 
+/**
+ * Color appearance theme modes supported by the UI component library. Supports
+ * light, dark, or automated operating system preference.
+ */
 export type ModeType = "light" | "dark" | "system";
 
+/**
+ * React Native theme provider supplying design tokens to mobile apps. Wraps
+ * children with overlay portals, toasts, and active theme styles.
+ */
 export function Provider({
   mode = "system",
   ...props

@@ -51,9 +51,17 @@ const checkboxIconStyle = tva({
   base: "text-primary-foreground fill-none h-3.5 w-3.5",
 });
 
+/**
+ * Contextual wrapper managing multi-select state across child Checkbox items.
+ * Coordinates shared values, change listeners, and validation status.
+ */
 const CheckboxGroup = UICheckbox.Group;
 type ICheckboxProps = React.ComponentPropsWithoutRef<typeof UICheckbox> & VariantProps<typeof checkboxStyle>;
 
+/**
+ * Accessible multi-state checkbox component supporting controlled form states.
+ * Synchronizes with style contexts across web and native mobile platforms.
+ */
 const Checkbox = React.forwardRef<React.ComponentRef<typeof UICheckbox>, ICheckboxProps>(function Checkbox(
   { className, ...props },
   ref
@@ -64,6 +72,10 @@ const Checkbox = React.forwardRef<React.ComponentRef<typeof UICheckbox>, ICheckb
 type ICheckboxIndicatorProps = React.ComponentPropsWithoutRef<typeof UICheckbox.Indicator> &
   VariantProps<typeof checkboxIndicatorStyle>;
 
+/**
+ * Visual container displaying checkbox checkmark status and border states.
+ * Renders background fills, focus rings, and validation feedback borders.
+ */
 const CheckboxIndicator = React.forwardRef<React.ComponentRef<typeof UICheckbox.Indicator>, ICheckboxIndicatorProps>(
   function CheckboxIndicator({ className, ...props }, ref) {
     return <UICheckbox.Indicator className={checkboxIndicatorStyle({ class: className })} {...props} ref={ref} />;
@@ -73,6 +85,10 @@ const CheckboxIndicator = React.forwardRef<React.ComponentRef<typeof UICheckbox.
 type ICheckboxLabelProps = React.ComponentPropsWithoutRef<typeof UICheckbox.Label> &
   VariantProps<typeof checkboxLabelStyle>;
 
+/**
+ * Interactive text label associated with a parent Checkbox input control.
+ * Toggles parent selection state upon tap while supporting disabled styles.
+ */
 const CheckboxLabel = React.forwardRef<React.ComponentRef<typeof UICheckbox.Label>, ICheckboxLabelProps>(
   function CheckboxLabel({ className, ...props }, ref) {
     return <UICheckbox.Label className={checkboxLabelStyle({ class: className })} {...props} ref={ref} />;
@@ -88,6 +104,10 @@ type ICheckboxIconProps = React.ComponentPropsWithoutRef<typeof UICheckbox.Icon>
     size?: number | string;
   };
 
+/**
+ * Checkmark icon rendered within CheckboxIndicator when selected. Displays
+ * customizable iconography scaled to indicator size.
+ */
 const CheckboxIcon = React.forwardRef<React.ComponentRef<typeof UICheckbox.Icon>, ICheckboxIconProps>(
   function CheckboxIcon({ className, size, ...props }, ref) {
     if (typeof size === "number") {

@@ -4,8 +4,8 @@ import { useTranslation } from "react-i18next";
 import { formatCompactNumber, formatNumber, formatPercent } from "../lib/utils/format-number";
 
 /**
- * Custom React hook for locale-aware number formatting. Automatically synchronizes with the active i18next language or
- * accepts an optional override.
+ * Custom React hook for locale-aware number and percent formatting. Coordinates
+ * with active i18next language or applies manual overrides.
  */
 export function useNumberFormatter(customLocale?: string) {
   const { i18n } = useTranslation();

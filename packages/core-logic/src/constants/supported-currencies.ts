@@ -1,3 +1,7 @@
+/**
+ * Configuration contract for monetary currency display and precision. Defines
+ * ISO codes, display symbols, target locales, and fractions.
+ */
 export interface CurrencyConfig {
   code: "IDR" | "USD" | "SGD" | "EUR";
   symbol: string;
@@ -6,6 +10,10 @@ export interface CurrencyConfig {
   fractionDigits: number;
 }
 
+/**
+ * Map of supported fiat currencies and their localization standards. Used for
+ * currency formatting and conversion logic across the app.
+ */
 export const SUPPORTED_CURRENCIES: Record<string, CurrencyConfig> = {
   IDR: {
     code: "IDR",

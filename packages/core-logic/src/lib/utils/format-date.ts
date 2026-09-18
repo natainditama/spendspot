@@ -7,7 +7,10 @@ function toDate(input: DateInput): Date {
   return new Date(input);
 }
 
-/** Formats a timestamp or Date instance into a localized calendar string. */
+/**
+ * Formats timestamps or Date instances into localized calendar date strings.
+ * Applies internationalization options or standard day-month-year defaults.
+ */
 export function formatDate(date: DateInput, locale: string = "id-ID", options?: Intl.DateTimeFormatOptions): string {
   const d = toDate(date);
   if (isNaN(d.getTime())) {
@@ -27,7 +30,10 @@ export function formatDate(date: DateInput, locale: string = "id-ID", options?: 
   }
 }
 
-/** Formats a timestamp into a humanized relative time description (e.g. "5 minutes ago", "kemarin"). */
+/**
+ * Generates humanized relative time descriptions from a timestamp. Formats
+ * intervals into natural phrases like minutes or hours ago.
+ */
 export function formatRelativeTime(date: DateInput, locale: string = "id-ID"): string {
   const d = toDate(date);
   if (isNaN(d.getTime())) {
@@ -72,7 +78,10 @@ export function formatRelativeTime(date: DateInput, locale: string = "id-ID"): s
   }
 }
 
-/** Formats a date range into a localized interval (e.g. "1 – 30 Sep 2026"). */
+/**
+ * Formats date boundaries into localized interval representations. Uses Intl
+ * range formatting when supported by the active runtime.
+ */
 export function formatDateRange(startDate: DateInput, endDate: DateInput, locale: string = "id-ID"): string {
   const start = toDate(startDate);
   const end = toDate(endDate);

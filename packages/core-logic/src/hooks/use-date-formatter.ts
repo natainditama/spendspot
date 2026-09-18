@@ -4,8 +4,8 @@ import { useTranslation } from "react-i18next";
 import { formatDate, formatDateRange, formatRelativeTime } from "../lib/utils/format-date";
 
 /**
- * Custom React hook for locale-aware date and time formatting. Automatically synchronizes with the active i18next
- * language or accepts an optional override.
+ * Custom React hook for locale-aware date and time formatting utilities.
+ * Synchronizes with active i18next language or applies an explicit override.
  */
 export function useDateFormatter(customLocale?: string) {
   const { i18n } = useTranslation();

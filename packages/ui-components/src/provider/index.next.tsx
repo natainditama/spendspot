@@ -16,8 +16,16 @@ const createStyle = (styleTagId: string) => {
   return style;
 };
 
+/**
+ * SSR-safe isomorphic layout effect resolving to useEffect in node runtime.
+ * Avoids React hydration warnings while executing synchronously on client.
+ */
 export const useSafeLayoutEffect = typeof window !== "undefined" ? useLayoutEffect : useEffect;
 
+/**
+ * Next.js application theme provider supplying CSS tokens and overlays. Injects
+ * style elements and synchronizes themes with document root.
+ */
 export function Provider({
   mode = "light",
   ...props

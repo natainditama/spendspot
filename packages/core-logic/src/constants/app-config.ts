@@ -1,3 +1,7 @@
+/**
+ * Global application configuration constants for the SpendSpot ecosystem.
+ * Defines branding parameters, geofencing bounds, and AI system limits.
+ */
 export const APP_CONFIG = {
   appName: "SpendSpot",
   domain: "natatama.com",

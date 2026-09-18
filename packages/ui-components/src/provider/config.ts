@@ -2,6 +2,10 @@
 
 type CSSVariables = Record<string, string>;
 
+/**
+ * Theme color token palette definitions for light and dark appearance modes.
+ * Supplies CSS custom property variable maps for design system components.
+ */
 export const config: Record<"light" | "dark", CSSVariables> = {
   light: {
     "--primary": "#171717",

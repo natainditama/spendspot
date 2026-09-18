@@ -37,6 +37,10 @@ const inputFieldStyle = tva({
 
 type IInputProps = React.ComponentProps<typeof UIInput> & VariantProps<typeof inputStyle> & { className?: string };
 
+/**
+ * Compound container wrapping text inputs with optional slot icons and actions.
+ * Coordinates focus boundaries, validation borders, and accessibility states.
+ */
 const Input = React.forwardRef<React.ComponentRef<typeof UIInput>, IInputProps>(function Input(
   { className, ...props },
   ref
@@ -51,6 +55,10 @@ type IInputIconProps = React.ComponentProps<typeof UIInput.Icon> &
     width?: number;
   };
 
+/**
+ * Decorative or interactive icon element within an Input container. Aligns with
+ * input font sizes and applies theme-aware muted colors.
+ */
 const InputIcon = React.forwardRef<React.ComponentRef<typeof UIInput.Icon>, IInputIconProps>(function InputIcon(
   { className, ...props },
   ref
@@ -61,6 +69,10 @@ const InputIcon = React.forwardRef<React.ComponentRef<typeof UIInput.Icon>, IInp
 type IInputSlotProps = React.ComponentProps<typeof UIInput.Slot> &
   VariantProps<typeof inputSlotStyle> & { className?: string };
 
+/**
+ * Pressable accessory slot at the leading or trailing input edge. Hosts action
+ * buttons like password visibility or search triggers.
+ */
 const InputSlot = React.forwardRef<React.ComponentRef<typeof UIInput.Slot>, IInputSlotProps>(function InputSlot(
   { className, ...props },
   ref
@@ -79,6 +91,10 @@ const InputSlot = React.forwardRef<React.ComponentRef<typeof UIInput.Slot>, IInp
 type IInputFieldProps = React.ComponentProps<typeof UIInput.Input> &
   VariantProps<typeof inputFieldStyle> & { className?: string };
 
+/**
+ * Core text entry field component wrapping the native TextInput element.
+ * Handles keyboard events, placeholder styling, and editable text states.
+ */
 const InputField = React.forwardRef<React.ComponentRef<typeof UIInput.Input>, IInputFieldProps>(function InputField(
   { className, ...props },
   ref
