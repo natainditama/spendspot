@@ -9,7 +9,7 @@ export type ModeType = "light" | "dark" | "system";
 
 export const useSafeLayoutEffect = typeof window !== "undefined" ? useLayoutEffect : useEffect;
 
-export function UIProvider({ mode = "light", ...props }: { mode?: ModeType; children?: React.ReactNode }) {
+export function Provider({ mode = "light", ...props }: { mode?: ModeType; children?: React.ReactNode }) {
   const handleMediaQuery = useCallback((e: MediaQueryListEvent) => {
     script(e.matches ? "dark" : "light");
   }, []);

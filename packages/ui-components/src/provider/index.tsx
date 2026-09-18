@@ -6,7 +6,7 @@ import { config } from "./config";
 
 export type ModeType = "light" | "dark" | "system";
 
-export function UIProvider({
+export function Provider({
   mode = "system",
   ...props
 }: {

@@ -7,7 +7,7 @@
     "./button": "./src/button/index.tsx",
     "./checkbox": "./src/checkbox/index.tsx",
     "./input": "./src/input/index.tsx",
-    "./ui-provider": "./src/ui-provider/index.tsx"
+    "./provider": "./src/provider/index.tsx"
   },
   "scripts": {
     "build": "tsc --noEmit",

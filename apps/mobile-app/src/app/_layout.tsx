@@ -1,5 +1,5 @@
 import { Stack } from "expo-router";
-import { UIProvider } from "@spendspot/ui-components/ui-provider";
+import { Provider as UIProvider } from "@spendspot/ui-components/provider";
 
 import "../../global.css";
 

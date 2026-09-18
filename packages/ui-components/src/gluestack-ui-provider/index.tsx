@@ -1,2 +1,2 @@
-export * from "../ui-provider";
-export { UIProvider as GluestackUIProvider } from "../ui-provider";
+export * from "../provider";
+export { Provider as GluestackUIProvider } from "../provider";

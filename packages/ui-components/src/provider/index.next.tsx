@@ -18,7 +18,7 @@ const createStyle = (styleTagId: string) => {
 
 export const useSafeLayoutEffect = typeof window !== "undefined" ? useLayoutEffect : useEffect;
 
-export function UIProvider({
+export function Provider({
   mode = "light",
   ...props
 }: {
