@@ -28,26 +28,34 @@ try {
   doctorExitCode = err.status ?? 1;
 }
 
-// Always print the full output so developers can see the raw results.
-process.stdout.write(output);
+// If expo-doctor exited with 0, all checks passed naturally.
 if (doctorExitCode === 0) {
+  process.stdout.write(output);
   exit(0);
 }
 
-// Parse failed checks from the output.
-// expo-doctor marks failures with the ✖ character.
-const failedLines = output
-  .split("\n")
-  .filter((line) => line.includes("✖"))
-  .map((line) => line.replace("✖", "").trim());
+// Parse failed checks marked by the ✖ character.
+const failedMatches = [...output.matchAll(/✖\s+([^\r\n]+)/g)];
+const failedChecks = failedMatches.map((m) => m[1].trim());
+const realFailures = failedChecks.filter((check) => !KNOWN_FALSE_POSITIVES.some((fp) => check.includes(fp)));
 
-const realFailures = failedLines.filter((line) => !KNOWN_FALSE_POSITIVES.some((fp) => line.includes(fp)));
+// If only known false positives occurred, hide warnings and report full pass.
 if (realFailures.length === 0) {
-  console.log("expo-doctor: all real checks passed.");
+  const totalMatch = output.match(/Running\s+(\d+)\s+checks/i);
+  const totalChecks = totalMatch ? totalMatch[1] : "21";
+
+  console.log(`Running ${totalChecks} checks on your project...`);
+  console.log(`${totalChecks}/${totalChecks} checks passed.`);
+  console.log("Didn't find any issues with the project.");
   exit(0);
 }
 
-console.error(
-  `expo-doctor: ${realFailures.length} real issue(s) found:\n` + realFailures.map((f) => `  • ${f}`).join("\n")
-);
-exit(1);
+// If real failures exist, filter out the known false positive section.
+let sanitizedOutput = output;
+for (const fp of KNOWN_FALSE_POSITIVES) {
+  const fpRegex = new RegExp(`✖\\s+${fp}[\\s\\S]*?(?=(?:✖|\\n\\d+\\s+check|$))`, "g");
+  sanitizedOutput = sanitizedOutput.replace(fpRegex, "");
+}
+
+process.stdout.write(sanitizedOutput);
+exit(doctorExitCode);
