@@ -10,8 +10,8 @@ import { defineConfig } from "eslint/config";
 const rootDir = path.dirname(fileURLToPath(import.meta.url));
 
 /**
- * Shared strict ruleset for SpendSpot: enforces correctness, immutability, and
- * clean imports to suppress the unused-vars error.
+ * Shared strict ruleset for SpendSpot: enforces correctness, immutability, and clean imports to suppress the
+ * unused-vars error.
  */
 const strictRules = {
   // Unused variables / parameters / imports
@@ -69,8 +69,8 @@ const strictRules = {
 };
 
 /**
- * SpendSpot ESLint flat config: composed from expo, turbo, prettier, gitignore.
- * Workspace-level configs can import and extend this array directly.
+ * SpendSpot ESLint flat config: composed from expo, turbo, prettier, gitignore. Workspace-level configs can import and
+ * extend this array directly.
  */
 export default defineConfig([
   // Reads .gitignore from the repo root and propagates ignores into ESLint

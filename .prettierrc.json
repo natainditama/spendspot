@@ -3,16 +3,7 @@
   "arrowParens": "always",
   "bracketSpacing": true,
   "endOfLine": "auto",
-  "importOrder": [
-    "<BUILTIN_MODULES>",
-    "<THIRD_PARTY_MODULES>",
-    "",
-    "^@spendspot/(.*)$",
-    "",
-    "^@/(.*)$",
-    "",
-    "^[./]"
-  ],
+  "importOrder": ["<BUILTIN_MODULES>", "<THIRD_PARTY_MODULES>", "", "^@spendspot/(.*)$", "", "^@/(.*)$", "", "^[./]"],
   "importOrderParserPlugins": ["typescript", "jsx"],
   "plugins": [
     "@ianvs/prettier-plugin-sort-imports",
@@ -21,7 +12,7 @@
     "prettier-plugin-sort-json",
     "prettier-plugin-packagejson"
   ],
-  "printWidth": 80,
+  "printWidth": 120,
   "semi": true,
   "singleQuote": false,
   "tabWidth": 2,

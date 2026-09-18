@@ -13,12 +13,10 @@ console.log("Hello from Functions!");
 // Use publishable for Client-facing, key-validated endpoints
 // Use secret for Server-to-server, internal calls
 export default {
-  fetch: withSupabase(
-    { auth: ["publishable", "secret"] },
-    async (req, _ctx) => {
-      // Called by another service with a secret key
-      // _ctx.supabaseAdmin bypasses RLS — use for privileged operations
-      /*
+  fetch: withSupabase({ auth: ["publishable", "secret"] }, async (req, _ctx) => {
+    // Called by another service with a secret key
+    // _ctx.supabaseAdmin bypasses RLS — use for privileged operations
+    /*
     if (_ctx.authMode === "secret") {
       const { user_id } = await req.json();
       const { data } = await _ctx.supabaseAdmin.auth.admin.getUserById(user_id);
@@ -29,13 +27,12 @@ export default {
     }
     */
 
-      const { name } = await req.json();
+    const { name } = await req.json();
 
-      return Response.json({
-        message: `Hello ${name}!`,
-      });
-    }
-  ),
+    return Response.json({
+      message: `Hello ${name}!`,
+    });
+  }),
 };
 
 /* To invoke locally:

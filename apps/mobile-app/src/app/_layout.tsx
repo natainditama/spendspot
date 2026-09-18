@@ -1,5 +1,12 @@
 import { Stack } from "expo-router";
+import { UIProvider } from "@spendspot/ui-components/ui-provider";
+
+import "../../global.css";
 
 export default function RootLayout() {
-  return <Stack />;
+  return (
+    <UIProvider mode="light">
+      <Stack />
+    </UIProvider>
+  );
 }

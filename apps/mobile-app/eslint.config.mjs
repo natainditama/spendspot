@@ -3,8 +3,8 @@ import rootConfig from "../../eslint.config.mjs";
 import { defineConfig } from "eslint/config";
 
 /**
- * Mobile-app ESLint configuration extending the SpendSpot monorepo root config.
- * Workspace-specific overrides and exclusions can be defined here.
+ * Mobile-app ESLint configuration extending the SpendSpot monorepo root config. Workspace-specific overrides and
+ * exclusions can be defined here.
  */
 export default defineConfig([
   ...rootConfig,

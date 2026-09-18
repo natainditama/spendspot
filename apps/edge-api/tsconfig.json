@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "composite": false,
     "declaration": false,
     "declarationMap": false,
     "outDir": "./dist",
@@ -11,6 +12,7 @@
     "typeRoots": ["../../node_modules/@types", "./node_modules/@types"],
     "types": ["node"]
   },
+  "exclude": ["dist/**", "node_modules/**", "supabase/.branches/**", "supabase/.temp/**", "supabase/migrations/**"],
   "extends": "../../tsconfig.base.json",
   "include": ["supabase/functions/**/*"]
 }
