@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "composite": false,
+    "declaration": false,
+    "declarationMap": false,
+    "jsx": "react",
+    "outDir": "./dist",
+    "paths": {
+      "@spendspot/ui-components/*": ["./src/*/index.tsx"],
+      "react-native": ["../../apps/mobile-app/node_modules/react-native"],
+      "react-native/*": ["../../apps/mobile-app/node_modules/react-native/*"]
+    },
+    "rootDir": "./src",
+    "strict": true,
+    "typeRoots": ["../../node_modules/@types", "../../apps/mobile-app/node_modules/@types", "./node_modules/@types"],
+    "types": ["react"]
+  },
+  "exclude": ["dist/**", "node_modules/**"],
+  "extends": "../../tsconfig.base.json",
+  "include": ["src/**/*", "nativewind-env.d.ts"]
+}

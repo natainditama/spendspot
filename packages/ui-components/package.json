@@ -1,0 +1,42 @@
+{
+  "name": "@spendspot/ui-components",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Shared React Native UI component library for SpendSpot",
+  "exports": {
+    "./button": "./src/button/index.tsx",
+    "./checkbox": "./src/checkbox/index.tsx",
+    "./input": "./src/input/index.tsx",
+    "./ui-provider": "./src/ui-provider/index.tsx"
+  },
+  "scripts": {
+    "build": "tsc --noEmit",
+    "dev": "tsc --noEmit --watch",
+    "lint": "eslint .",
+    "start": "tsc --noEmit --watch",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@expo/html-elements": "^0.12.5",
+    "@gluestack-ui/core": "^5.0.15",
+    "@gluestack-ui/utils": "^5.0.6",
+    "@legendapp/motion": "^2.4.0",
+    "@spendspot/core-logic": "workspace:*",
+    "react-aria": "^3.45.0",
+    "react-stately": "^3.39.0",
+    "tailwind-variants": "^0.1.20"
+  },
+  "devDependencies": {
+    "babel-plugin-module-resolver": "^5.0.0"
+  },
+  "peerDependencies": {
+    "nativewind": "^5.0.0-preview.4",
+    "react": ">=18.0.0",
+    "react-native": ">=0.74.0",
+    "react-native-css": "^3.0.4",
+    "react-native-reanimated": "4.5.1",
+    "react-native-safe-area-context": "~5.7.0",
+    "react-native-svg": "15.15.4",
+    "react-native-worklets": "0.10.1"
+  }
+}

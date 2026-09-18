@@ -1,0 +1,10 @@
+﻿{
+  "app": {
+    "entry": "src/index.ts",
+    "components": "src"
+  },
+  "tailwind": {
+    "config": "tailwind.config.js",
+    "css": "global.css"
+  }
+}
