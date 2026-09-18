@@ -6,11 +6,20 @@
     "jsx": "react",
     "outDir": "./dist",
     "paths": {
+      "@spendspot/core-logic": ["../core-logic/src/index.ts"],
+      "@spendspot/core-logic/*": [
+        "../core-logic/src/hooks/*.ts",
+        "../core-logic/src/constants/*.ts",
+        "../core-logic/src/lib/utils/*.ts",
+        "../core-logic/src/lib/*/index.ts",
+        "../core-logic/src/types/*.ts",
+        "../core-logic/src/*"
+      ],
       "@spendspot/ui-components/*": ["./src/*/index.tsx"],
       "react-native": ["../../apps/mobile-app/node_modules/react-native"],
       "react-native/*": ["../../apps/mobile-app/node_modules/react-native/*"]
     },
-    "rootDir": "./src",
+    "rootDir": "../..",
     "strict": true,
     "typeRoots": ["../../node_modules/@types", "../../apps/mobile-app/node_modules/@types", "./node_modules/@types"],
     "types": ["react"]

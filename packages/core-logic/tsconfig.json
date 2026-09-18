@@ -6,14 +6,14 @@
     "jsx": "react-jsx",
     "outDir": "./dist",
     "paths": {
-      "@shared/*": ["./supabase/functions/_shared/*"]
+      "@spendspot/core-logic/*": ["./src/*"]
     },
-    "rootDir": "./supabase/functions",
+    "rootDir": "./src",
     "strict": true,
     "typeRoots": ["../../node_modules/@types", "./node_modules/@types"],
-    "types": ["node"]
+    "types": ["react", "node"]
   },
-  "exclude": ["dist/**", "node_modules/**", "supabase/.branches/**", "supabase/.temp/**", "supabase/migrations/**"],
+  "exclude": ["dist/**", "node_modules/**"],
   "extends": "../../tsconfig.base.json",
-  "include": ["supabase/functions/**/*"]
+  "include": ["src/**/*"]
 }

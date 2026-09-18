@@ -1,0 +1,71 @@
+{
+  "ai": {
+    "title": "AI Financial Assistant",
+    "placeholder": "Ask about your spending...",
+    "disclaimer": "AI only answers questions about your personal financial data.",
+    "quotaExceeded": "Your daily AI quota has been reached. Please try again tomorrow!"
+  },
+  "category": {
+    "FOOD_AND_BEVERAGE": "Food & Beverage",
+    "TRANSPORTATION": "Transportation",
+    "HOUSING_AND_UTILITIES": "Housing & Utilities",
+    "EDUCATION": "Education",
+    "HEALTHCARE": "Healthcare",
+    "ENTERTAINMENT": "Entertainment",
+    "SHOPPING": "Shopping",
+    "FINANCIAL": "Financial",
+    "OTHER": "Other"
+  },
+  "common": {
+    "appName": "SpendSpot",
+    "confirm": "Confirm",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "loading": "Loading...",
+    "retry": "Retry",
+    "today": "Today",
+    "thisWeek": "This Week",
+    "thisMonth": "This Month",
+    "thisYear": "This Year"
+  },
+  "dashboard": {
+    "title": "Financial Dashboard",
+    "remainingBudget": "Remaining Budget",
+    "spentToday": "Spent Today",
+    "dailyLimit": "Daily Limit",
+    "recentTransactions": "Recent Transactions",
+    "topSpots": "Top Spending Spots",
+    "quickLog": "Quick Log"
+  },
+  "error": {
+    "generic": "Something went wrong. Please try again.",
+    "network": "Network error. Check your internet connection.",
+    "unauthorized": "Session expired. Please sign in again.",
+    "notFound": "The requested resource was not found."
+  },
+  "history": {
+    "title": "Transaction History",
+    "search": "Search notes or amount...",
+    "export": "Export Report",
+    "filter": "Filter Categories",
+    "empty": "No transactions recorded yet."
+  },
+  "map": {
+    "title": "Spending Spots Map",
+    "searchPlaceholder": "Search saved spots...",
+    "totalSpentAtSpot": "Total Spent at This Spot",
+    "visits": "Visits",
+    "lastVisit": "Last Visited",
+    "logExpenseHere": "Log Expense Here"
+  },
+  "profile": {
+    "title": "Profile & Settings",
+    "language": "Language",
+    "currency": "Currency",
+    "limits": "Budget Limits",
+    "biometric": "Biometric Lock (Fingerprint / Face ID)",
+    "aiLimit": "Daily AI Quota Remaining"
+  }
+}

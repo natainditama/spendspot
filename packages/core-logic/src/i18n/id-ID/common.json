@@ -1,0 +1,71 @@
+{
+  "ai": {
+    "title": "Asisten Keuangan AI",
+    "placeholder": "Tanyakan seputar pengeluaranmu...",
+    "disclaimer": "AI hanya menjawab pertanyaan seputar data keuangan pribadi Anda.",
+    "quotaExceeded": "Batas kuota harian Anda telah habis. Coba lagi besok!"
+  },
+  "category": {
+    "FOOD_AND_BEVERAGE": "Makanan & Minuman",
+    "TRANSPORTATION": "Transportasi",
+    "HOUSING_AND_UTILITIES": "Kosan & Tagihan",
+    "EDUCATION": "Kuliah & Pendidikan",
+    "HEALTHCARE": "Kesehatan & Medis",
+    "ENTERTAINMENT": "Hiburan & Hobi",
+    "SHOPPING": "Belanja & Keperluan",
+    "FINANCIAL": "Keuangan & Admin",
+    "OTHER": "Lainnya"
+  },
+  "common": {
+    "appName": "SpendSpot",
+    "confirm": "Konfirmasi",
+    "save": "Simpan",
+    "cancel": "Batal",
+    "delete": "Hapus",
+    "edit": "Ubah",
+    "loading": "Memuat...",
+    "retry": "Coba Lagi",
+    "today": "Hari Ini",
+    "thisWeek": "Minggu Ini",
+    "thisMonth": "Bulan Ini",
+    "thisYear": "Tahun Ini"
+  },
+  "dashboard": {
+    "title": "Dasbor Keuangan",
+    "remainingBudget": "Sisa Anggaran",
+    "spentToday": "Pengeluaran Hari Ini",
+    "dailyLimit": "Batas Harian",
+    "recentTransactions": "Transaksi Terakhir",
+    "topSpots": "Spot Pengeluaran Terbanyak",
+    "quickLog": "Catat Cepat"
+  },
+  "error": {
+    "generic": "Terjadi kesalahan. Silakan coba lagi.",
+    "network": "Gagal terhubung ke jaringan. Periksa koneksi internet Anda.",
+    "unauthorized": "Sesi telah berakhir. Silakan masuk kembali.",
+    "notFound": "Sumber daya yang diminta tidak ditemukan."
+  },
+  "history": {
+    "title": "Riwayat Transaksi",
+    "search": "Cari catatan atau nominal...",
+    "export": "Ekspor Laporan",
+    "filter": "Filter Kategori",
+    "empty": "Belum ada transaksi yang tercatat."
+  },
+  "map": {
+    "title": "Peta Spot Pengeluaran",
+    "searchPlaceholder": "Cari spot tersimpan...",
+    "totalSpentAtSpot": "Total Pengeluaran di Spot Ini",
+    "visits": "Kunjungan",
+    "lastVisit": "Terakhir Dikunjungi",
+    "logExpenseHere": "Catat Pengeluaran di Sini"
+  },
+  "profile": {
+    "title": "Profil & Pengaturan",
+    "language": "Bahasa",
+    "currency": "Mata Uang",
+    "limits": "Batas Anggaran",
+    "biometric": "Kunci Biometrik (Fingerprint / Face ID)",
+    "aiLimit": "Sisa Kuota AI Harian"
+  }
+}

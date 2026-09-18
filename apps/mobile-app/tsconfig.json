@@ -3,13 +3,24 @@
     "composite": false,
     "declaration": false,
     "declarationMap": false,
+    "jsx": "react-native",
+    "outDir": "./dist",
     "paths": {
       "@/*": ["./src/*"],
       "@/assets/*": ["./assets/*"],
+      "@spendspot/core-logic/*": [
+        "../../packages/core-logic/src/hooks/*.ts",
+        "../../packages/core-logic/src/constants/*.ts",
+        "../../packages/core-logic/src/lib/utils/*.ts",
+        "../../packages/core-logic/src/lib/*/index.ts",
+        "../../packages/core-logic/src/types/*.ts",
+        "../../packages/core-logic/src/*"
+      ],
       "@spendspot/ui-components/*": ["../../packages/ui-components/src/*/index.tsx"],
       "react-native": ["./node_modules/react-native"],
       "react-native/*": ["./node_modules/react-native/*"]
     },
+    "rootDir": "../..",
     "strict": true,
     "typeRoots": ["../../node_modules/@types", "./node_modules/@types"],
     "types": ["react", "node"]
