@@ -1,18 +1,6 @@
 ## Description
 
-Provide a clear and concise summary of the changes proposed in this Pull Request, including motivation and context.
-
-- What problem does this solve?
-- What changes were made?
-
----
-
-## Related Issue
-
-Link any related issue(s) resolved or referenced by this PR:
-
-- Closes #
-- Relates to #
+<!-- Provide a clear explanation of the context, motivation, and summary of changes introduced by this pull request. -->
 
 ---
 
@@ -49,12 +37,6 @@ Describe how the changes were verified:
 - [ ] Manual verification performed (e.g. device testing, emulator, local edge functions)
 - [ ] Static type analysis verified (`bun run typecheck`)
 - [ ] Linter and formatter verified (`bun run lint` / `bun run format`)
-
-### Visual / Output Proof (if applicable)
-
-| Before | After  |
-| :----: | :----: |
-| _None_ | _None_ |
 
 ---
 

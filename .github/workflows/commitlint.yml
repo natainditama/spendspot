@@ -1,5 +1,20 @@
 name: Lint Commit Messages
-on: [pull_request]
+
+on:
+  pull_request:
+    branches:
+      - develop
+      - main
+    types:
+      - opened
+      - synchronize
+      - reopened
+      - edited
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 permissions:
   contents: read
@@ -7,13 +22,22 @@ permissions:
 
 jobs:
   commitlint:
+    name: Validate Conventional Commits
     runs-on: ubuntu-latest
+    timeout-minutes: 5
 
     steps:
-      # Checkout the repository
       - name: Checkout repository
-        uses: actions/checkout@v7
+        uses: actions/checkout@v4
+        with:
+          # fetch-depth: 0 is required to retrieve the full commit history
+          # of the pull request for commitlint to validate every commit
+          fetch-depth: 0
 
-      # Check commitlint
-      - name: Check commitlint
+      - name: Validate commit messages
         uses: wagoid/commitlint-github-action@v6
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          # Fail step only on errors, allowing non-blocking style warnings to surface
+          failOnWarnings: false

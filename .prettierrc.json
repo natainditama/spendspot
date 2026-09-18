@@ -5,6 +5,8 @@
   "endOfLine": "auto",
   "importOrder": ["<BUILTIN_MODULES>", "<THIRD_PARTY_MODULES>", "", "^@spendspot/(.*)$", "", "^@/(.*)$", "", "^[./]"],
   "importOrderParserPlugins": ["typescript", "jsx"],
+  "jsdocEmptyCommentStrategy": "keep",
+  "jsdocPrintWidth": 80,
   "plugins": [
     "@ianvs/prettier-plugin-sort-imports",
     "@lebedevna/prettier-plugin-sql",

@@ -37,5 +37,9 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   experiments: {
     typedRoutes: true,
     reactCompiler: true,
+    // Enables accurate module resolution in Bun monorepos (SDK 55+).
+    // This resolves false-positive "duplicate dependencies" warnings from
+    // expo-doctor caused by Bun's content-addressable symlink architecture.
+    autolinkingModuleResolution: true,
   },
 });

@@ -4,14 +4,79 @@
   "extends": ["config:recommended"],
   "packageRules": [
     {
-      "automerge": true,
-      "automergeType": "pr",
-      "description": "Automatically merge minor and patch updates to develop",
-      "matchUpdateTypes": ["minor", "patch"],
-      "platformAutomerge": true
+      "description": "Group all Expo SDK packages together so they are always updated in a single PR, preventing version mismatches caught by expo-doctor CI.",
+      "matchPackageNames": [
+        "expo",
+        "expo-constants",
+        "expo-font",
+        "expo-linking",
+        "expo-router",
+        "expo-splash-screen",
+        "expo-status-bar",
+        "@expo/dom-webview",
+        "@expo/log-box",
+        "@expo/metro-config",
+        "@expo/vector-icons"
+      ],
+      "groupName": "Expo SDK packages",
+      "groupSlug": "expo-sdk",
+      "automerge": false
     },
     {
-      "description": "Require manual review for major updates",
+      "description": "Group all React Native core packages together so they are always updated alongside the Expo SDK, ensuring cross-package compatibility.",
+      "matchPackageNames": [
+        "react-native",
+        "react-native-gesture-handler",
+        "react-native-reanimated",
+        "react-native-safe-area-context",
+        "react-native-screens",
+        "react-native-svg",
+        "react-native-worklets"
+      ],
+      "groupName": "React Native core packages",
+      "groupSlug": "react-native-core",
+      "automerge": false
+    },
+    {
+      "description": "Auto-merge minor and patch updates for non-Expo/React Native packages after the expo-check CI status check passes.",
+      "matchUpdateTypes": ["minor", "patch"],
+      "excludePackageNames": [
+        "expo",
+        "expo-constants",
+        "expo-font",
+        "expo-linking",
+        "expo-router",
+        "expo-splash-screen",
+        "expo-status-bar",
+        "@expo/dom-webview",
+        "@expo/log-box",
+        "@expo/metro-config",
+        "@expo/vector-icons",
+        "react-native",
+        "react-native-gesture-handler",
+        "react-native-reanimated",
+        "react-native-safe-area-context",
+        "react-native-screens",
+        "react-native-svg",
+        "react-native-worklets"
+      ],
+      "automerge": true,
+      "automergeType": "pr",
+      "platformAutomerge": true,
+      "statusCheckNames": ["expo-doctor / Run expo-doctor"]
+    },
+    {
+      "description": "Restrict ESLint to <10.0.0 because ecosystem plugins rely on context.getFilename() which was removed in ESLint 10.",
+      "matchPackageNames": ["eslint"],
+      "allowedVersions": "<10.0.0"
+    },
+    {
+      "description": "Restrict TypeScript to <6.1.0 because typescript-eslint v8 peerDependencies explicitly require >=4.8.4 <6.1.0.",
+      "matchPackageNames": ["typescript"],
+      "allowedVersions": "<6.1.0"
+    },
+    {
+      "description": "Require manual review for all major version updates across all packages.",
       "matchUpdateTypes": ["major"],
       "automerge": false
     }

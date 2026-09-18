@@ -6,7 +6,8 @@
     "jsx": "react-jsx",
     "outDir": "./dist",
     "paths": {
-      "@shared/*": ["./supabase/functions/_shared/*"]
+      "@shared/*": ["./supabase/functions/_shared/*"],
+      "@supabase/functions-js/edge-runtime.d.ts": ["../../node_modules/@supabase/functions-js/src/edge-runtime.d.ts"]
     },
     "rootDir": "./supabase/functions",
     "strict": true,

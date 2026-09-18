@@ -56,12 +56,36 @@
     ]
   },
   "resolutions": {
-    "@types/react": "~19.3.0",
-    "lightningcss": "1.33.0"
+    "@types/react": "~19.2.2",
+    "expo": "~57.0.24",
+    "expo-constants": "~57.0.19",
+    "expo-linking": "~57.0.10",
+    "expo-router": "~57.0.22",
+    "lightningcss": "1.33.0",
+    "react": "19.2.3",
+    "react-native": "0.86.3",
+    "react-native-gesture-handler": "~2.32.0",
+    "react-native-reanimated": "4.5.1",
+    "react-native-safe-area-context": "~5.7.0",
+    "react-native-screens": "~4.26.0",
+    "react-native-svg": "15.15.4",
+    "react-native-worklets": "0.10.1"
   },
   "overrides": {
-    "@types/react": "~19.3.0",
-    "lightningcss": "1.33.0"
+    "@types/react": "~19.2.2",
+    "expo": "~57.0.24",
+    "expo-constants": "~57.0.19",
+    "expo-linking": "~57.0.10",
+    "expo-router": "~57.0.22",
+    "lightningcss": "1.33.0",
+    "react": "19.2.3",
+    "react-native": "0.86.3",
+    "react-native-gesture-handler": "~2.32.0",
+    "react-native-reanimated": "4.5.1",
+    "react-native-safe-area-context": "~5.7.0",
+    "react-native-screens": "~4.26.0",
+    "react-native-svg": "15.15.4",
+    "react-native-worklets": "0.10.1"
   },
   "devDependencies": {
     "@commitlint/cli": "^21.2.2",
@@ -70,8 +94,8 @@
     "@lebedevna/prettier-plugin-sql": "^0.3.2",
     "@tailwindcss/postcss": "^4.2.0",
     "@types/node": "^26.5.1",
-    "@types/react": "~19.3.0",
-    "eslint": "^10.0.0",
+    "@types/react": "~19.2.2",
+    "eslint": "^9.0.0",
     "eslint-config-expo": "~57.0.2",
     "eslint-config-flat-gitignore": "^2.4.0",
     "eslint-config-prettier": "^10.1.8",
@@ -84,7 +108,7 @@
     "prettier-plugin-packagejson": "^3.0.2",
     "prettier-plugin-sort-json": "^4.2.0",
     "tailwindcss": "^4.2.0",
-    "typescript": "~7.0.0",
+    "typescript": "~6.0.3",
     "typescript-eslint": "^8.0.0"
   }
 }

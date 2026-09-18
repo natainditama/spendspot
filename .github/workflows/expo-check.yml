@@ -1,0 +1,114 @@
+name: Expo Check
+
+on:
+  pull_request:
+    branches:
+      - develop
+    paths:
+      - "apps/mobile-app/package.json"
+      - "package.json"
+      - "bun.lock"
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  expo-doctor:
+    name: Run expo-doctor
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          # Disable credential persistence to adhere to security best practices
+          persist-credentials: false
+
+      - name: Setup Bun runtime environment
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - name: Install dependencies with Bun
+        # Frozen lockfile guarantees immutable and deterministic builds in CI
+        run: bun install --frozen-lockfile
+        shell: bash
+
+      - name: Run expo-doctor
+        id: expo_doctor
+        working-directory: apps/mobile-app
+        run: |
+          node ../../scripts/expo-doctor.mjs 2>&1 | tee /tmp/expo-doctor-output.txt
+          EXIT_CODE=${PIPESTATUS[0]}
+
+          echo "## Expo Doctor Report" >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          cat /tmp/expo-doctor-output.txt >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+
+          exit $EXIT_CODE
+        shell: bash
+
+      - name: Post expo-doctor result as PR comment
+        if: always() && github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const output = fs.readFileSync('/tmp/expo-doctor-output.txt', 'utf8');
+
+            const hasRealFailure = output.includes('real issue(s) found');
+            const title = hasRealFailure
+              ? 'Expo Doctor: Compatibility issues detected'
+              : 'Expo Doctor: All compatibility checks passed';
+
+            const body = [
+              `### ${title}`,
+              '',
+              '<details>',
+              '<summary>View full expo-doctor output</summary>',
+              '',
+              '```',
+              output.trim(),
+              '```',
+              '',
+              '</details>',
+              '',
+              '> **Note:** The duplicate dependencies warning is a known false positive in Bun monorepos.',
+              '> Bun uses content-addressable symlinks, so identical package versions may appear at multiple',
+              '> symlink paths while still resolving to a single installation.',
+            ].join('\n');
+
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
+
+            const existing = comments.find(
+              c => c.user.type === 'Bot' && c.body.includes('Expo Doctor:')
+            );
+
+            if (existing) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: existing.id,
+                body,
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body,
+              });
+            }
