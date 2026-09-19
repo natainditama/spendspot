@@ -35,18 +35,34 @@ const UICheckbox = createCheckbox({
   Indicator: IndicatorWrapper,
 });
 
+/**
+ * Base layout and state styles for the root Checkbox container. Configures row
+ * alignment, cursor states, and disabled opacity levels.
+ */
 const checkboxStyle = tva({
   base: "group/checkbox flex-row items-center justify-start gap-2 web:cursor-pointer data-[disabled=true]:cursor-not-allowed data-[disabled=true]:opacity-50",
 });
 
+/**
+ * Visual presentation styles for the Checkbox indicator element. Handles
+ * borders, focus-visible rings, checked background fills, and invalid states.
+ */
 const checkboxIndicatorStyle = tva({
   base: "justify-center items-center w-4 h-4 shrink-0 rounded border border-input dark:bg-input/30   shadow-xs web:outline-none web:data-[focus-visible=true]:ring-[3px] web:data-[focus-visible=true]:ring-ring/50 web:data-[focus-visible=true]:border-ring data-[checked=true]:bg-primary  data-[checked=true]:border-primary dark:data-[checked=true]:bg-primary dark:data-[checked=true]:border-primary data-[invalid=true]:ring-destructive/20 data-[invalid=true]:border-destructive data-[disabled=true]:cursor-not-allowed data-[disabled=true]:opacity-50",
 });
 
+/**
+ * Typography and cursor styles for the Checkbox text label. Adjusts font
+ * weight, text selection, and dimmed contrast when disabled.
+ */
 const checkboxLabelStyle = tva({
   base: "text-foreground text-sm font-medium font-body web:select-none web:cursor-pointer data-[disabled=true]:cursor-not-allowed data-[disabled=true]:opacity-50",
 });
 
+/**
+ * Dimensions and color styling for the checkmark icon inside CheckboxIndicator.
+ * Applies theme-aware foreground fills and standardized icon proportions.
+ */
 const checkboxIconStyle = tva({
   base: "text-primary-foreground fill-none h-3.5 w-3.5",
 });

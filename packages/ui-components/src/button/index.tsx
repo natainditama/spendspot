@@ -21,6 +21,11 @@ const UIButton = createButton({
   Icon: StyledUIIcon,
 });
 
+/**
+ * Variant style configuration for button interactive surface containers.
+ * Defines dimensions, color themes, focus rings, and hover/active
+ * pseudo-classes.
+ */
 const buttonStyle = tva({
   base: "rounded-md flex-row items-center justify-center data-[focus-visible=true]:web:outline-none data-[focus-visible=true]:web:ring-2 data-[disabled=true]:opacity-40 gap-2 h-fit",
   variants: {
@@ -45,6 +50,10 @@ const buttonStyle = tva({
   },
 });
 
+/**
+ * Typographic variant styles for button label text nodes. Coordinates font
+ * sizing and high-contrast color foregrounds across parent variants.
+ */
 const buttonTextStyle = tva({
   base: "web:select-none font-sans",
   parentVariants: {
@@ -65,6 +74,11 @@ const buttonTextStyle = tva({
   },
 });
 
+/**
+ * Size styling configuration for asynchronous loading spinners inside buttons.
+ * Harmonizes spinner diameter scales with surrounding button container
+ * heights.
+ */
 const buttonSpinnerStyle = tva({
   base: "",
   parentVariants: {
@@ -77,6 +91,10 @@ const buttonSpinnerStyle = tva({
   },
 });
 
+/**
+ * Dimensions and color inheritance styling for icons rendered in buttons.
+ * Harmonizes icon bounding boxes and pointer events across button dimensions.
+ */
 const buttonIconStyle = tva({
   base: "fill-none pointer-events-none shrink-0",
   parentVariants: {
@@ -97,6 +115,11 @@ const buttonIconStyle = tva({
   },
 });
 
+/**
+ * Layout container styles grouping multiple related buttons sequentially.
+ * Provides configurable inter-button gap spacing scales and attached
+ * segmentation.
+ */
 const buttonGroupStyle = tva({
   base: "",
   variants: {
