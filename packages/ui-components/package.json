@@ -4,6 +4,7 @@
   "private": true,
   "description": "Shared React Native UI component library for SpendSpot",
   "exports": {
+    "./*": "./src/*/index.tsx",
     "./button": "./src/button/index.tsx",
     "./checkbox": "./src/checkbox/index.tsx",
     "./input": "./src/input/index.tsx",
@@ -20,7 +21,9 @@
     "@expo/html-elements": "^57.0.0",
     "@gluestack-ui/core": "^5.0.15",
     "@gluestack-ui/utils": "^5.0.6",
+    "@gorhom/bottom-sheet": "^5.2.14",
     "@legendapp/motion": "^2.4.0",
+    "@react-native-community/datetimepicker": "^9.2.1",
     "@spendspot/core-logic": "workspace:*",
     "react-aria": "^3.45.0",
     "react-stately": "^3.39.0",
