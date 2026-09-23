@@ -1,19 +1,9 @@
 import React from "react";
-import { View, ViewProps } from "react-native";
+import { styled, View } from "tamagui";
 
-import type { VariantProps } from "@gluestack-ui/utils/nativewind-utils";
-import { boxStyle } from "./styles";
-
-type IBoxProps = ViewProps & VariantProps<typeof boxStyle> & { className?: string };
-
-/**
- * Universal layout container primitive rendering a styled React Native View.
- * Provides a standardized baseline for flex alignments, padding, and theme
- * classes.
- */
-const Box = React.forwardRef<React.ComponentRef<typeof View>, IBoxProps>(function Box({ className, ...props }, ref) {
-  return <View ref={ref} {...props} className={boxStyle({ class: className })} />;
+export const Box = styled(View, {
+  name: "Box",
 });
 
-Box.displayName = "Box";
-export { Box };
+export type BoxProps = React.ComponentProps<typeof Box>;
+export default Box;

@@ -1,241 +1,277 @@
-"use client";
+import React, { createContext, forwardRef, useContext, useState } from "react";
+import { Modal, Pressable, ScrollView } from "react-native";
+import { Paragraph, styled, View, XStack, YStack } from "tamagui";
 
-import React from "react";
-import { UIIcon } from "@gluestack-ui/core/icon/creator";
-import { type VariantProps, tva, useStyleContext, withStyleContext } from "@gluestack-ui/utils/nativewind-utils";
-import { createSelect } from "@gluestack-ui/core/select/creator";
-import { styled } from "nativewind";
-import {
-  Actionsheet,
-  ActionsheetContent,
-  ActionsheetItem,
-  ActionsheetItemText,
-  ActionsheetDragIndicator,
-  ActionsheetDragIndicatorWrapper,
-  ActionsheetBackdrop,
-  ActionsheetScrollView,
-  ActionsheetVirtualizedList,
-  ActionsheetFlatList,
-  ActionsheetSectionList,
-  ActionsheetSectionHeaderText,
-} from "./select-actionsheet";
-import { Pressable, View, TextInput } from "react-native";
+interface SelectContextValue {
+  isOpen: boolean;
+  setIsOpen: (open: boolean) => void;
+  selectedValue?: string;
+  onValueChange?: (value: string) => void;
+  selectedLabel?: string;
+  setSelectedLabel: (label: string) => void;
+}
 
-const SelectTriggerWrapper = React.forwardRef<
-  React.ComponentRef<typeof Pressable>,
-  React.ComponentProps<typeof Pressable>
->(function SelectTriggerWrapper({ ...props }, ref) {
-  return <Pressable {...props} ref={ref} />;
+const SelectContext = createContext<SelectContextValue>({
+  isOpen: false,
+  setIsOpen: () => {},
+  selectedLabel: "",
+  setSelectedLabel: () => {},
 });
 
-const selectIconStyle = tva({
-  base: "text-foreground/50 fill-none",
-  parentVariants: {
-    size: {
-      "2xs": "h-3 w-3",
-      xs: "h-3.5 w-3.5",
-      sm: "h-4 w-4",
-      md: "h-[18px] w-[18px]",
-      lg: "h-5 w-5",
-      xl: "h-6 w-6",
-    },
-  },
-});
+export interface SelectProps {
+  selectedValue?: string;
+  onValueChange?: (val: string) => void;
+  children?: React.ReactNode;
+  className?: string;
+}
 
-const selectStyle = tva({
-  base: "",
-});
-
-const selectTriggerStyle = tva({
-  base: "border border-border rounded flex-row items-center overflow-hidden data-[hover=true]:border-primary/80 data-[focus=true]:border-primary/80 data-[disabled=true]:opacity-40 data-[disabled=true]:data-[hover=true]:border-border/80",
-  variants: {
-    size: {
-      xl: "min-h-12",
-      lg: "min-h-11",
-      md: "min-h-10",
-      sm: "min-h-9",
-    },
-    variant: {
-      underlined:
-        "border-0 border-b rounded-none data-[hover=true]:border-primary/80 data-[focus=true]:border-primary/80 data-[focus=true]:web:shadow-[inset_0_-1px_0_0] data-[focus=true]:web:shadow-primary/80 data-[invalid=true]:border-destructive data-[invalid=true]:web:shadow-destructive",
-      outline:
-        "data-[focus=true]:border-primary/80 data-[focus=true]:web:shadow-[inset_0_0_0_1px] data-[focus=true]:data-[hover=true]:web:shadow-primary/80 data-[invalid=true]:web:shadow-[inset_0_0_0_1px] data-[invalid=true]:border-destructive data-[invalid=true]:web:shadow-destructive data-[invalid=true]:data-[hover=true]:border-destructive",
-      rounded:
-        "rounded-full data-[focus=true]:border-primary/80 data-[focus=true]:web:shadow-[inset_0_0_0_1px] data-[focus=true]:web:shadow-primary/80 data-[invalid=true]:border-destructive data-[invalid=true]:web:shadow-destructive",
-    },
-  },
-});
-
-const selectInputStyle = tva({
-  base: "px-3 placeholder:text-foreground/50 web:w-full h-full text-foreground/90 pointer-events-none web:outline-none ios:leading-[0px] py-0",
-  parentVariants: {
-    size: {
-      xl: "text-xl",
-      lg: "text-lg",
-      md: "text-base",
-      sm: "text-sm",
-    },
-    variant: {
-      underlined: "px-0",
-      outline: "",
-      rounded: "px-4",
-    },
-  },
-});
-
-const StyledIcon = styled(UIIcon, {
-  className: {
-    target: "style",
-  },
-});
-
-const UISelect = createSelect(
-  {
-    Root: View,
-    Trigger: withStyleContext(SelectTriggerWrapper),
-    Input: TextInput,
-    Icon: StyledIcon,
-  },
-  {
-    Portal: Actionsheet,
-    Backdrop: ActionsheetBackdrop,
-    Content: ActionsheetContent,
-    DragIndicator: ActionsheetDragIndicator,
-    DragIndicatorWrapper: ActionsheetDragIndicatorWrapper,
-    Item: ActionsheetItem,
-    ItemText: ActionsheetItemText,
-    ScrollView: ActionsheetScrollView,
-    VirtualizedList: ActionsheetVirtualizedList,
-    FlatList: ActionsheetFlatList,
-    SectionList: ActionsheetSectionList,
-    SectionHeaderText: ActionsheetSectionHeaderText,
-  }
-);
-
-type ISelectProps = VariantProps<typeof selectStyle> & React.ComponentProps<typeof UISelect> & { className?: string };
-
-const Select = React.forwardRef<React.ComponentRef<typeof UISelect>, ISelectProps>(function Select(
-  { className, ...props },
+/**
+ * Accessible select input dropdown component coordinating trigger button and
+ * sheet options.
+ */
+export const Select = forwardRef<any, SelectProps>(function Select(
+  { selectedValue, onValueChange, children, ...props },
   ref
 ) {
+  const [isOpen, setIsOpen] = useState(false);
+  const [selectedLabel, setSelectedLabel] = useState<string>("");
+
   return (
-    <UISelect
-      className={selectStyle({
-        class: className,
-      })}
+    <SelectContext.Provider
+      value={{
+        isOpen,
+        setIsOpen,
+        selectedValue,
+        onValueChange,
+        selectedLabel,
+        setSelectedLabel,
+      }}
+    >
+      <View ref={ref} width="100%" {...props}>
+        {children}
+      </View>
+    </SelectContext.Provider>
+  );
+});
+
+export interface SelectTriggerProps extends React.ComponentPropsWithoutRef<typeof XStack> {
+  size?: "sm" | "md" | "lg" | "xl";
+  variant?: "outline" | "rounded" | "underlined";
+  className?: string;
+}
+
+/** Interactive surface triggering selection sheet expansion. */
+export const SelectTrigger = forwardRef<React.ElementRef<typeof XStack>, SelectTriggerProps>(function SelectTrigger(
+  { size = "md", variant = "outline", children, ...props },
+  ref
+) {
+  const { setIsOpen } = useContext(SelectContext);
+
+  const height = size === "sm" ? 36 : size === "lg" ? 48 : size === "xl" ? 52 : 42;
+  const borderRadius = variant === "rounded" ? 9999 : variant === "underlined" ? 0 : 6;
+  const borderWidth = variant === "underlined" ? 0 : 1;
+  const borderBottomWidth = 1;
+
+  return (
+    <XStack
       ref={ref}
+      height={height}
+      borderRadius={borderRadius}
+      borderWidth={borderWidth}
+      borderBottomWidth={borderBottomWidth}
+      borderColor="$borderColor"
+      backgroundColor="$background"
+      paddingHorizontal={12}
+      alignItems="center"
+      justifyContent="space-between"
+      cursor="pointer"
+      onPress={() => setIsOpen(true)}
+      {...props}
+    >
+      {children}
+    </XStack>
+  );
+});
+
+export interface SelectInputProps extends React.ComponentPropsWithoutRef<typeof Paragraph> {
+  placeholder?: string;
+  className?: string;
+}
+
+/** Text node displaying the selected option label or fallback placeholder. */
+export const SelectInput = forwardRef<React.ElementRef<typeof Paragraph>, SelectInputProps>(function SelectInput(
+  { placeholder = "Select an option", ...props },
+  ref
+) {
+  const { selectedLabel, selectedValue } = useContext(SelectContext);
+  const textToShow = selectedLabel || selectedValue || placeholder;
+  const isPlaceholder = !selectedLabel && !selectedValue;
+
+  return (
+    <Paragraph ref={ref} color={isPlaceholder ? "$colorHover" : "$color"} fontSize={14} numberOfLines={1} {...props}>
+      {textToShow}
+    </Paragraph>
+  );
+});
+
+export interface SelectIconProps {
+  as?: React.ElementType;
+  size?: number | string;
+  height?: number;
+  width?: number;
+  color?: string;
+  className?: string;
+  [key: string]: any;
+}
+
+/** Dropdown indicator icon displayed on the select trigger edge. */
+export const SelectIcon = forwardRef<any, SelectIconProps>(function SelectIcon(
+  { as: Component, size = 16, height, width, color = "$color", ...props },
+  ref
+) {
+  const dim = height ?? width ?? (typeof size === "number" ? size : 16);
+  if (Component) {
+    return <Component ref={ref} size={dim} width={dim} height={dim} color={color} {...props} />;
+  }
+  return null;
+});
+
+export interface SelectPortalProps {
+  children?: React.ReactNode;
+  className?: string;
+}
+
+/** Portaled overlay boundary presenting sheet options in modal hierarchy. */
+export const SelectPortal = function SelectPortal({ children }: SelectPortalProps) {
+  const { isOpen, setIsOpen } = useContext(SelectContext);
+
+  if (!isOpen) return null;
+
+  return (
+    <Modal visible={isOpen} transparent animationType="slide" onRequestClose={() => setIsOpen(false)}>
+      <View flex={1} justifyContent="flex-end">
+        {children}
+      </View>
+    </Modal>
+  );
+};
+
+export interface SelectBackdropProps extends React.ComponentPropsWithoutRef<typeof Pressable> {
+  className?: string;
+}
+
+/** Dimmed scrim backdrop capturing taps outside the options sheet. */
+export const SelectBackdrop = forwardRef<any, SelectBackdropProps>(function SelectBackdrop(props, ref) {
+  const { setIsOpen } = useContext(SelectContext);
+
+  return (
+    <Pressable
+      ref={ref}
+      style={{ position: "absolute", top: 0, bottom: 0, left: 0, right: 0, backgroundColor: "rgba(0,0,0,0.5)" }}
+      onPress={() => setIsOpen(false)}
       {...props}
     />
   );
 });
 
-type ISelectTriggerProps = VariantProps<typeof selectTriggerStyle> &
-  React.ComponentProps<typeof UISelect.Trigger> & { className?: string };
+export interface SelectContentProps extends React.ComponentPropsWithoutRef<typeof YStack> {
+  className?: string;
+}
 
-const SelectTrigger = React.forwardRef<React.ComponentRef<typeof UISelect.Trigger>, ISelectTriggerProps>(
-  function SelectTrigger({ className, size = "md", variant = "outline", ...props }, ref) {
-    return (
-      <UISelect.Trigger
-        className={selectTriggerStyle({
-          class: className,
-          size,
-          variant,
-        })}
-        ref={ref}
-        context={{ size, variant }}
-        {...props}
-      />
-    );
-  }
-);
-
-type ISelectInputProps = VariantProps<typeof selectInputStyle> &
-  React.ComponentProps<typeof UISelect.Input> & { className?: string };
-
-const SelectInput = React.forwardRef<React.ComponentRef<typeof UISelect.Input>, ISelectInputProps>(function SelectInput(
-  { className, ...props },
+/** Sliding bottom sheet surface container holding selection options. */
+export const SelectContent = forwardRef<React.ElementRef<typeof YStack>, SelectContentProps>(function SelectContent(
+  { children, ...props },
   ref
 ) {
-  const { size: parentSize, variant: parentVariant } = useStyleContext();
   return (
-    <UISelect.Input
-      className={selectInputStyle({
-        class: className,
-        parentVariants: {
-          size: parentSize,
-          variant: parentVariant,
-        },
-      })}
+    <YStack
       ref={ref}
+      backgroundColor="$background"
+      borderTopLeftRadius={16}
+      borderTopRightRadius={16}
+      borderWidth={1}
+      borderColor="$borderColor"
+      paddingHorizontal={16}
+      paddingBottom={32}
+      paddingTop={8}
+      maxHeight="60%"
+      gap={4}
       {...props}
-    />
+    >
+      {children}
+    </YStack>
   );
 });
 
-type ISelectIcon = VariantProps<typeof selectIconStyle> &
-  React.ComponentProps<typeof UISelect.Icon> & { className?: string };
+export const SelectDragIndicatorWrapper = styled(XStack, {
+  name: "SelectDragIndicatorWrapper",
+  width: "100%",
+  alignItems: "center",
+  justifyContent: "center",
+  paddingVertical: 8,
+});
 
-const SelectIcon = React.forwardRef<React.ComponentRef<typeof UISelect.Icon>, ISelectIcon>(function SelectIcon(
-  { className, size, ...props },
+export const SelectDragIndicator = styled(View, {
+  name: "SelectDragIndicator",
+  width: 36,
+  height: 4,
+  borderRadius: 2,
+  backgroundColor: "$borderColor",
+});
+
+export interface SelectItemProps extends React.ComponentPropsWithoutRef<typeof XStack> {
+  label: string;
+  value: string;
+  className?: string;
+}
+
+/** Selectable item row inside the select options list. */
+export const SelectItem = forwardRef<React.ElementRef<typeof XStack>, SelectItemProps>(function SelectItem(
+  { label, value, ...props },
   ref
 ) {
-  const { size: parentSize } = useStyleContext();
-  if (typeof size === "number") {
-    return <UISelect.Icon ref={ref} {...props} className={selectIconStyle({ class: className })} size={size} />;
-  } else if (
-    //@ts-expect-error : web only
-    (props?.height !== undefined || props?.width !== undefined) &&
-    size === undefined
-  ) {
-    return <UISelect.Icon ref={ref} {...props} className={selectIconStyle({ class: className })} />;
-  }
+  const { onValueChange, setSelectedLabel, setIsOpen, selectedValue } = useContext(SelectContext);
+  const isSelected = selectedValue === value;
+
+  const handleSelect = () => {
+    setSelectedLabel(label);
+    onValueChange?.(value);
+    setIsOpen(false);
+  };
+
   return (
-    <UISelect.Icon
-      className={selectIconStyle({
-        class: className,
-        size,
-        parentVariants: {
-          size: parentSize,
-        },
-      })}
+    <XStack
       ref={ref}
+      paddingVertical={12}
+      paddingHorizontal={8}
+      borderRadius={6}
+      backgroundColor={isSelected ? "$backgroundHover" : "transparent"}
+      cursor="pointer"
+      onPress={handleSelect}
+      alignItems="center"
+      justifyContent="space-between"
       {...props}
-    />
+    >
+      <Paragraph fontWeight={isSelected ? "600" : "400"} fontSize={15} color="$color">
+        {label}
+      </Paragraph>
+    </XStack>
   );
 });
+
+export const SelectScrollView = ScrollView;
+export const SelectFlatList = View;
+export const SelectVirtualizedList = View;
+export const SelectSectionList = View;
+export const SelectSectionHeaderText = Paragraph;
 
 Select.displayName = "Select";
 SelectTrigger.displayName = "SelectTrigger";
 SelectInput.displayName = "SelectInput";
 SelectIcon.displayName = "SelectIcon";
-
-// Actionsheet Components
-const SelectPortal = UISelect.Portal;
-const SelectBackdrop = UISelect.Backdrop;
-const SelectContent = UISelect.Content;
-const SelectDragIndicator = UISelect.DragIndicator;
-const SelectDragIndicatorWrapper = UISelect.DragIndicatorWrapper;
-const SelectItem = UISelect.Item;
-const SelectScrollView = UISelect.ScrollView;
-const SelectVirtualizedList = UISelect.VirtualizedList;
-const SelectFlatList = UISelect.FlatList;
-const SelectSectionList = UISelect.SectionList;
-const SelectSectionHeaderText = UISelect.SectionHeaderText;
-
-export {
-  Select,
-  SelectTrigger,
-  SelectInput,
-  SelectIcon,
-  SelectPortal,
-  SelectBackdrop,
-  SelectContent,
-  SelectDragIndicator,
-  SelectDragIndicatorWrapper,
-  SelectItem,
-  SelectScrollView,
-  SelectVirtualizedList,
-  SelectFlatList,
-  SelectSectionList,
-  SelectSectionHeaderText,
-};
+SelectPortal.displayName = "SelectPortal";
+SelectBackdrop.displayName = "SelectBackdrop";
+SelectContent.displayName = "SelectContent";
+SelectDragIndicatorWrapper.displayName = "SelectDragIndicatorWrapper";
+SelectDragIndicator.displayName = "SelectDragIndicator";
+SelectItem.displayName = "SelectItem";

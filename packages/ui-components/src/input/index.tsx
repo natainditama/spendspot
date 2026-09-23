@@ -1,137 +1,163 @@
-"use client";
+import React, { createContext, forwardRef, useContext } from "react";
+import { TextInput, type TextInputProps } from "react-native";
+import { styled, XStack } from "tamagui";
 
-import React from "react";
-import { createInput } from "@gluestack-ui/core/input/creator";
-import { View, Pressable, TextInput } from "react-native";
-import { tva, withStyleContext, type VariantProps } from "@gluestack-ui/utils/nativewind-utils";
-import { styled } from "nativewind";
-import { UIIcon } from "@gluestack-ui/core/icon/creator";
+type InputSize = "sm" | "md" | "lg";
 
-const SCOPE = "INPUT";
-const StyledUIIcon = styled(UIIcon, {
-  className: "style",
+interface InputContextValue {
+  size: InputSize;
+  isDisabled?: boolean;
+  isInvalid?: boolean;
+}
+
+const InputContext = createContext<InputContextValue>({
+  size: "md",
+  isDisabled: false,
+  isInvalid: false,
 });
 
-const UIInput = createInput({
-  Root: withStyleContext(View, SCOPE),
-  Icon: StyledUIIcon,
-  Slot: Pressable,
-  Input: TextInput,
+const InputContainer = styled(XStack, {
+  name: "Input",
+  flexDirection: "row",
+  alignItems: "center",
+  borderWidth: 1,
+  borderColor: "$borderColor",
+  backgroundColor: "$background",
+  borderRadius: 6,
+  paddingHorizontal: 12,
+  gap: 8,
+
+  variants: {
+    size: {
+      sm: {
+        height: 32,
+      },
+      md: {
+        height: 40,
+      },
+      lg: {
+        height: 48,
+      },
+    },
+    isInvalid: {
+      true: {
+        borderColor: "$red10",
+      },
+    },
+    isDisabled: {
+      true: {
+        opacity: 0.5,
+        pointerEvents: "none",
+      },
+    },
+  } as const,
+
+  defaultVariants: {
+    size: "md",
+  },
 });
 
-/**
- * Container styling variant generator establishing border, focus, and disabled
- * states. Formats rounded input shell styling and dark mode background
- * elevations.
- */
-const inputStyle = tva({
-  base: "min-h-9 w-full flex-row items-center rounded-md border border-border  dark:bg-input/30 bg-transparent shadow-xs transition-[color,box-shadow] overflow-hidden data-[focus=true]:outline-none data-[focus=true]:border-ring dark:data-[focus=true]:border-ring data-[focus=true]:web:ring-[3px] data-[focus=true]:web:ring-ring/50 data-[invalid=true]:border-destructive/40 dark:data-[invalid=true]:border-destructive/40 data-[invalid=true]:web:ring-destructive/20 dark:data-[invalid=true]:web:ring-destructive/40 data-[disabled=true]:pointer-events-none data-[disabled=true]:cursor-not-allowed data-[disabled=true]:opacity-50 px-3 gap-2",
-});
+export interface InputProps extends React.ComponentPropsWithoutRef<typeof InputContainer> {
+  className?: string;
+  size?: InputSize;
+  isDisabled?: boolean;
+  isInvalid?: boolean;
+}
 
-/**
- * Centered alignment and color formatting styles for accessory input icons.
- * Sets standardized icon sizing tokens with theme-aware muted contrast.
- */
-const inputIconStyle = tva({
-  base: "justify-center items-center text-muted-foreground fill-none h-4 w-4",
-});
-
-/**
- * Interactive pressable slot styles positioned at input leading or trailing
- * boundaries. Enforces proper cursor behavior when interacting with input
- * action slots.
- */
-const inputSlotStyle = tva({
-  base: "justify-center items-center web:disabled:cursor-not-allowed",
-});
-
-/**
- * Text editing field styles configuring typography, placeholders, and cursors.
- * Adapts platform vertical metrics and disables selection when input is
- * disabled.
- */
-const inputFieldStyle = tva({
-  base: "flex-1 text-foreground text-sm md:text-sm py-1 h-full placeholder:text-muted-foreground  web:outline-none ios:leading-[0px] web:cursor-text web:data-[disabled=true]:cursor-not-allowed",
-});
-
-type IInputProps = React.ComponentProps<typeof UIInput> & VariantProps<typeof inputStyle> & { className?: string };
-
-/**
- * Compound container wrapping text inputs with optional slot icons and actions.
- * Coordinates focus boundaries, validation borders, and accessibility states.
- */
-const Input = React.forwardRef<React.ComponentRef<typeof UIInput>, IInputProps>(function Input(
-  { className, ...props },
-  ref
-) {
-  return <UIInput ref={ref} {...props} className={inputStyle({ class: className })} context={{}} />;
-});
-
-type IInputIconProps = React.ComponentProps<typeof UIInput.Icon> &
-  VariantProps<typeof inputIconStyle> & {
-    className?: string;
-    height?: number;
-    width?: number;
-  };
-
-/**
- * Decorative or interactive icon element within an Input container. Aligns with
- * input font sizes and applies theme-aware muted colors.
- */
-const InputIcon = React.forwardRef<React.ComponentRef<typeof UIInput.Icon>, IInputIconProps>(function InputIcon(
-  { className, ...props },
-  ref
-) {
-  return <UIInput.Icon ref={ref} {...props} className={inputIconStyle({ class: className })} />;
-});
-
-type IInputSlotProps = React.ComponentProps<typeof UIInput.Slot> &
-  VariantProps<typeof inputSlotStyle> & { className?: string };
-
-/**
- * Pressable accessory slot at the leading or trailing input edge. Hosts action
- * buttons like password visibility or search triggers.
- */
-const InputSlot = React.forwardRef<React.ComponentRef<typeof UIInput.Slot>, IInputSlotProps>(function InputSlot(
-  { className, ...props },
+/** Compound container wrapping text inputs with accessory slots and icons. */
+export const Input = forwardRef<React.ElementRef<typeof InputContainer>, InputProps>(function Input(
+  { size = "md", isDisabled = false, isInvalid = false, children, ...props },
   ref
 ) {
   return (
-    <UIInput.Slot
+    <InputContext.Provider value={{ size, isDisabled, isInvalid }}>
+      <InputContainer ref={ref} size={size} isDisabled={isDisabled} isInvalid={isInvalid} {...props}>
+        {children}
+      </InputContainer>
+    </InputContext.Provider>
+  );
+});
+
+export interface InputFieldProps extends TextInputProps {
+  className?: string;
+}
+
+/**
+ * Core text input field forwarding native keyboard events and placeholder
+ * colors.
+ */
+export const InputField = forwardRef<TextInput, InputFieldProps>(function InputField(
+  { placeholderTextColor = "#9ca3af", style, ...props },
+  ref
+) {
+  const { size, isDisabled } = useContext(InputContext);
+  const fontSize = size === "sm" ? 13 : size === "lg" ? 16 : 14;
+
+  return (
+    <TextInput
       ref={ref}
+      editable={!isDisabled}
+      placeholderTextColor={placeholderTextColor}
+      style={[
+        {
+          flex: 1,
+          height: "100%",
+          padding: 0,
+          margin: 0,
+          color: "currentColor",
+          fontSize,
+          outlineWidth: 0,
+        } as any,
+        style,
+      ]}
       {...props}
-      className={inputSlotStyle({
-        class: className,
-      })}
     />
   );
 });
 
-type IInputFieldProps = React.ComponentProps<typeof UIInput.Input> &
-  VariantProps<typeof inputFieldStyle> & { className?: string };
+export interface InputSlotProps extends React.ComponentPropsWithoutRef<typeof XStack> {
+  className?: string;
+  onPress?: (e?: any) => void;
+}
 
 /**
- * Core text entry field component wrapping the native TextInput element.
- * Handles keyboard events, placeholder styling, and editable text states.
+ * Interactive or decorative accessory slot at the leading or trailing input
+ * edge.
  */
-const InputField = React.forwardRef<React.ComponentRef<typeof UIInput.Input>, IInputFieldProps>(function InputField(
-  { className, ...props },
+export const InputSlot = forwardRef<React.ElementRef<typeof XStack>, InputSlotProps>(function InputSlot(
+  { children, ...props },
   ref
 ) {
   return (
-    <UIInput.Input
-      ref={ref}
-      {...props}
-      className={inputFieldStyle({
-        class: className,
-      })}
-    />
+    <XStack ref={ref} alignItems="center" justifyContent="center" {...props}>
+      {children}
+    </XStack>
   );
+});
+
+export interface InputIconProps {
+  as?: React.ElementType;
+  size?: number | string;
+  height?: number;
+  width?: number;
+  color?: string;
+  className?: string;
+  [key: string]: any;
+}
+
+/** Accessory icon component placed inside an Input container or slot. */
+export const InputIcon = forwardRef<any, InputIconProps>(function InputIcon(
+  { as: Component, size = 16, height, width, color = "#9ca3af", ...props },
+  ref
+) {
+  const dim = height ?? width ?? (typeof size === "number" ? size : 16);
+  if (Component) {
+    return <Component ref={ref} size={dim} width={dim} height={dim} color={color} {...props} />;
+  }
+  return null;
 });
 
 Input.displayName = "Input";
-InputIcon.displayName = "InputIcon";
-InputSlot.displayName = "InputSlot";
 InputField.displayName = "InputField";
-
-export { Input, InputField, InputIcon, InputSlot };
+InputSlot.displayName = "InputSlot";
+InputIcon.displayName = "InputIcon";

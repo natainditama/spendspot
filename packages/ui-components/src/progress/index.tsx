@@ -1,70 +1,45 @@
-"use client";
-import { createProgress } from "@gluestack-ui/core/progress/creator";
-import { type VariantProps, tva, useStyleContext, withStyleContext } from "@gluestack-ui/utils/nativewind-utils";
 import React from "react";
-import { View } from "react-native";
+import { Progress as TamaguiProgress, styled } from "tamagui";
 
-const SCOPE = "PROGRESS";
-export const UIProgress = createProgress({
-  Root: withStyleContext(View, SCOPE),
-  FilledTrack: View,
-});
+export interface ProgressProps extends React.ComponentPropsWithoutRef<typeof TamaguiProgress> {
+  className?: string;
+  orientation?: "horizontal" | "vertical";
+}
 
-const progressStyle = tva({
-  base: "bg-primary/20 relative h-2 w-full overflow-hidden rounded-full",
+/**
+ * Progress bar component visualizing task completion percentages. Built with
+ * Tamagui Progress primitives.
+ */
+export const Progress = styled(TamaguiProgress, {
+  name: "Progress",
+  size: "$2",
+  backgroundColor: "$backgroundHover",
+  borderRadius: 9999,
+  overflow: "hidden",
+  height: 8,
+  width: "100%",
+
   variants: {
     orientation: {
-      horizontal: "w-full h-2",
-      vertical: "h-full w-2 justify-end",
+      horizontal: {
+        width: "100%",
+        height: 8,
+      },
+      vertical: {
+        height: "100%",
+        width: 8,
+      },
     },
+  } as const,
+
+  defaultVariants: {
+    orientation: "horizontal",
   },
 });
 
-const progressFilledTrackStyle = tva({
-  base: "bg-primary  transition-all",
-  variants: {
-    orientation: {
-      horizontal: "h-full",
-      vertical: "w-full",
-    },
-  },
+export const ProgressFilledTrack = styled(TamaguiProgress.Indicator, {
+  name: "ProgressFilledTrack",
+  backgroundColor: "$primary",
+  borderRadius: 9999,
+  height: "100%",
 });
-
-type IProgressProps = VariantProps<typeof progressStyle> & React.ComponentProps<typeof UIProgress>;
-type IProgressFilledTrackProps = VariantProps<typeof progressFilledTrackStyle> &
-  React.ComponentProps<typeof UIProgress.FilledTrack>;
-
-const Progress = React.forwardRef<React.ComponentRef<typeof UIProgress>, IProgressProps>(function Progress(
-  { className, orientation = "horizontal", ...props },
-  ref
-) {
-  return (
-    <UIProgress
-      ref={ref}
-      {...props}
-      className={progressStyle({ orientation, class: className })}
-      context={{ orientation }}
-      orientation={orientation}
-    />
-  );
-});
-
-const ProgressFilledTrack = React.forwardRef<
-  React.ComponentRef<typeof UIProgress.FilledTrack>,
-  IProgressFilledTrackProps
->(function ProgressFilledTrack({ className, ...props }, ref) {
-  const { orientation: parentOrientation } = useStyleContext(SCOPE);
-
-  return (
-    <UIProgress.FilledTrack
-      ref={ref}
-      className={progressFilledTrackStyle({
-        orientation: parentOrientation,
-        class: className,
-      })}
-      {...props}
-    />
-  );
-});
-
-export { Progress, ProgressFilledTrack };

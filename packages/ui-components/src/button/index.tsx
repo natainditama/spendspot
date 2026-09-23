@@ -1,286 +1,286 @@
-"use client";
+import React, { createContext, useContext } from "react";
+import { Paragraph, Spinner, styled, XStack, YStack } from "tamagui";
 
-import React from "react";
-import { createButton } from "@gluestack-ui/core/button/creator";
-import { UIIcon } from "@gluestack-ui/core/icon/creator";
-import { tva, useStyleContext, withStyleContext, type VariantProps } from "@gluestack-ui/utils/nativewind-utils";
-import { styled } from "nativewind";
-import { ActivityIndicator, Pressable, Text, View } from "react-native";
+type ButtonVariant = "default" | "destructive" | "outline" | "secondary" | "ghost" | "link";
+type ButtonSize = "default" | "sm" | "lg" | "icon";
 
-const SCOPE = "BUTTON";
-const Root = withStyleContext(Pressable, SCOPE);
-const StyledUIIcon = styled(UIIcon, {
-  className: "style",
+interface ButtonContextValue {
+  variant: ButtonVariant;
+  size: ButtonSize;
+  isDisabled?: boolean;
+}
+
+const ButtonContext = createContext<ButtonContextValue>({
+  variant: "default",
+  size: "default",
+  isDisabled: false,
 });
 
-const UIButton = createButton({
-  Root: Root,
-  Text,
-  Group: View,
-  Spinner: ActivityIndicator,
-  Icon: StyledUIIcon,
-});
+const ButtonFrame = styled(XStack, {
+  name: "Button",
+  alignItems: "center",
+  justifyContent: "center",
+  flexDirection: "row",
+  gap: 8,
+  userSelect: "none",
+  cursor: "pointer",
 
-/**
- * Variant style configuration for button interactive surface containers.
- * Defines dimensions, color themes, focus rings, and hover/active
- * pseudo-classes.
- */
-const buttonStyle = tva({
-  base: "rounded-md flex-row items-center justify-center data-[focus-visible=true]:web:outline-none data-[focus-visible=true]:web:ring-2 data-[disabled=true]:opacity-40 gap-2 h-fit",
   variants: {
     variant: {
-      default: "bg-primary data-[hover=true]:bg-primary/90 data-[active=true]:bg-primary/90",
-      destructive:
-        "bg-destructive data-[hover=true]:bg-destructive/90 data-[active=true]:bg-destructive/90 focus-visible:ring-destructive/20 dark:focus-visible:ring-destructive/40 dark:bg-destructive/60",
-      outline:
-        "border border-border bg-background shadow-xs data-[hover=true]:bg-accent data-[active=true]:bg-accent dark:bg-input/[0.045] dark:border-border/90 dark:data-[hover=true]:bg-input/[0.075] dark:data-[active=true]:bg-input/[0.075]",
-      secondary:
-        "bg-secondary text-secondary-foreground data-[hover=true]:bg-secondary/80 data-[active=true]:bg-secondary/80",
-      ghost:
-        "data-[hover=true]:bg-accent data-[active=true]:bg-accent dark:data-[hover=true]:bg-accent/50 dark:data-[active=true]:bg-accent/50",
-      link: "text-primary underline-offset-4 data-[hover=true]:underline data-[active=true]:underline",
+      default: {
+        backgroundColor: "$color",
+        pressStyle: { opacity: 0.85 },
+      },
+      destructive: {
+        backgroundColor: "$red10",
+        pressStyle: { opacity: 0.85 },
+      },
+      outline: {
+        backgroundColor: "transparent",
+        borderWidth: 1,
+        borderColor: "$borderColor",
+        pressStyle: { backgroundColor: "$backgroundHover" },
+      },
+      secondary: {
+        backgroundColor: "$backgroundHover",
+        pressStyle: { opacity: 0.8 },
+      },
+      ghost: {
+        backgroundColor: "transparent",
+        pressStyle: { backgroundColor: "$backgroundHover" },
+      },
+      link: {
+        backgroundColor: "transparent",
+        paddingHorizontal: 0,
+        pressStyle: { opacity: 0.7 },
+      },
     },
     size: {
-      default: "px-4 py-2",
-      sm: "min-h-8 rounded-md px-3 text-xs",
-      lg: "min-h-10 rounded-md px-8",
-      icon: "min-h-9 min-w-9",
+      default: {
+        height: 40,
+        paddingHorizontal: 16,
+        borderRadius: 6,
+      },
+      sm: {
+        height: 32,
+        paddingHorizontal: 12,
+        borderRadius: 6,
+      },
+      lg: {
+        height: 48,
+        paddingHorizontal: 24,
+        borderRadius: 8,
+      },
+      icon: {
+        height: 36,
+        width: 36,
+        padding: 0,
+        borderRadius: 6,
+      },
     },
+    isDisabled: {
+      true: {
+        opacity: 0.45,
+        pointerEvents: "none",
+        cursor: "not-allowed",
+      },
+    },
+  } as const,
+
+  defaultVariants: {
+    variant: "default",
+    size: "default",
   },
 });
 
-/**
- * Typographic variant styles for button label text nodes. Coordinates font
- * sizing and high-contrast color foregrounds across parent variants.
- */
-const buttonTextStyle = tva({
-  base: "web:select-none font-sans",
-  parentVariants: {
-    variant: {
-      default: "text-primary-foreground",
-      destructive: "text-white",
-      outline: "text-foreground data-[hover=true]:text-accent-foreground data-[active=true]:text-accent-foreground",
-      secondary: "text-secondary-foreground",
-      ghost: "text-foreground ",
-      link: "text-primary underline data-[hover=true]:underline data-[active=true]:underline",
-    },
-    size: {
-      default: "text-sm",
-      sm: "text-xs",
-      lg: "text-sm",
-      icon: "text-sm",
-    },
-  },
-});
+export interface ButtonProps extends React.ComponentPropsWithoutRef<typeof ButtonFrame> {
+  className?: string;
+  variant?: ButtonVariant;
+  size?: ButtonSize;
+  isDisabled?: boolean;
+  disabled?: boolean;
+}
 
 /**
- * Size styling configuration for asynchronous loading spinners inside buttons.
- * Harmonizes spinner diameter scales with surrounding button container
- * heights.
+ * Primary interactive button component supporting standard SpendSpot variant
+ * themes.
  */
-const buttonSpinnerStyle = tva({
-  base: "",
-  parentVariants: {
-    size: {
-      default: "h-4 w-4",
-      sm: "h-3 w-3",
-      lg: "h-5 w-5",
-      icon: "h-4 w-4",
-    },
-  },
-});
-
-/**
- * Dimensions and color inheritance styling for icons rendered in buttons.
- * Harmonizes icon bounding boxes and pointer events across button dimensions.
- */
-const buttonIconStyle = tva({
-  base: "fill-none pointer-events-none shrink-0",
-  parentVariants: {
-    variant: {
-      default: "text-primary-foreground",
-      destructive: "text-white",
-      outline: "text-foreground data-[hover=true]:text-accent-foreground data-[active=true]:text-accent-foreground",
-      secondary: "text-secondary-foreground",
-      ghost: "text-foreground data-[hover=true]:text-accent-foreground data-[active=true]:text-accent-foreground",
-      link: "text-primary",
-    },
-    size: {
-      default: "h-4 w-4",
-      sm: "h-3 w-3",
-      lg: "h-5 w-5",
-      icon: "h-4 w-4",
-    },
-  },
-});
-
-/**
- * Layout container styles grouping multiple related buttons sequentially.
- * Provides configurable inter-button gap spacing scales and attached
- * segmentation.
- */
-const buttonGroupStyle = tva({
-  base: "",
-  variants: {
-    space: {
-      xs: "gap-1",
-      sm: "gap-2",
-      md: "gap-3",
-      lg: "gap-4",
-      xl: "gap-5",
-      "2xl": "gap-6",
-      "3xl": "gap-7",
-      "4xl": "gap-8",
-    },
-    isAttached: {
-      true: "gap-0",
-    },
-    flexDirection: {
-      row: "flex-row",
-      column: "flex-col",
-      "row-reverse": "flex-row-reverse",
-      "column-reverse": "flex-col-reverse",
-    },
-  },
-});
-
-type IButtonProps = Omit<React.ComponentPropsWithoutRef<typeof UIButton>, "context"> &
-  VariantProps<typeof buttonStyle> & { className?: string };
-
-/**
- * Primary interactive button component with variant and size styling. Provides
- * accessible state control and NativeWind theme tokens.
- */
-const Button = React.forwardRef<React.ComponentRef<typeof UIButton>, IButtonProps>(
-  ({ className, variant = "default", size = "default", ...props }, ref) => {
-    return (
-      <UIButton
-        ref={ref}
-        {...props}
-        className={buttonStyle({ variant, size, class: className })}
-        context={{ variant, size }}
-      />
-    );
-  }
-);
-
-type IButtonTextProps = React.ComponentPropsWithoutRef<typeof UIButton.Text> &
-  VariantProps<typeof buttonTextStyle> & { className?: string };
-
-/**
- * Typography element displaying label content inside a Button container.
- * Inherits contextual variant and sizing styles from parent button context.
- */
-const ButtonText = React.forwardRef<React.ComponentRef<typeof UIButton.Text>, IButtonTextProps>(
-  ({ className, size, ...props }, ref) => {
-    const { size: parentSize, variant: parentVariant } = useStyleContext(SCOPE);
-
-    return (
-      <UIButton.Text
-        ref={ref}
-        {...props}
-        className={buttonTextStyle({
-          parentVariants: {
-            size: parentSize,
-            variant: parentVariant,
-          },
-          size,
-          class: className,
-        })}
-      />
-    );
-  }
-);
-
-/**
- * Loading spinner indicator rendered inside buttons during async actions.
- * Dynamically adjusts visual dimensions based on parent button sizing.
- */
-const ButtonSpinner = React.forwardRef<
-  React.ComponentRef<typeof UIButton.Spinner>,
-  React.ComponentPropsWithoutRef<typeof UIButton.Spinner>
->(({ className, ...props }, ref) => {
-  const { size: parentSize } = useStyleContext(SCOPE);
-
+export const Button = React.forwardRef<React.ElementRef<typeof ButtonFrame>, ButtonProps>(function Button(
+  { variant = "default", size = "default", isDisabled, disabled, children, ...props },
+  ref
+) {
+  const finalDisabled = isDisabled || disabled;
   return (
-    <UIButton.Spinner
-      ref={ref}
-      {...props}
-      className={buttonSpinnerStyle({
-        parentVariants: { size: parentSize },
-        class: className,
-      })}
-    />
+    <ButtonContext.Provider value={{ variant, size, isDisabled: finalDisabled }}>
+      <ButtonFrame
+        ref={ref}
+        variant={variant}
+        size={size}
+        isDisabled={finalDisabled}
+        accessibilityRole="button"
+        accessibilityState={{ disabled: finalDisabled }}
+        {...props}
+      >
+        {children}
+      </ButtonFrame>
+    </ButtonContext.Provider>
   );
 });
 
-type IButtonIcon = React.ComponentPropsWithoutRef<typeof UIButton.Icon> &
-  VariantProps<typeof buttonIconStyle> & {
-    className?: string | undefined;
-    as?: React.ElementType;
-    height?: number;
-    width?: number;
-  };
+export interface ButtonTextProps extends Omit<React.ComponentPropsWithoutRef<typeof Paragraph>, "size"> {
+  className?: string;
+  size?: ButtonSize;
+}
+
+/** Typography label element placed inside a Button container. */
+export const ButtonText = React.forwardRef<React.ElementRef<typeof Paragraph>, ButtonTextProps>(function ButtonText(
+  { size: explicitSize, children, ...props },
+  ref
+) {
+  const context = useContext(ButtonContext);
+  const variant = context.variant;
+  const size = explicitSize ?? context.size;
+
+  let color = "$background";
+  if (variant === "destructive") {
+    color = "#ffffff";
+  } else if (variant === "outline" || variant === "secondary" || variant === "ghost") {
+    color = "$color";
+  } else if (variant === "link") {
+    color = "$blue10";
+  }
+
+  const fontSize = size === "sm" ? 13 : size === "lg" ? 16 : 14;
+
+  return (
+    <Paragraph
+      ref={ref}
+      color={color as any}
+      fontSize={fontSize}
+      fontWeight="600"
+      textDecorationLine={variant === "link" ? "underline" : "none"}
+      userSelect="none"
+      {...props}
+    >
+      {children}
+    </Paragraph>
+  );
+});
+
+export interface ButtonIconProps {
+  as?: React.ElementType;
+  size?: number | string;
+  height?: number;
+  width?: number;
+  color?: string;
+  className?: string;
+  [key: string]: any;
+}
 
 /**
- * Icon wrapper component rendered inside buttons alongside or without labels.
- * Synchronizes icon color schemes and dimensions with button style variants.
+ * Icon container element coordinating dimensions and colors with parent button
+ * variants.
  */
-const ButtonIcon = React.forwardRef<React.ComponentRef<typeof UIButton.Icon>, IButtonIcon>(
-  ({ className, size, ...props }, ref) => {
-    const { size: parentSize, variant: parentVariant } = useStyleContext(SCOPE);
+export const ButtonIcon = React.forwardRef<any, ButtonIconProps>(function ButtonIcon(
+  { as: Component, size, height, width, color: explicitColor, ...props },
+  ref
+) {
+  const context = useContext(ButtonContext);
+  const variant = context.variant;
+  const btnSize = context.size;
 
-    if (typeof size === "number") {
-      return <UIButton.Icon ref={ref} {...props} className={buttonIconStyle({ class: className })} size={size} />;
-    } else if ((props.height !== undefined || props.width !== undefined) && size === undefined) {
-      return <UIButton.Icon ref={ref} {...props} className={buttonIconStyle({ class: className })} />;
+  let color = explicitColor;
+  if (!color) {
+    if (variant === "default") {
+      color = "white";
+    } else if (variant === "destructive") {
+      color = "white";
+    } else if (variant === "outline" || variant === "secondary" || variant === "ghost") {
+      color = "currentColor";
+    } else if (variant === "link") {
+      color = "#3b82f6";
+    }
+  }
+
+  const iconDimension =
+    size !== undefined
+      ? typeof size === "number"
+        ? size
+        : parseInt(size as string, 10)
+      : height !== undefined
+        ? height
+        : btnSize === "sm"
+          ? 14
+          : btnSize === "lg"
+            ? 20
+            : 16;
+
+  if (Component) {
+    return (
+      <Component ref={ref} size={iconDimension} width={iconDimension} height={iconDimension} color={color} {...props} />
+    );
+  }
+
+  return null;
+});
+
+export interface ButtonSpinnerProps {
+  color?: string;
+  className?: string;
+}
+
+/** Loading spinner component coordinating appearance with parent button sizing. */
+export const ButtonSpinner = React.forwardRef<React.ElementRef<typeof Spinner>, ButtonSpinnerProps>(
+  function ButtonSpinner({ color: explicitColor, ...props }, ref) {
+    const context = useContext(ButtonContext);
+    const variant = context.variant;
+
+    let color = explicitColor;
+    if (!color) {
+      color = variant === "default" || variant === "destructive" ? "white" : undefined;
     }
 
-    return (
-      <UIButton.Icon
-        {...props}
-        className={buttonIconStyle({
-          parentVariants: {
-            size: parentSize,
-            variant: parentVariant,
-          },
-          size,
-          class: className,
-        })}
-        ref={ref}
-      />
-    );
+    return <Spinner ref={ref} size="small" color={color as any} {...props} />;
   }
 );
 
-type IButtonGroupProps = React.ComponentPropsWithoutRef<typeof UIButton.Group> & VariantProps<typeof buttonGroupStyle>;
+const SPACES: Record<string, number> = {
+  xs: 4,
+  sm: 8,
+  md: 12,
+  lg: 16,
+  xl: 20,
+  "2xl": 24,
+  "3xl": 28,
+  "4xl": 32,
+};
 
-/**
- * Layout container managing multiple adjacent or attached buttons. Controls
- * orientation and consistent spacing across grouped buttons.
- */
-const ButtonGroup = React.forwardRef<React.ComponentRef<typeof UIButton.Group>, IButtonGroupProps>(
-  ({ className, space = "md", isAttached = false, flexDirection = "column", ...props }, ref) => {
-    return (
-      <UIButton.Group
-        className={buttonGroupStyle({
-          class: className,
-          space,
-          isAttached,
-          flexDirection,
-        })}
-        {...props}
-        ref={ref}
-      />
-    );
-  }
-);
+export interface ButtonGroupProps {
+  className?: string;
+  space?: keyof typeof SPACES;
+  isAttached?: boolean;
+  flexDirection?: "row" | "column" | "row-reverse" | "column-reverse";
+  children?: React.ReactNode;
+}
+
+/** Layout group organizing multiple adjacent buttons with configurable spacing. */
+export const ButtonGroup = React.forwardRef<any, ButtonGroupProps>(function ButtonGroup(
+  { space = "md", isAttached = false, flexDirection = "row", children, ...props },
+  ref
+) {
+  const gap = isAttached ? 0 : (SPACES[space] ?? 12);
+  const isCol = flexDirection === "column" || flexDirection === "column-reverse";
+  const Container = isCol ? YStack : XStack;
+
+  return (
+    <Container ref={ref} gap={gap} flexDirection={flexDirection} {...props}>
+      {children}
+    </Container>
+  );
+});
 
 Button.displayName = "Button";
 ButtonText.displayName = "ButtonText";
-ButtonSpinner.displayName = "ButtonSpinner";
 ButtonIcon.displayName = "ButtonIcon";
+ButtonSpinner.displayName = "ButtonSpinner";
 ButtonGroup.displayName = "ButtonGroup";
-
-export { Button, ButtonGroup, ButtonIcon, ButtonSpinner, ButtonText };

@@ -1,78 +1,116 @@
-"use client";
-import React from "react";
-import { createTextarea } from "@gluestack-ui/core/textarea/creator";
-import { View, TextInput } from "react-native";
-import { type VariantProps, tva, useStyleContext, withStyleContext } from "@gluestack-ui/utils/nativewind-utils";
+import React, { createContext, forwardRef, useContext } from "react";
+import { TextInput, type TextInputProps } from "react-native";
+import { styled, YStack } from "tamagui";
 
-const SCOPE = "TEXTAREA";
-const UITextarea = createTextarea({
-  Root: withStyleContext(View, SCOPE),
-  Input: TextInput,
+type TextareaSize = "sm" | "md" | "lg" | "xl";
+
+interface TextareaContextValue {
+  size: TextareaSize;
+  isDisabled?: boolean;
+}
+
+const TextareaContext = createContext<TextareaContextValue>({
+  size: "md",
+  isDisabled: false,
 });
 
-const textareaStyle = tva({
-  base: "w-full h-[100px] border border-border  dark:bg-input/30 rounded data-[hover=true]:border-border/80 data-[focus=true]:border-primary/80 data-[focus=true]:data-[hover=true]:border-primary/80 data-[disabled=true]:opacity-40 data-[disabled=true]:bg-background/90 data-[disabled=true]:data-[hover=true]:border-border/80",
+const TextareaFrame = styled(YStack, {
+  name: "Textarea",
+  borderWidth: 1,
+  borderColor: "$borderColor",
+  backgroundColor: "$background",
+  borderRadius: 6,
+  minHeight: 100,
+  padding: 8,
 
   variants: {
-    variant: {
-      default:
-        "data-[focus=true]:border-primary/80 data-[focus=true]:web:ring-1 data-[focus=true]:web:ring-inset data-[focus=true]:web:ring-indicator-primary data-[invalid=true]:border-destructive data-[invalid=true]:web:ring-1 data-[invalid=true]:web:ring-inset data-[invalid=true]:web:ring-indicator-error data-[invalid=true]:data-[hover=true]:border-destructive data-[invalid=true]:data-[focus=true]:data-[hover=true]:border-primary/80 data-[invalid=true]:data-[focus=true]:data-[hover=true]:web:ring-1 data-[invalid=true]:data-[focus=true]:data-[hover=true]:web:ring-inset data-[invalid=true]:data-[focus=true]:data-[hover=true]:web:ring-indicator-primary data-[invalid=true]:data-[disabled=true]:data-[hover=true]:border-destructive data-[invalid=true]:data-[disabled=true]:data-[hover=true]:web:ring-1 data-[invalid=true]:data-[disabled=true]:data-[hover=true]:web:ring-inset data-[invalid=true]:data-[disabled=true]:data-[hover=true]:web:ring-indicator-error ",
-    },
     size: {
-      sm: "",
-      md: "",
-      lg: "",
-      xl: "",
+      sm: {
+        minHeight: 80,
+      },
+      md: {
+        minHeight: 100,
+      },
+      lg: {
+        minHeight: 120,
+      },
+      xl: {
+        minHeight: 150,
+      },
     },
+    isDisabled: {
+      true: {
+        opacity: 0.5,
+        pointerEvents: "none",
+      },
+    },
+  } as const,
+
+  defaultVariants: {
+    size: "md",
   },
 });
 
-const textareaInputStyle = tva({
-  base: "p-2 web:outline-0 web:outline-none flex-1 text-foreground placeholder:text-foreground/60 web:cursor-text web:data-[disabled=true]:cursor-not-allowed",
-  parentVariants: {
-    size: {
-      sm: "text-sm",
-      md: "text-base",
-      lg: "text-lg",
-      xl: "text-xl",
-    },
-  },
-});
+export interface TextareaProps extends React.ComponentPropsWithoutRef<typeof TextareaFrame> {
+  className?: string;
+  size?: TextareaSize;
+  variant?: "default";
+  isDisabled?: boolean;
+}
 
-type ITextareaProps = React.ComponentProps<typeof UITextarea> & VariantProps<typeof textareaStyle>;
-
-const Textarea = React.forwardRef<React.ComponentRef<typeof UITextarea>, ITextareaProps>(function Textarea(
-  { className, variant = "default", size = "md", ...props },
+/**
+ * Multi-line text entry container providing border boundaries and focus
+ * styling.
+ */
+export const Textarea = forwardRef<React.ElementRef<typeof TextareaFrame>, TextareaProps>(function Textarea(
+  { size = "md", isDisabled = false, children, ...props },
   ref
 ) {
   return (
-    <UITextarea ref={ref} {...props} className={textareaStyle({ variant, class: className })} context={{ size }} />
+    <TextareaContext.Provider value={{ size, isDisabled }}>
+      <TextareaFrame ref={ref} size={size} isDisabled={isDisabled} {...props}>
+        {children}
+      </TextareaFrame>
+    </TextareaContext.Provider>
   );
 });
 
-type ITextareaInputProps = React.ComponentProps<typeof UITextarea.Input> & VariantProps<typeof textareaInputStyle>;
+export interface TextareaInputProps extends TextInputProps {
+  className?: string;
+}
 
-const TextareaInput = React.forwardRef<React.ComponentRef<typeof UITextarea.Input>, ITextareaInputProps>(
-  function TextareaInput({ className, ...props }, ref) {
-    const { size: parentSize } = useStyleContext(SCOPE);
+/** Multi-line text field component handling multi-line typing and scrolling. */
+export const TextareaInput = forwardRef<TextInput, TextareaInputProps>(function TextareaInput(
+  { placeholderTextColor = "#9ca3af", style, ...props },
+  ref
+) {
+  const { size, isDisabled } = useContext(TextareaContext);
+  const fontSize = size === "sm" ? 13 : size === "lg" ? 16 : 14;
 
-    return (
-      <UITextarea.Input
-        ref={ref}
-        {...props}
-        textAlignVertical="top"
-        className={textareaInputStyle({
-          parentVariants: {
-            size: parentSize,
-          },
-          class: className,
-        })}
-      />
-    );
-  }
-);
+  return (
+    <TextInput
+      ref={ref}
+      multiline
+      textAlignVertical="top"
+      editable={!isDisabled}
+      placeholderTextColor={placeholderTextColor}
+      style={[
+        {
+          flex: 1,
+          width: "100%",
+          height: "100%",
+          padding: 4,
+          margin: 0,
+          color: "currentColor",
+          fontSize,
+          outlineWidth: 0,
+        } as any,
+        style,
+      ]}
+      {...props}
+    />
+  );
+});
 
 Textarea.displayName = "Textarea";
 TextareaInput.displayName = "TextareaInput";
-
-export { Textarea, TextareaInput };

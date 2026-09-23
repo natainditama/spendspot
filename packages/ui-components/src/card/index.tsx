@@ -1,27 +1,52 @@
-"use client";
 import React from "react";
-import { View } from "react-native";
-import { cardStyle } from "./styles";
-import type { VariantProps } from "@gluestack-ui/utils/nativewind-utils";
+import { Card as TamaguiCard, styled } from "tamagui";
 
-type ICardProps = React.ComponentPropsWithoutRef<typeof View> &
-  VariantProps<typeof cardStyle> & {
-    className?: string;
-    size?: "default" | "sm";
-  };
-
-/**
- * Elevated card container organizing related dashboard metrics, forms, or
- * content. Wraps content in rounded bordered surfaces with subtle shadow
- * elevation.
- */
-const Card = React.forwardRef<React.ComponentRef<typeof View>, ICardProps>(function Card(
-  { className, size = "default", ...props },
-  ref
-) {
-  return <View className={cardStyle({ size, class: className })} {...props} ref={ref} />;
+export const Card = styled(TamaguiCard, {
+  name: "Card",
+  backgroundColor: "$card",
+  borderColor: "$borderColor",
+  borderWidth: 1,
+  borderRadius: "$4",
+  padding: "$4",
+  variants: {
+    size: {
+      sm: { padding: "$2", borderRadius: "$2" },
+      md: { padding: "$4", borderRadius: "$4" },
+      lg: { padding: "$6", borderRadius: "$6" },
+      default: { padding: "$4", borderRadius: "$4" },
+    },
+    variant: {
+      default: {
+        shadowColor: "$shadowColor",
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 8,
+        elevation: 2,
+      },
+      elevated: {
+        shadowColor: "$shadowColor",
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 8,
+        elevation: 2,
+      },
+      outline: {
+        borderWidth: 1,
+      },
+      ghost: {
+        borderWidth: 0,
+        backgroundColor: "transparent",
+      },
+      filled: {
+        backgroundColor: "$secondary",
+      },
+    },
+  } as const,
+  defaultVariants: {
+    size: "default",
+    variant: "default",
+  },
 });
 
-Card.displayName = "Card";
-
-export { Card };
+export type CardProps = React.ComponentProps<typeof Card>;
+export default Card;

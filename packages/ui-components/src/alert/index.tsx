@@ -1,141 +1,112 @@
-"use client";
+import React, { createContext, forwardRef, useContext } from "react";
+import { Paragraph, styled, XStack } from "tamagui";
 
-import React from "react";
-import { createAlert } from "@gluestack-ui/core/alert/creator";
-import { UIIcon } from "@gluestack-ui/core/icon/creator";
-import { tva, useStyleContext, withStyleContext, VariantProps } from "@gluestack-ui/utils/nativewind-utils";
-import { styled } from "nativewind";
-import { Text, View } from "react-native";
+type AlertVariant = "default" | "destructive";
 
-const SCOPE = "ALERT";
+interface AlertContextValue {
+  variant: AlertVariant;
+}
 
-/**
- * Variant style configuration for the root Alert container box. Establishes
- * status color treatments, borders, and flex layout alignments.
- */
-const alertStyle = tva({
-  base: "rounded-lg border px-2.5 py-2 flex-row gap-2 items-start ",
+const AlertContext = createContext<AlertContextValue>({
+  variant: "default",
+});
+
+const AlertFrame = styled(XStack, {
+  name: "Alert",
+  borderRadius: 8,
+  borderWidth: 1,
+  padding: 12,
+  alignItems: "flex-start",
+  gap: 8,
+  width: "100%",
+
   variants: {
     variant: {
-      default: "bg-card border-border",
-      destructive: "bg-card border-destructive",
+      default: {
+        backgroundColor: "$backgroundHover",
+        borderColor: "$borderColor",
+      },
+      destructive: {
+        backgroundColor: "rgba(239, 68, 68, 0.1)",
+        borderColor: "$red10",
+      },
     },
+  } as const,
+
+  defaultVariants: {
+    variant: "default",
   },
 });
 
-/**
- * Typographic style configuration for Alert message descriptions. Applies
- * high-contrast foreground colors tailored to the active variant.
- */
-const alertTextStyle = tva({
-  base: "font-medium tracking-tight text-sm flex-1",
-  parentVariants: {
-    variant: {
-      default: "text-card-foreground",
-      destructive: "text-destructive",
-    },
-  },
-});
+export interface AlertProps extends React.ComponentPropsWithoutRef<typeof AlertFrame> {
+  variant?: AlertVariant;
+  className?: string;
+}
 
-/**
- * Dimension and color variant styling for Alert status icons. Enforces
- * standardized glyph sizing and semantic palette coordination.
- */
-const alertIconStyle = tva({
-  base: "fill-none w-4 h-4 mt-0.5",
-  parentVariants: {
-    variant: {
-      default: "text-card-foreground",
-      destructive: "text-destructive",
-    },
-  },
-});
-
-const StyledUIIcon = styled(UIIcon, {
-  className: "style",
-});
-
-/**
- * Primitive core alert component generator bound to styling contexts. Composes
- * the primitive root layout, typography, and icon slot primitives.
- */
-export const UIAlert = createAlert({
-  Root: withStyleContext(View, SCOPE),
-  Text: Text,
-  Icon: StyledUIIcon,
-});
-
-type IAlertProps = Omit<React.ComponentPropsWithoutRef<typeof UIAlert>, "context"> & VariantProps<typeof alertStyle>;
-
-/**
- * Semantic alert banner communicating system feedback or status alerts. Wraps
- * content in accessible containers with default or destructive styling.
- */
-const Alert = React.forwardRef<React.ComponentRef<typeof UIAlert>, IAlertProps>(function Alert(
-  { className, variant = "default", ...props },
+/** Visual feedback callout presenting system alerts and status banners. */
+export const Alert = forwardRef<React.ElementRef<typeof AlertFrame>, AlertProps>(function Alert(
+  { variant = "default", children, ...props },
   ref
 ) {
-  return <UIAlert className={alertStyle({ variant, class: className })} context={{ variant }} ref={ref} {...props} />;
-});
-
-type IAlertTextProps = React.ComponentPropsWithoutRef<typeof UIAlert.Text> & VariantProps<typeof alertTextStyle>;
-
-/**
- * Text node rendering the primary descriptive message inside an Alert banner.
- * Inherits parent alert variant styles to render matching contextual foreground
- * tones.
- */
-const AlertText = React.forwardRef<React.ComponentRef<typeof UIAlert.Text>, IAlertTextProps>(function AlertText(
-  { className, ...props },
-  ref
-) {
-  const { variant: parentVariant } = useStyleContext(SCOPE);
   return (
-    <UIAlert.Text
-      className={alertTextStyle({
-        class: className,
-        parentVariants: {
-          variant: parentVariant,
-        },
-      })}
-      {...props}
-      ref={ref}
-    />
+    <AlertContext.Provider value={{ variant }}>
+      <AlertFrame ref={ref} variant={variant} role="alert" {...props}>
+        {children}
+      </AlertFrame>
+    </AlertContext.Provider>
   );
 });
 
-type IAlertIconProps = React.ComponentPropsWithoutRef<typeof UIAlert.Icon> &
-  VariantProps<typeof alertIconStyle> & {
-    height?: number;
-    width?: number;
-  };
+export interface AlertTextProps extends React.ComponentPropsWithoutRef<typeof Paragraph> {
+  className?: string;
+}
 
-/**
- * Visual status indicator icon displayed alongside Alert banner text.
- * Automatically synchronizes glyph fill colors with the surrounding alert
- * theme.
- */
-const AlertIcon = React.forwardRef<React.ComponentRef<typeof UIAlert.Icon>, IAlertIconProps>(function AlertIcon(
-  { className, ...props },
+/** Text node displaying the primary descriptive message in an alert. */
+export const AlertText = forwardRef<React.ElementRef<typeof Paragraph>, AlertTextProps>(function AlertText(
+  { children, ...props },
   ref
 ) {
-  const { variant: parentVariant } = useStyleContext(SCOPE);
+  const { variant } = useContext(AlertContext);
+
   return (
-    <UIAlert.Icon
-      className={alertIconStyle({
-        parentVariants: {
-          variant: parentVariant,
-        },
-        class: className,
-      })}
-      {...props}
+    <Paragraph
       ref={ref}
-    />
+      fontSize={13}
+      fontWeight="500"
+      color={variant === "destructive" ? "$red10" : "$color"}
+      flex={1}
+      {...props}
+    >
+      {children}
+    </Paragraph>
   );
+});
+
+export interface AlertIconProps {
+  as?: React.ElementType;
+  size?: number | string;
+  height?: number;
+  width?: number;
+  color?: string;
+  className?: string;
+  [key: string]: any;
+}
+
+/** Status indicator icon displayed alongside alert text. */
+export const AlertIcon = forwardRef<any, AlertIconProps>(function AlertIcon(
+  { as: Component, size = 16, height, width, color: explicitColor, ...props },
+  ref
+) {
+  const { variant } = useContext(AlertContext);
+  const color = explicitColor ?? (variant === "destructive" ? "#ef4444" : undefined);
+  const dim = height ?? width ?? (typeof size === "number" ? size : 16);
+
+  if (Component) {
+    return <Component ref={ref} size={dim} width={dim} height={dim} color={color} {...props} />;
+  }
+  return null;
 });
 
 Alert.displayName = "Alert";
 AlertText.displayName = "AlertText";
 AlertIcon.displayName = "AlertIcon";
-
-export { Alert, AlertIcon, AlertText };

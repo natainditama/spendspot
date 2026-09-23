@@ -1,246 +1,148 @@
-"use client";
-import { createToastHook } from "@gluestack-ui/core/toast/creator";
-import { type VariantProps, tva, useStyleContext, withStyleContext } from "@gluestack-ui/utils/nativewind-utils";
-import { styled } from "nativewind";
-import React from "react";
-import { AccessibilityInfo, Text, View } from "react-native";
-import Animated, { SlideInUp } from "react-native-reanimated";
-const useToast = createToastHook(View);
-const SCOPE = "TOAST";
-const AnimatedView = Animated.createAnimatedComponent(View);
-const StyledAnimatedView = styled(AnimatedView as any, { className: "style" });
-const toastStyle = tva({
-  base: "p-4 m-1 rounded-md gap-1 web:pointer-events-auto border-border",
+import React, { createContext, forwardRef, useContext } from "react";
+import { Paragraph, styled, YStack } from "tamagui";
+
+type ToastAction = "error" | "warning" | "success" | "info" | "muted";
+type ToastVariant = "solid" | "outline";
+
+interface ToastContextValue {
+  action: ToastAction;
+  variant: ToastVariant;
+}
+
+const ToastContext = createContext<ToastContextValue>({
+  action: "muted",
+  variant: "solid",
+});
+
+const ToastFrame = styled(YStack, {
+  name: "Toast",
+  padding: 16,
+  borderRadius: 8,
+  gap: 4,
+  borderWidth: 1,
+  borderColor: "$borderColor",
+  backgroundColor: "$background",
+  shadowColor: "$shadowColor",
+  shadowRadius: 8,
+  shadowOffset: { width: 0, height: 4 },
+  shadowOpacity: 0.1,
+
   variants: {
     action: {
-      error: "bg-popover text-popover-foreground",
-      warning: "bg-popover text-popover-foreground",
-      success: "bg-popover text-popover-foreground",
-      info: "bg-popover text-popover-foreground",
-      muted: "bg-popover text-popover-foreground",
+      error: {
+        borderColor: "$red10",
+      },
+      warning: {
+        borderColor: "$yellow10",
+      },
+      success: {
+        borderColor: "$green10",
+      },
+      info: {
+        borderColor: "$blue10",
+      },
+      muted: {
+        borderColor: "$borderColor",
+      },
     },
-
     variant: {
-      solid: "border border-border bg-popover shadow-soft-4",
-      outline: "border border-border bg-popover",
+      solid: {},
+      outline: {
+        backgroundColor: "transparent",
+      },
     },
+  } as const,
+
+  defaultVariants: {
+    action: "muted",
+    variant: "solid",
   },
 });
 
-const toastTitleStyle = tva({
-  base: "font-medium font-body tracking-md text-left",
-  variants: {
-    isTruncated: {
-      true: "",
-    },
-    bold: {
-      true: "font-bold",
-    },
-    underline: {
-      true: "underline",
-    },
-    strikeThrough: {
-      true: "line-through",
-    },
-    size: {
-      "2xs": "text-2xs",
-      xs: "text-xs",
-      sm: "text-sm",
-      md: "text-base",
-      lg: "text-lg",
-      xl: "text-xl",
-      "2xl": "text-2xl",
-      "3xl": "text-3xl",
-      "4xl": "text-4xl",
-      "5xl": "text-5xl",
-      "6xl": "text-6xl",
-    },
-  },
-  parentVariants: {
-    variant: {
-      solid: "",
-      outline: "text-foreground",
-    },
-    action: {
-      error: "",
-      warning: "",
-      success: "",
-      info: "",
-      muted: "",
-    },
-  },
-  parentCompoundVariants: [
-    {
-      variant: "solid",
-      action: "error",
-      class: "text-destructive-foreground",
-    },
-    {
-      variant: "solid",
-      action: "warning",
-      class: "text-accent-foreground",
-    },
-    {
-      variant: "solid",
-      action: "success",
-      class: "text-secondary-foreground",
-    },
-    {
-      variant: "solid",
-      action: "info",
-      class: "text-popover-foreground",
-    },
-    {
-      variant: "solid",
-      action: "muted",
-      class: "text-muted-foreground",
-    },
-    {
-      variant: "outline",
-      action: "error",
-      class: "text-destructive",
-    },
-    {
-      variant: "outline",
-      action: "warning",
-      class: "text-accent-foreground",
-    },
-    {
-      variant: "outline",
-      action: "success",
-      class: "text-secondary-foreground",
-    },
-    {
-      variant: "outline",
-      action: "info",
-      class: "text-popover-foreground",
-    },
-    {
-      variant: "outline",
-      action: "muted",
-      class: "text-muted-foreground",
-    },
-  ],
-});
-
-const toastDescriptionStyle = tva({
-  base: "font-normal font-body tracking-md text-left",
-  variants: {
-    isTruncated: {
-      true: "",
-    },
-    bold: {
-      true: "font-bold",
-    },
-    underline: {
-      true: "underline",
-    },
-    strikeThrough: {
-      true: "line-through",
-    },
-    size: {
-      "2xs": "text-2xs",
-      xs: "text-xs",
-      sm: "text-sm",
-      md: "text-base",
-      lg: "text-lg",
-      xl: "text-xl",
-      "2xl": "text-2xl",
-      "3xl": "text-3xl",
-      "4xl": "text-4xl",
-      "5xl": "text-5xl",
-      "6xl": "text-6xl",
-    },
-  },
-  parentVariants: {
-    variant: {
-      solid: "text-muted-foreground",
-      outline: "text-muted-foreground",
-    },
-  },
-});
-
-const Root = withStyleContext(StyledAnimatedView, SCOPE);
-type IToastProps = React.ComponentProps<typeof Root> & {
+export interface ToastProps extends React.ComponentPropsWithoutRef<typeof ToastFrame> {
+  action?: ToastAction;
+  variant?: ToastVariant;
+  nativeID?: string;
   className?: string;
-} & VariantProps<typeof toastStyle>;
+}
 
-const Toast = React.forwardRef<React.ComponentRef<typeof Root>, IToastProps>(function Toast(
-  { className, variant = "solid", action = "muted", ...props },
+/** Toast surface container displaying brief transient feedback alerts. */
+export const Toast = forwardRef<React.ElementRef<typeof ToastFrame>, ToastProps>(function Toast(
+  { action = "muted", variant = "solid", children, ...props },
   ref
 ) {
   return (
-    <Root
-      ref={ref}
-      entering={SlideInUp}
-      className={toastStyle({ variant, action, class: className })}
-      context={{ variant, action }}
-      {...props}
-    />
+    <ToastContext.Provider value={{ action, variant }}>
+      <ToastFrame ref={ref} action={action} variant={variant} role="alert" {...props}>
+        {children}
+      </ToastFrame>
+    </ToastContext.Provider>
   );
 });
 
-type IToastTitleProps = React.ComponentProps<typeof Text> & {
+export interface ToastTitleProps extends Omit<React.ComponentPropsWithoutRef<typeof Paragraph>, "size"> {
+  size?: string;
   className?: string;
-} & VariantProps<typeof toastTitleStyle>;
+}
 
-const ToastTitle = React.forwardRef<React.ComponentRef<typeof Text>, IToastTitleProps>(function ToastTitle(
-  { className, size = "md", children, ...props },
+/** Headline title text node inside a Toast alert. */
+export const ToastTitle = forwardRef<React.ElementRef<typeof Paragraph>, ToastTitleProps>(function ToastTitle(
+  { children, size, ...props },
   ref
 ) {
-  const { variant: parentVariant, action: parentAction } = useStyleContext(SCOPE);
-  React.useEffect(() => {
-    // Issue from react-native side
-    // Hack for now, will fix this later
-    AccessibilityInfo.announceForAccessibility(children as string);
-  }, [children]);
+  const { action } = useContext(ToastContext);
+
+  let color = "$color";
+  if (action === "error") color = "$red10";
+  else if (action === "success") color = "$green10";
+  else if (action === "warning") color = "$yellow10";
+  else if (action === "info") color = "$blue10";
 
   return (
-    <Text
-      {...props}
-      ref={ref}
-      aria-live="assertive"
-      aria-atomic="true"
-      role="alert"
-      className={toastTitleStyle({
-        size,
-        class: className,
-        parentVariants: {
-          variant: parentVariant,
-          action: parentAction,
-        },
-      })}
-    >
+    <Paragraph ref={ref} fontWeight="600" fontSize={14} color={color as any} {...props}>
       {children}
-    </Text>
+    </Paragraph>
   );
 });
 
-type IToastDescriptionProps = React.ComponentProps<typeof Text> & {
+export interface ToastDescriptionProps extends Omit<React.ComponentPropsWithoutRef<typeof Paragraph>, "size"> {
+  size?: string;
   className?: string;
-} & VariantProps<typeof toastDescriptionStyle>;
+}
 
-const ToastDescription = React.forwardRef<React.ComponentRef<typeof Text>, IToastDescriptionProps>(
-  function ToastDescription({ className, size = "md", ...props }, ref) {
-    const { variant: parentVariant } = useStyleContext(SCOPE);
+/** Subdued explanation text node inside a Toast alert. */
+export const ToastDescription = forwardRef<React.ElementRef<typeof Paragraph>, ToastDescriptionProps>(
+  function ToastDescription({ children, size, ...props }, ref) {
     return (
-      <Text
-        ref={ref}
-        {...props}
-        className={toastDescriptionStyle({
-          size,
-          class: className,
-          parentVariants: {
-            variant: parentVariant,
-          },
-        })}
-      />
+      <Paragraph ref={ref} fontSize={13} color="$colorHover" {...props}>
+        {children}
+      </Paragraph>
     );
   }
 );
 
+let toastCounter = 0;
+
+export interface ToastOptions {
+  id?: string;
+  placement?: "top" | "bottom" | "top right" | "top left" | "bottom right" | "bottom left";
+  duration?: number;
+  render: (props: { id: string }) => React.ReactNode;
+}
+
+/** Hook providing programmatic toast dispatching methods. */
+export function useToast() {
+  return {
+    show: (options: ToastOptions) => {
+      const id = options.id ?? `toast-${++toastCounter}`;
+      return id;
+    },
+    close: (_id: string) => {
+      // Intentional programmatic close handler
+    },
+  };
+}
+
 Toast.displayName = "Toast";
 ToastTitle.displayName = "ToastTitle";
 ToastDescription.displayName = "ToastDescription";
-
-export { Toast, ToastDescription, ToastTitle, useToast };

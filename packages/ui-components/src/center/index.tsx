@@ -1,22 +1,11 @@
-import { View, ViewProps } from "react-native";
 import React from "react";
-import { centerStyle } from "./styles";
-import type { VariantProps } from "@gluestack-ui/utils/nativewind-utils";
+import { styled, YStack } from "tamagui";
 
-type ICenterProps = ViewProps & VariantProps<typeof centerStyle>;
-
-/**
- * Layout primitive centering children horizontally and vertically via flexbox.
- * Useful for loading states, empty state banners, and focal graphical
- * elements.
- */
-const Center = React.forwardRef<React.ComponentRef<typeof View>, ICenterProps>(function Center(
-  { className, ...props },
-  ref
-) {
-  return <View className={centerStyle({ class: className })} {...props} ref={ref} />;
+export const Center = styled(YStack, {
+  name: "Center",
+  alignItems: "center",
+  justifyContent: "center",
 });
 
-Center.displayName = "Center";
-
-export { Center };
+export type CenterProps = React.ComponentProps<typeof Center>;
+export default Center;

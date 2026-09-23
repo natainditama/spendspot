@@ -1,8 +1,7 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
-import { Appearance, View, ViewProps, StyleSheet } from "react-native";
-import { OverlayProvider } from "@gluestack-ui/core/overlay/creator";
-import { ToastProvider } from "@gluestack-ui/core/toast/creator";
-import { config } from "./config";
+import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
+import { Appearance, StyleSheet, View, type ViewProps } from "react-native";
+import { TamaguiProvider, Theme } from "tamagui";
+import { config } from "../tamagui.config";
 
 /**
  * Color appearance theme modes supported by the UI component library. Supports
@@ -10,18 +9,29 @@ import { config } from "./config";
  */
 export type ModeType = "light" | "dark" | "system";
 
+const RootProviderContext = createContext<boolean>(false);
+
 /**
- * React Native theme provider supplying design tokens to mobile apps. Wraps
- * children with overlay portals, toasts, and active theme styles.
+ * Tamagui design system provider for SpendSpot. Supplies typed design tokens,
+ * responsive media queries, and adaptive themes.
+ *
+ * Automatically detects if already nested inside a root TamaguiProvider to
+ * prevent duplicate PortalProviders and hydration warnings, smoothly delegating
+ * to Theme.
  */
 export function Provider({
   mode = "system",
-  ...props
+  defaultTheme,
+  children,
+  style,
 }: {
   mode?: ModeType;
+  defaultTheme?: "light" | "dark";
   children?: React.ReactNode;
   style?: ViewProps["style"];
 }) {
+  const isAlreadyInRoot = useContext(RootProviderContext);
+
   const [systemScheme, setSystemScheme] = useState<"light" | "dark">(() =>
     Appearance.getColorScheme() === "dark" ? "dark" : "light"
   );
@@ -36,15 +46,29 @@ export function Provider({
     return () => subscription.remove();
   }, [mode, handleSystemChange]);
 
-  const colorScheme = useMemo<"light" | "dark">(() => (mode === "system" ? systemScheme : mode), [mode, systemScheme]);
-  const cssVars = useMemo(() => config[colorScheme] as Record<string, string>, [colorScheme]);
+  const activeTheme = useMemo<"light" | "dark">(
+    () => defaultTheme ?? (mode === "system" ? systemScheme : mode),
+    [defaultTheme, mode, systemScheme]
+  );
+
+  // If already nested within a root Provider, do not instantiate a second TamaguiProvider
+  // to avoid duplicate PortalProvider root hosts and hydration mismatches. Instead, apply the Theme.
+  if (isAlreadyInRoot) {
+    return (
+      <Theme name={activeTheme}>
+        <View style={[styles.root, style]}>{children}</View>
+      </Theme>
+    );
+  }
 
   return (
-    <View style={[styles.root, cssVars, props.style]}>
-      <OverlayProvider>
-        <ToastProvider>{props.children}</ToastProvider>
-      </OverlayProvider>
-    </View>
+    <RootProviderContext.Provider value={true}>
+      <TamaguiProvider config={config} defaultTheme={activeTheme}>
+        <Theme name={activeTheme}>
+          <View style={[styles.root, style]}>{children}</View>
+        </Theme>
+      </TamaguiProvider>
+    </RootProviderContext.Provider>
   );
 }
 
@@ -55,3 +79,5 @@ const styles = StyleSheet.create({
     width: "100%",
   },
 });
+
+export default Provider;

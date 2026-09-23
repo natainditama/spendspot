@@ -1,31 +1,37 @@
-import React from "react";
-import type { VariantProps } from "@gluestack-ui/utils/nativewind-utils";
-import { View, type ViewProps } from "react-native";
-import { hstackStyle } from "./styles";
+import React, { forwardRef } from "react";
+import { styled, XStack } from "tamagui";
 
-type IHStackProps = ViewProps & VariantProps<typeof hstackStyle>;
+const SPACE_MAP: Record<string, number> = {
+  none: 0,
+  xs: 4,
+  sm: 8,
+  md: 16,
+  lg: 24,
+  xl: 32,
+  "2xl": 40,
+  "3xl": 48,
+  "4xl": 64,
+};
 
-/**
- * Mobile horizontal flexbox container aligning child views in a row. Handles
- * gap spacing scales and reverse order layout transitions.
- */
-const HStack = React.forwardRef<React.ComponentRef<typeof View>, IHStackProps>(function HStack(
-  { className, space, reversed, ...props },
+const StyledHStack = styled(XStack, {
+  name: "HStack",
+  flexDirection: "row",
+  alignItems: "center",
+});
+
+export interface HStackProps extends Omit<React.ComponentPropsWithoutRef<typeof StyledHStack>, "space"> {
+  space?: string | number;
+  reversed?: boolean;
+}
+
+export const HStack = forwardRef<React.ElementRef<typeof StyledHStack>, HStackProps>(function HStack(
+  { space, gap, reversed, ...props },
   ref
 ) {
+  const resolvedGap = gap ?? (typeof space === "string" ? (SPACE_MAP[space] ?? space) : space);
   return (
-    <View
-      className={hstackStyle({
-        space,
-        reversed: reversed as boolean,
-        class: className,
-      })}
-      {...props}
-      ref={ref}
-    />
+    <StyledHStack ref={ref} flexDirection={reversed ? "row-reverse" : "row"} gap={resolvedGap as any} {...props} />
   );
 });
 
-HStack.displayName = "HStack";
-
-export { HStack };
+export default HStack;

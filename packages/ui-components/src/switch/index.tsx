@@ -1,32 +1,65 @@
-"use client";
-import React from "react";
-import { Switch as RNSwitch } from "react-native";
-import { createSwitch } from "@gluestack-ui/core/switch/creator";
-import { type VariantProps, tva, withStyleContext } from "@gluestack-ui/utils/nativewind-utils";
+import React, { forwardRef } from "react";
+import { Switch as TamaguiSwitch, styled } from "tamagui";
 
-const UISwitch = createSwitch({
-  Root: withStyleContext(RNSwitch),
-});
-
-const switchStyle = tva({
-  base: "data-[focus=true]:outline-0 data-[focus=true]:ring-2 data-[focus=true]:ring-indicator-primary web:cursor-pointer disabled:cursor-not-allowed data-[disabled=true]:opacity-40 data-[invalid=true]:border-destructive data-[invalid=true]:rounded-xl data-[invalid=true]:border-2",
+const StyledTamaguiSwitch = styled(TamaguiSwitch, {
+  name: "Switch",
+  backgroundColor: "$backgroundHover",
+  borderWidth: 2,
+  borderColor: "transparent",
+  focusStyle: {
+    outlineWidth: 2,
+    outlineColor: "$color",
+  },
 
   variants: {
-    size: {
-      sm: "scale-[0.75]",
-      md: "",
-      lg: "scale-[1.25]",
+    checked: {
+      true: {
+        backgroundColor: "$color",
+      },
     },
-  },
+  } as const,
 });
 
-type ISwitchProps = React.ComponentProps<typeof UISwitch> & VariantProps<typeof switchStyle>;
-const Switch = React.forwardRef<React.ComponentRef<typeof UISwitch>, ISwitchProps>(function Switch(
-  { className, size = "md", ...props },
+export interface SwitchProps extends Omit<
+  React.ComponentPropsWithoutRef<typeof StyledTamaguiSwitch>,
+  "value" | "size"
+> {
+  className?: string;
+  value?: boolean;
+  onValueChange?: (val: boolean) => void;
+  size?: "sm" | "md" | "lg";
+}
+
+const SIZE_MAP = {
+  sm: "$2",
+  md: "$3",
+  lg: "$4",
+} as const;
+
+/** Accessible toggle switch allowing users to alternate between binary states. */
+export const Switch = forwardRef<React.ElementRef<typeof StyledTamaguiSwitch>, SwitchProps>(function Switch(
+  { value, onValueChange, checked, onCheckedChange, size = "md", ...props },
   ref
 ) {
-  return <UISwitch ref={ref} {...props} className={switchStyle({ size, class: className })} />;
+  const isChecked = value !== undefined ? value : checked;
+  const handleCheckedChange = (next: boolean) => {
+    onCheckedChange?.(next);
+    onValueChange?.(next);
+  };
+
+  const tamaguiSize = SIZE_MAP[size] ?? "$3";
+
+  return (
+    <StyledTamaguiSwitch
+      ref={ref}
+      size={tamaguiSize as any}
+      checked={isChecked}
+      onCheckedChange={handleCheckedChange}
+      {...props}
+    >
+      <TamaguiSwitch.Thumb backgroundColor="$background" />
+    </StyledTamaguiSwitch>
+  );
 });
 
 Switch.displayName = "Switch";
-export { Switch };

@@ -1,84 +1,80 @@
 import React, { forwardRef } from "react";
-import type { VariantProps } from "@gluestack-ui/utils/nativewind-utils";
-import { View } from "react-native";
-import { skeletonStyle, skeletonTextStyle } from "./styles";
+import { styled, View, YStack } from "tamagui";
 
-type ISkeletonProps = React.ComponentProps<typeof View> &
-  VariantProps<typeof skeletonStyle> & {
-    isLoaded?: boolean;
-    startColor?: string;
-    speed?: number | string;
-  };
+export interface SkeletonProps extends React.ComponentPropsWithoutRef<typeof View> {
+  className?: string;
+  isLoaded?: boolean;
+  startColor?: string;
+  speed?: number | string;
+  variant?: "circular" | "rounded" | "sharp";
+  children?: React.ReactNode;
+}
 
-type ISkeletonTextProps = React.ComponentProps<typeof View> &
-  VariantProps<typeof skeletonTextStyle> & {
-    _lines?: number;
-    isLoaded?: boolean;
-    startColor?: string;
-  };
+export interface SkeletonTextProps extends React.ComponentPropsWithoutRef<typeof YStack> {
+  className?: string;
+  _lines?: number;
+  gap?: number;
+  isLoaded?: boolean;
+  startColor?: string;
+  children?: React.ReactNode;
+}
 
-const Skeleton = forwardRef<React.ComponentRef<typeof View>, ISkeletonProps>(function Skeleton(
-  { className, variant, children, startColor = "bg-accent", isLoaded = false, speed = 4, ...props },
-  ref
-) {
-  if (!isLoaded) {
-    return (
-      <View
-        className={`animate-pulse ${startColor} ${skeletonStyle({
-          variant,
-          speed: speed as 1 | 2 | 3 | 4,
-          class: className,
-        })}`}
-        {...props}
-        ref={ref}
-      />
-    );
-  } else {
-    return children;
-  }
+const SkeletonFrame = styled(View, {
+  name: "SkeletonFrame",
+  backgroundColor: "$backgroundHover",
+  opacity: 0.7,
+
+  variants: {
+    variant: {
+      circular: {
+        borderRadius: 9999,
+      },
+      rounded: {
+        borderRadius: 6,
+      },
+      sharp: {
+        borderRadius: 0,
+      },
+    },
+  } as const,
+
+  defaultVariants: {
+    variant: "rounded",
+  },
 });
 
-const SkeletonText = forwardRef<React.ComponentRef<typeof View>, ISkeletonTextProps>(function SkeletonText(
-  { className, _lines, isLoaded = false, startColor = "bg-accent", gap = 2, children, ...props },
+/**
+ * Skeleton placeholder component presenting an animated shimmer block while
+ * content loads.
+ */
+export const Skeleton = forwardRef<React.ElementRef<typeof SkeletonFrame>, SkeletonProps>(function Skeleton(
+  { isLoaded = false, children, variant = "rounded", ...props },
   ref
 ) {
-  if (!isLoaded) {
-    if (_lines) {
-      return (
-        <View
-          className={`flex flex-col ${skeletonTextStyle({
-            gap,
-          })}`}
-          ref={ref}
-        >
-          {Array.from({ length: _lines }).map((_, index) => (
-            <Skeleton
-              key={index}
-              className={`${startColor} ${skeletonTextStyle({
-                class: className,
-              })}`}
-              {...props}
-            />
-          ))}
-        </View>
-      );
-    } else {
-      return (
-        <Skeleton
-          className={`${startColor} ${skeletonTextStyle({
-            class: className,
-          })}`}
-          {...props}
-          ref={ref}
-        />
-      );
-    }
-  } else {
-    return children;
+  if (isLoaded) {
+    return <>{children}</>;
   }
+
+  return <SkeletonFrame ref={ref} variant={variant} {...props} />;
+});
+
+/** Multiple line skeleton placeholder representing loading paragraphs of text. */
+export const SkeletonText = forwardRef<React.ElementRef<typeof YStack>, SkeletonTextProps>(function SkeletonText(
+  { isLoaded = false, children, _lines = 3, gap = 8, ...props },
+  ref
+) {
+  if (isLoaded) {
+    return <>{children}</>;
+  }
+
+  return (
+    <YStack gap={gap} ref={ref} {...props}>
+      {Array.from({ length: _lines }).map((_, index) => (
+        <SkeletonFrame key={index} variant="rounded" height={14} width={index === _lines - 1 ? "70%" : "100%"} />
+      ))}
+    </YStack>
+  );
 });
 
 Skeleton.displayName = "Skeleton";
 SkeletonText.displayName = "SkeletonText";
-
-export { Skeleton, SkeletonText };

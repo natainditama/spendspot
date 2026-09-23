@@ -1,47 +1,23 @@
-"use client";
-import React from "react";
-import { Platform, View } from "react-native";
-import { type VariantProps, tva } from "@gluestack-ui/utils/nativewind-utils";
+import React, { forwardRef } from "react";
+import { Separator, styled } from "tamagui";
 
-/**
- * Visual separator style variant generator supporting horizontal and vertical
- * orientations. Sets 1px hairline dimensions and theme-aware muted background
- * coloring.
- */
-const dividerStyle = tva({
-  base: "bg-border",
-  variants: {
-    orientation: {
-      vertical: "w-px h-full",
-      horizontal: "h-px w-auto",
-    },
-  },
+const StyledSeparator = styled(Separator, {
+  name: "Divider",
+  borderColor: "$borderColor",
+  marginVertical: "$2",
 });
 
-type IUIDividerProps = React.ComponentPropsWithoutRef<typeof View> & VariantProps<typeof dividerStyle>;
+export interface DividerProps extends React.ComponentPropsWithoutRef<typeof StyledSeparator> {
+  orientation?: "horizontal" | "vertical";
+  className?: string;
+}
 
-/**
- * Accessible hairline separator element for segmenting interface sections.
- * Configures role separator semantics and directional orientation styles.
- */
-const Divider = React.forwardRef<React.ComponentRef<typeof View>, IUIDividerProps>(function Divider(
-  { className, orientation = "horizontal", ...props },
+export const Divider = forwardRef<React.ElementRef<typeof StyledSeparator>, DividerProps>(function Divider(
+  { orientation = "horizontal", vertical, ...props },
   ref
 ) {
-  return (
-    <View
-      ref={ref}
-      {...props}
-      aria-orientation={orientation}
-      role={Platform.OS === "web" ? "separator" : undefined}
-      className={dividerStyle({
-        orientation,
-        class: className,
-      })}
-    />
-  );
+  const isVertical = vertical ?? orientation === "vertical";
+  return <StyledSeparator ref={ref} vertical={isVertical} {...props} />;
 });
 
-Divider.displayName = "Divider";
-
-export { Divider };
+export default Divider;

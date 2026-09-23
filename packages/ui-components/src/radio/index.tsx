@@ -1,172 +1,167 @@
-"use client";
-import { UIIcon } from "@gluestack-ui/core/icon/creator";
-import { createRadio } from "@gluestack-ui/core/radio/creator";
-import { type VariantProps, tva, useStyleContext, withStyleContext } from "@gluestack-ui/utils/nativewind-utils";
-import { styled } from "nativewind";
-import React from "react";
-import { Platform, Pressable, Text, View } from "react-native";
+import React, { createContext, forwardRef, useContext } from "react";
+import { Paragraph, View, XStack, YStack } from "tamagui";
 
-const SCOPE = "Radio";
+interface RadioGroupContextValue {
+  value?: string;
+  onChange?: (value: string) => void;
+  isDisabled?: boolean;
+}
 
-const StyledIcon = styled(UIIcon, {
-  className: {
-    target: "style",
-  },
+const RadioGroupContext = createContext<RadioGroupContextValue | null>(null);
+
+interface RadioContextValue {
+  isSelected: boolean;
+  isDisabled: boolean;
+  size: "sm" | "md" | "lg";
+  select: () => void;
+}
+
+const RadioContext = createContext<RadioContextValue>({
+  isSelected: false,
+  isDisabled: false,
+  size: "md",
+  select: () => {},
 });
 
-const UIRadio = createRadio({
-  Root: (Platform.OS === "web" ? withStyleContext(View, SCOPE) : withStyleContext(Pressable, SCOPE)) as ReturnType<
-    typeof withStyleContext<typeof Pressable>
-  >,
-  Group: View,
-  Icon: StyledIcon,
-  Indicator: View,
-  Label: Text,
-});
+export interface RadioGroupProps {
+  value?: string;
+  onChange?: (value: string) => void;
+  isDisabled?: boolean;
+  children?: React.ReactNode;
+  className?: string;
+}
 
-const radioStyle = tva({
-  base: "group/radio flex-row justify-start items-center gap-2 web:cursor-pointer data-[disabled=true]:web:cursor-not-allowed data-[disabled=true]:opacity-50",
-  variants: {
-    size: {
-      sm: "gap-1.5",
-      md: "gap-2",
-      lg: "gap-2",
-    },
-  },
-});
-
-const radioGroupStyle = tva({
-  base: "gap-3",
-});
-
-const radioIconStyle = tva({
-  base: "rounded-full absolute stroke-none fill-primary h-2 w-2",
-  parentVariants: {
-    size: {
-      sm: "h-[9px] w-[9px]",
-      md: "h-3 w-3",
-      lg: "h-4 w-4",
-    },
-  },
-});
-
-const radioIndicatorStyle = tva({
-  base: "relative justify-center items-center aspect-square h-4 w-4 shrink-0 rounded-full border border-border  dark:bg-input/30 shadow-xs web:outline-none web:data-[focus-visible=true]:ring-[3px] web:data-[focus-visible=true]:ring-ring/50 web:data-[focus-visible=true]:border-ring data-[invalid=true]:ring-destructive/20 data-[invalid=true]:border-destructive data-[disabled=true]:cursor-not-allowed data-[disabled=true]:opacity-50",
-  parentVariants: {
-    size: {
-      sm: "h-4 w-4",
-      md: "h-5 w-5",
-      lg: "h-6 w-6",
-    },
-  },
-});
-
-const radioLabelStyle = tva({
-  base: "text-foreground text-sm font-medium web:select-none web:cursor-pointer data-[disabled=true]:cursor-not-allowed data-[disabled=true]:opacity-50 font-body",
-  parentVariants: {
-    size: {
-      "2xs": "text-2xs",
-      xs: "text-xs",
-      sm: "text-sm",
-      md: "text-base",
-      lg: "text-lg",
-      xl: "text-xl",
-      "2xl": "text-2xl",
-      "3xl": "text-3xl",
-      "4xl": "text-4xl",
-      "5xl": "text-5xl",
-      "6xl": "text-6xl",
-    },
-  },
-});
-
-type IRadioProps = Omit<React.ComponentProps<typeof UIRadio>, "context"> & VariantProps<typeof radioStyle>;
-const Radio = React.forwardRef<React.ComponentRef<typeof UIRadio>, IRadioProps>(function Radio(
-  { className, size = "md", ...props },
+/**
+ * Container component that manages selection state across a collection of Radio
+ * options.
+ */
+export const RadioGroup = forwardRef<React.ElementRef<typeof YStack>, RadioGroupProps>(function RadioGroup(
+  { value, onChange, isDisabled, children, ...props },
   ref
 ) {
-  return <UIRadio className={radioStyle({ class: className, size })} {...props} ref={ref} context={{ size }} />;
-});
-
-type IRadioGroupProps = React.ComponentProps<typeof UIRadio.Group> & VariantProps<typeof radioGroupStyle>;
-const RadioGroup = React.forwardRef<React.ComponentRef<typeof UIRadio.Group>, IRadioGroupProps>(function RadioGroup(
-  { className, ...props },
-  ref
-) {
-  return <UIRadio.Group className={radioGroupStyle({ class: className })} {...props} ref={ref} />;
-});
-
-type IRadioIndicatorProps = React.ComponentProps<typeof UIRadio.Indicator> & VariantProps<typeof radioIndicatorStyle>;
-const RadioIndicator = React.forwardRef<React.ComponentRef<typeof UIRadio.Indicator>, IRadioIndicatorProps>(
-  function RadioIndicator({ className, ...props }, ref) {
-    const { size } = useStyleContext(SCOPE);
-    return (
-      <UIRadio.Indicator
-        className={radioIndicatorStyle({
-          parentVariants: { size },
-          class: className,
-        })}
-        ref={ref}
-        {...props}
-      />
-    );
-  }
-);
-
-type IRadioLabelProps = React.ComponentProps<typeof UIRadio.Label> & VariantProps<typeof radioIndicatorStyle>;
-const RadioLabel = React.forwardRef<React.ComponentRef<typeof UIRadio.Label>, IRadioLabelProps>(function RadioLabel(
-  { className, ...props },
-  ref
-) {
-  const { size } = useStyleContext(SCOPE);
   return (
-    <UIRadio.Label
-      className={radioLabelStyle({
-        parentVariants: { size },
-        class: className,
-      })}
-      ref={ref}
-      {...props}
-    />
+    <RadioGroupContext.Provider value={{ value, onChange, isDisabled }}>
+      <YStack ref={ref} gap={8} {...props}>
+        {children}
+      </YStack>
+    </RadioGroupContext.Provider>
   );
 });
 
-type IRadioIconProps = React.ComponentProps<typeof UIRadio.Icon> &
-  VariantProps<typeof radioIconStyle> & {
-    height?: number;
-    width?: number;
+export interface RadioProps extends Omit<React.ComponentPropsWithoutRef<typeof XStack>, "size"> {
+  value: string;
+  isDisabled?: boolean;
+  size?: "sm" | "md" | "lg";
+  className?: string;
+}
+
+/** Individual radio option item. */
+export const Radio = forwardRef<React.ElementRef<typeof XStack>, RadioProps>(function Radio(
+  { value, isDisabled: explicitDisabled, size = "md", children, ...props },
+  ref
+) {
+  const groupContext = useContext(RadioGroupContext);
+  const isSelected = groupContext ? groupContext.value === value : false;
+  const isDisabled = Boolean(groupContext?.isDisabled || explicitDisabled);
+
+  const select = () => {
+    if (isDisabled) return;
+    groupContext?.onChange?.(value);
   };
-const RadioIcon = React.forwardRef<React.ComponentRef<typeof UIRadio.Icon>, IRadioIconProps>(function RadioIcon(
-  { className, size, ...props },
-  ref
-) {
-  const { size: parentSize } = useStyleContext(SCOPE);
-
-  if (typeof size === "number") {
-    return <UIRadio.Icon ref={ref} {...props} className={radioIconStyle({ class: className })} size={size} />;
-  } else if ((props.height !== undefined || props.width !== undefined) && size === undefined) {
-    return <UIRadio.Icon ref={ref} {...props} className={radioIconStyle({ class: className })} />;
-  }
 
   return (
-    <UIRadio.Icon
-      {...props}
-      className={radioIconStyle({
-        parentVariants: {
-          size: parentSize,
-        },
-        size,
-        class: className,
-      })}
-      ref={ref}
-    />
+    <RadioContext.Provider value={{ isSelected, isDisabled, size, select }}>
+      <XStack
+        ref={ref}
+        alignItems="center"
+        gap={8}
+        cursor={isDisabled ? "not-allowed" : "pointer"}
+        opacity={isDisabled ? 0.5 : 1}
+        onPress={select}
+        role="radio"
+        aria-checked={isSelected}
+        {...props}
+      >
+        {children}
+      </XStack>
+    </RadioContext.Provider>
   );
+});
+
+export interface RadioIndicatorProps extends React.ComponentPropsWithoutRef<typeof View> {
+  className?: string;
+}
+
+/** Circular outer frame visual indicator for a radio input. */
+export const RadioIndicator = forwardRef<React.ElementRef<typeof View>, RadioIndicatorProps>(function RadioIndicator(
+  { children, ...props },
+  ref
+) {
+  const { isSelected } = useContext(RadioContext);
+
+  return (
+    <View
+      ref={ref}
+      width={18}
+      height={18}
+      borderRadius={9999}
+      borderWidth={1}
+      borderColor={isSelected ? "$color" : "$borderColor"}
+      backgroundColor="$background"
+      alignItems="center"
+      justifyContent="center"
+      {...props}
+    >
+      {children}
+    </View>
+  );
+});
+
+export interface RadioLabelProps extends React.ComponentPropsWithoutRef<typeof Paragraph> {
+  className?: string;
+}
+
+/** Descriptive label accompanying the Radio component. */
+export const RadioLabel = forwardRef<React.ElementRef<typeof Paragraph>, RadioLabelProps>(function RadioLabel(
+  { children, ...props },
+  ref
+) {
+  return (
+    <Paragraph ref={ref} fontSize={14} fontWeight="500" userSelect="none" {...props}>
+      {children}
+    </Paragraph>
+  );
+});
+
+export interface RadioIconProps {
+  as?: React.ElementType;
+  size?: number | string;
+  height?: number;
+  width?: number;
+  color?: string;
+  className?: string;
+  [key: string]: any;
+}
+
+/** Inner indicator dot displayed when a radio option is active. */
+export const RadioIcon = forwardRef<any, RadioIconProps>(function RadioIcon(
+  { as: Component, size = 8, height, width, color = "$color", ...props },
+  ref
+) {
+  const { isSelected } = useContext(RadioContext);
+  if (!isSelected) return null;
+
+  const dim = height ?? width ?? (typeof size === "number" ? size : 8);
+
+  if (Component) {
+    return <Component ref={ref} size={dim} width={dim} height={dim} color={color} {...props} />;
+  }
+
+  return <View ref={ref} width={dim} height={dim} borderRadius={9999} backgroundColor={color as any} {...props} />;
 });
 
 Radio.displayName = "Radio";
-RadioGroup.displayName = "RadioGroup";
 RadioIndicator.displayName = "RadioIndicator";
 RadioLabel.displayName = "RadioLabel";
 RadioIcon.displayName = "RadioIcon";
-
-export { Radio, RadioGroup, RadioIcon, RadioIndicator, RadioLabel };
+RadioGroup.displayName = "RadioGroup";

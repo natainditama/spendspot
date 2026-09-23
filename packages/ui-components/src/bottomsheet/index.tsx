@@ -1,5 +1,3 @@
-"use client";
-
 import React, {
   createContext,
   forwardRef,
@@ -10,9 +8,6 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { FocusScope } from "@gluestack-ui/utils/aria";
-import { tva } from "@gluestack-ui/utils/nativewind-utils";
-import { Overlay } from "@gluestack-ui/core/overlay/creator";
 import GorhomBottomSheet, {
   BottomSheetBackdrop as GorhomBottomSheetBackdrop,
   BottomSheetFlatList as GorhomBottomSheetFlatList,
@@ -23,10 +18,9 @@ import GorhomBottomSheet, {
   BottomSheetSectionList as GorhomBottomSheetSectionList,
   BottomSheetView as GorhomBottomSheetView,
 } from "@gorhom/bottom-sheet";
-import { styled } from "nativewind";
 import {
   Keyboard,
-  Platform,
+  StyleSheet,
   Text,
   View,
   type PressableProps,
@@ -34,76 +28,6 @@ import {
   type TextProps,
   Pressable as RNPressable,
 } from "react-native";
-import { Pressable as GGHPressable } from "react-native-gesture-handler";
-
-/**
- * Backdrop overlay styling obscuring background application screens during
- * sheet presentation. Positions a fixed semi-transparent scrim with dimming
- * animation support.
- */
-const bottomSheetBackdropStyle = tva({
-  base: "absolute inset-0 bg-black opacity-50",
-});
-
-/**
- * Main sheet container body styling defining horizontal padding and item gaps.
- * Houses sheet content with standardized vertical rhythm and edge spacing.
- */
-const bottomSheetContentStyle = tva({
-  base: "px-4 gap-2",
-});
-
-/**
- * Interactive touch target styling for elements that trigger sheet expansion.
- * Configures touch bounds, border radii, and surface styling for sheet
- * openers.
- */
-const bottomSheetTriggerStyle = tva({
-  base: "p-4 rounded-lg border border-border/90",
-});
-
-/**
- * Handle container styling positioned at the top of the sliding bottom sheet.
- * Centers the visual drag indicator and rounds upper sheet borders.
- */
-const bottomSheetHandleStyle = tva({
-  base: "py-3 w-full items-center rounded-t-xl",
-});
-
-/**
- * Interactive list item row styling inside bottom sheet options menus.
- * Accommodates press states, hover feedback, and disabled accessibility
- * attributes.
- */
-const bottomSheetItemStyle = tva({
-  base: "p-3 flex-row items-center rounded-sm w-full disabled:opacity-40 web:pointer-events-auto disabled:cursor-not-allowed hover:bg-accent/40 active:bg-accent/50 data-[focus=true]:bg-accent/20 web:data-[focus-visible=true]:bg-accent/40",
-});
-
-/**
- * Typographic styling for label text inside bottom sheet interactive item rows.
- * Formats clean body typography with high-contrast text foreground colors.
- */
-const bottomSheetItemTextStyle = tva({
-  base: "text-foreground font-normal text-sm",
-});
-
-/**
- * Bottom action bar container styling pinned to the lower edge of the sheet.
- * Provides border separation and padding for confirmation buttons and sticky
- * controls.
- */
-const bottomSheetFooterStyle = tva({
-  base: "p-4 border-t border-border/90",
-});
-
-/**
- * Input field styling adapted for text inputs rendered within draggable bottom
- * sheets. Resolves keyboard scrolling, border highlights, and dark-mode input
- * contrast.
- */
-const bottomSheetTextInputStyle = tva({
-  base: "flex-1 text-foreground text-sm md:text-sm py-1 placeholder:text-muted-foreground  web:outline-none ios:leading-[0px] web:cursor-text  h-9 w-full flex-row items-center rounded-md border border-border dark:bg-input/30 bg-transparent shadow-xs overflow-hidden px-3 gap-2",
-});
 
 type BottomSheetContextValue = {
   bottomSheetRef: React.RefObject<GorhomBottomSheet | null>;
@@ -131,20 +55,19 @@ export type BottomSheetRef = {
   collapse: () => void;
 };
 
-type IBottomSheetRootProps = {
+export interface BottomSheetProps {
   defaultSnapIndex?: number;
   children?: React.ReactNode;
   onOpen?: () => void;
   onClose?: () => void;
   onChange?: (index: number) => void;
-};
+}
 
 /**
  * Root provider coordinating bottom sheet visibility, snap indices, and
- * imperative ref handlers. Wraps sheet triggers and modal portals with a
- * unified state controller context.
+ * imperative ref handlers.
  */
-export const BottomSheet = forwardRef<BottomSheetRef, IBottomSheetRootProps>(
+export const BottomSheet = forwardRef<BottomSheetRef, BottomSheetProps>(
   ({ defaultSnapIndex = 0, onOpen, onClose, onChange, children }, ref) => {
     const bottomSheetRef = useRef<GorhomBottomSheet>(null);
     const [isVisible, setIsVisible] = useState(false);
@@ -224,35 +147,24 @@ export const BottomSheet = forwardRef<BottomSheetRef, IBottomSheetRootProps>(
   }
 );
 
-BottomSheet.displayName = "BottomSheet";
-
-const StyledGorhomBottomSheet = styled(GorhomBottomSheet, {
-  className: "style",
-  backgroundClassName: "backgroundStyle",
-  handleIndicatorClassName: "handleIndicatorStyle",
-});
-
-type IBottomSheetPortalProps = Omit<React.ComponentProps<typeof GorhomBottomSheet>, "ref" | "index"> & {
+export interface BottomSheetPortalProps extends Omit<React.ComponentProps<typeof GorhomBottomSheet>, "ref" | "index"> {
   className?: string;
   backgroundClassName?: string;
   handleIndicatorClassName?: string;
-};
+}
 
 /**
  * Portaled sheet overlay mounting the native gesture-driven bottom sheet to
- * root portals. Manages snap height animations, defensive index clamping, and
- * overlay background surfaces.
+ * root portals.
  */
 export const BottomSheetPortal = ({
-  className,
-  backgroundClassName,
-  handleIndicatorClassName,
   enablePanDownToClose = true,
   enableDynamicSizing = false,
   snapPoints,
   onChange,
+  children,
   ...props
-}: IBottomSheetPortalProps) => {
+}: BottomSheetPortalProps) => {
   const { bottomSheetRef, handleSheetChanges, isVisible, currentIndex } = useContext(BottomSheetContext);
 
   const snapPointsKey = JSON.stringify(snapPoints);
@@ -264,14 +176,13 @@ export const BottomSheetPortal = ({
 
   if (!isVisible) return null;
 
-  // Defensive index check to prevent Invariant Violation
   const snapPointsArray = Array.isArray(memoizedSnapPoints) ? memoizedSnapPoints : undefined;
   const validIndex =
     snapPointsArray && snapPointsArray.length > 0 ? Math.min(currentIndex, snapPointsArray.length - 1) : currentIndex;
 
   return (
-    <Overlay isOpen={true} isKeyboardDismissable={false} style={{ flex: 1 }}>
-      <StyledGorhomBottomSheet
+    <View style={StyleSheet.absoluteFill} pointerEvents="box-none">
+      <GorhomBottomSheet
         ref={bottomSheetRef}
         snapPoints={memoizedSnapPoints}
         index={validIndex}
@@ -281,67 +192,55 @@ export const BottomSheetPortal = ({
           (onChange as any)?.(idx, position, type);
         }}
         enablePanDownToClose={enablePanDownToClose}
-        // @ts-ignore
-        className={className}
-        // @ts-ignore
-        backgroundClassName={`${backgroundClassName} bg-background border border-border/90 rounded-xl`}
-        // @ts-ignore
-        handleIndicatorClassName={`${handleIndicatorClassName} bg-primary`}
+        backgroundStyle={styles.sheetBackground}
+        handleIndicatorStyle={styles.handleIndicator}
         {...props}
       >
-        {props.children}
-      </StyledGorhomBottomSheet>
-    </Overlay>
+        {children}
+      </GorhomBottomSheet>
+    </View>
   );
 };
 
+export interface BottomSheetTriggerProps extends PressableProps {
+  index?: number;
+  className?: string;
+}
+
 /**
  * Interactive pressable trigger that expands the bottom sheet upon user
- * interaction. Wires press events to context sheet open handlers with optional
- * target snap indices.
+ * interaction.
  */
-export const BottomSheetTrigger = ({
-  className,
-  index,
-  onPress,
-  ...props
-}: PressableProps & { className?: string; index?: number }) => {
+export const BottomSheetTrigger = ({ index, onPress, children, style, ...props }: BottomSheetTriggerProps) => {
   const { handleOpen } = useContext(BottomSheetContext);
   return (
     <RNPressable
       {...props}
+      style={style}
       onPress={(e) => {
         onPress?.(e);
         handleOpen(index);
       }}
-      className={bottomSheetTriggerStyle({ className })}
     >
-      {props.children}
+      {children}
     </RNPressable>
   );
 };
 
-type IBottomSheetBackdropProps = React.ComponentProps<typeof GorhomBottomSheetBackdrop> & {
+export interface BottomSheetBackdropProps extends Partial<React.ComponentProps<typeof GorhomBottomSheetBackdrop>> {
   className?: string;
-};
+}
 
-/**
- * Animated backdrop scrim dimming background content beneath the active bottom
- * sheet. Fades in synchronously with sheet expansion and handles tap-to-close
- * gestures.
- */
+/** Dimmed backdrop beneath the active bottom sheet. */
 export const BottomSheetBackdrop = ({
   disappearsOnIndex = -1,
   appearsOnIndex = 0,
   opacity = 0.5,
-  className,
   pressBehavior = "close",
   ...props
-}: Partial<IBottomSheetBackdropProps>) => {
+}: BottomSheetBackdropProps) => {
   return (
     <GorhomBottomSheetBackdrop
-      // @ts-ignore
-      className={bottomSheetBackdropStyle({ className })}
       disappearsOnIndex={disappearsOnIndex}
       appearsOnIndex={appearsOnIndex}
       opacity={opacity}
@@ -351,197 +250,117 @@ export const BottomSheetBackdrop = ({
   );
 };
 
-const StyledGorhomBottomSheetHandle = styled(GorhomBottomSheetHandle, {
-  className: "style",
-});
-
-type IBottomSheetHandleProps = React.ComponentProps<typeof GorhomBottomSheetHandle> & {
+export interface BottomSheetDragIndicatorProps extends Partial<React.ComponentProps<typeof GorhomBottomSheetHandle>> {
   className?: string;
   indicatorClassName?: string;
+}
+
+/** Drag handle component anchored to top apex of bottom sheet. */
+export const BottomSheetDragIndicator = ({ children, ...props }: BottomSheetDragIndicatorProps) => {
+  return <GorhomBottomSheetHandle {...(props as any)}>{children}</GorhomBottomSheetHandle>;
 };
 
-/**
- * Drag handle component anchored to the top apex of the bottom sheet. Renders a
- * visual grab pill affording vertical pan gestures to resize or dismiss.
- */
-export const BottomSheetDragIndicator = ({
-  children,
-  className,
-  indicatorClassName,
-  ...props
-}: Partial<IBottomSheetHandleProps>) => {
-  return (
-    <StyledGorhomBottomSheetHandle
-      {...(props as any)}
-      // @ts-ignore
-      className={bottomSheetHandleStyle({ className })}
-    >
-      {children}
-    </StyledGorhomBottomSheetHandle>
-  );
-};
-
-const StyledGorhomBottomSheetView = styled(GorhomBottomSheetView, {
-  className: "style",
-});
-
-type IBottomSheetContentProps = React.ComponentProps<typeof GorhomBottomSheetView> & {
+export interface BottomSheetContentProps extends React.ComponentProps<typeof GorhomBottomSheetView> {
   className?: string;
   focusScope?: boolean;
-};
+}
 
-/**
- * Main sheet content container wrapping children with accessible focus
- * isolation. Automatically handles escape key dismissal on web and manages
- * content paddings.
- */
-export const BottomSheetContent = ({ className, focusScope = true, ...props }: IBottomSheetContentProps) => {
-  const { handleClose, isVisible } = useContext(BottomSheetContext);
-
-  const keyDownHandlers = useMemo(() => {
-    if (Platform.OS !== "web") return {};
-    return {
-      onKeyDown: (e: React.KeyboardEvent) => {
-        if (e.key === "Escape") {
-          e.preventDefault();
-          handleClose();
-        }
-      },
-    };
-  }, [handleClose]);
-
-  const content = props.children;
-  const wrappedContent =
-    Platform.OS === "web" && isVisible && focusScope ? (
-      <FocusScope contain={isVisible} autoFocus restoreFocus>
-        {content}
-      </FocusScope>
-    ) : (
-      content
-    );
-
+/** Main sheet content container wrapping children. */
+export const BottomSheetContent = ({ children, style, ...props }: BottomSheetContentProps) => {
   return (
-    <StyledGorhomBottomSheetView
-      {...props}
-      // @ts-ignore
-      {...keyDownHandlers}
-      // @ts-ignore
-      className={bottomSheetContentStyle({ className })}
-    >
-      {wrappedContent}
-    </StyledGorhomBottomSheetView>
+    <GorhomBottomSheetView style={[{ paddingHorizontal: 16, gap: 8 }, style]} {...props}>
+      {children}
+    </GorhomBottomSheetView>
   );
 };
 
-type IBottomSheetFooterProps = React.ComponentProps<typeof GorhomBottomSheetFooter> & {
+export interface BottomSheetFooterProps extends React.ComponentProps<typeof GorhomBottomSheetFooter> {
   className?: string;
-  children?: React.ReactNode;
-};
+}
 
-/**
- * Sticky bottom sheet footer container anchored to the bottom perimeter.
- * Provides a dedicated compartment for primary confirmation and action
- * triggers.
- */
-export const BottomSheetFooter = ({ className, children, ...props }: IBottomSheetFooterProps) => {
+/** Sticky bottom sheet footer container. */
+export const BottomSheetFooter = ({ children, style, ...props }: BottomSheetFooterProps) => {
   return (
-    <GorhomBottomSheetFooter {...props}>
-      <View
-        // @ts-ignore
-        className={bottomSheetFooterStyle({ className })}
-      >
-        {children}
-      </View>
+    <GorhomBottomSheetFooter
+      style={StyleSheet.flatten([{ padding: 16, borderTopWidth: 1, borderTopColor: "#e5e7eb" }, style])}
+      {...props}
+    >
+      {children}
     </GorhomBottomSheetFooter>
   );
 };
 
-type IBottomSheetItemProps = PressableProps & {
-  className?: string;
+export interface BottomSheetItemProps extends PressableProps {
   closeOnSelect?: boolean;
-};
+  className?: string;
+}
 
-const StyledGGHPressable = styled(GGHPressable as any, {
-  className: "style",
-});
-
-/**
- * Interactive list option item inside a bottom sheet menu or action selector.
- * Provides touch feedback and optionally triggers sheet closure upon
- * selection.
- */
-export const BottomSheetItem = ({ children, className, closeOnSelect = true, ...props }: IBottomSheetItemProps) => {
+/** Interactive list option row inside bottom sheet. */
+export const BottomSheetItem = ({ children, closeOnSelect = true, onPress, style, ...props }: BottomSheetItemProps) => {
   const { handleClose } = useContext(BottomSheetContext);
 
-  const PressableComponent = (Platform.OS === "web" ? RNPressable : StyledGGHPressable) as any;
-
   return (
-    <PressableComponent
+    <RNPressable
       {...props}
-      // @ts-ignore
-      className={bottomSheetItemStyle({ className })}
-      onPress={(e: any) => {
-        props.onPress?.(e);
+      style={(state) => [
+        {
+          padding: 12,
+          flexDirection: "row",
+          alignItems: "center",
+          borderRadius: 6,
+          backgroundColor: state.pressed ? "rgba(0,0,0,0.05)" : "transparent",
+        },
+        typeof style === "function" ? style(state) : style,
+      ]}
+      onPress={(e) => {
+        onPress?.(e);
         if (closeOnSelect) {
           handleClose();
         }
       }}
-      role="button"
-      accessibilityRole="button"
     >
       {children}
-    </PressableComponent>
+    </RNPressable>
   );
 };
 
-type IBottomSheetItemTextProps = TextProps & {
+export interface BottomSheetItemTextProps extends TextProps {
   className?: string;
-};
+}
 
-/**
- * Text node rendering the primary descriptive label for a BottomSheetItem.
- * Ensures consistent typography scale and readable foreground color contrast.
- */
-export const BottomSheetItemText = ({ className, ...props }: IBottomSheetItemTextProps) => {
-  return <Text {...props} className={bottomSheetItemTextStyle({ className })} />;
-};
-
-const StyledGorhomBottomSheetInput = styled(GorhomBottomSheetInput, {
-  className: "style",
-});
-
-/**
- * Form text input component optimized for native bottom sheet gesture contexts.
- * Maintains correct keyboard avoidance and viewport offsets inside sliding
- * sheets.
- */
-export const BottomSheetTextInput = ({ className, ...props }: TextInputProps) => {
+/** Primary descriptive label for a BottomSheetItem. */
+export const BottomSheetItemText = ({ children, style, ...props }: BottomSheetItemTextProps) => {
   return (
-    <StyledGorhomBottomSheetInput
+    <Text style={[{ fontSize: 14, color: "#111827" }, style]} {...props}>
+      {children}
+    </Text>
+  );
+};
+
+export const BottomSheetTextInput = (props: TextInputProps) => {
+  return (
+    <GorhomBottomSheetInput
+      style={{ height: 40, paddingHorizontal: 12, borderWidth: 1, borderColor: "#e5e7eb", borderRadius: 6 }}
       {...props}
-      // @ts-ignore
-      className={bottomSheetTextInputStyle({ className })}
     />
   );
 };
 
-/**
- * Native scrollable container integrated with bottom sheet pan gesture
- * responders. Enables smooth fluid scrolling within sheet content without
- * blocking drag-to-dismiss.
- */
 export const BottomSheetScrollView = GorhomBottomSheetScrollView;
-
-/**
- * High-performance virtualized flat list tailored for large datasets in bottom
- * sheets. Coexists cleanly with sheet pan responders to deliver stutter-free
- * 60fps scrolling.
- */
 export const BottomSheetFlatList = GorhomBottomSheetFlatList;
-
-/**
- * High-performance sectioned list supporting grouped data collections inside
- * sheets. Coordinates sticky headers and gesture interactions with bottom sheet
- * drag limits.
- */
 export const BottomSheetSectionList = GorhomBottomSheetSectionList;
+
+const styles = StyleSheet.create({
+  sheetBackground: {
+    backgroundColor: "#ffffff",
+    borderTopLeftRadius: 16,
+    borderTopRightRadius: 16,
+  },
+  handleIndicator: {
+    backgroundColor: "#9ca3af",
+    width: 36,
+    height: 4,
+  },
+});
+
+BottomSheet.displayName = "BottomSheet";

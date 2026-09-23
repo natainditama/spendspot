@@ -1,144 +1,185 @@
-"use client";
+import React, { createContext, forwardRef, useContext } from "react";
+import { Paragraph, View, XStack } from "tamagui";
 
-import React from "react";
-import { createCheckbox } from "@gluestack-ui/core/checkbox/creator";
-import { View, Pressable, Text, Platform, TextProps, ViewProps } from "react-native";
-import { tva, withStyleContext, VariantProps } from "@gluestack-ui/utils/nativewind-utils";
-import { UIIcon } from "@gluestack-ui/core/icon/creator";
-import { styled } from "nativewind";
+interface CheckboxGroupContextValue {
+  value?: string[];
+  onChange?: (values: string[]) => void;
+  isDisabled?: boolean;
+}
 
-const IndicatorWrapper = React.forwardRef<React.ComponentRef<typeof View>, ViewProps>(function IndicatorWrapper(
-  { ...props },
+const CheckboxGroupContext = createContext<CheckboxGroupContextValue | null>(null);
+
+interface CheckboxContextValue {
+  isChecked: boolean;
+  isDisabled: boolean;
+  toggle: () => void;
+}
+
+const CheckboxContext = createContext<CheckboxContextValue>({
+  isChecked: false,
+  isDisabled: false,
+  toggle: () => {},
+});
+
+export interface CheckboxGroupProps {
+  value?: string[];
+  onChange?: (values: string[]) => void;
+  isDisabled?: boolean;
+  children?: React.ReactNode;
+  className?: string;
+}
+
+/** Group container managing multi-select state across child Checkbox elements. */
+export const CheckboxGroup = forwardRef<any, CheckboxGroupProps>(function CheckboxGroup(
+  { value = [], onChange, isDisabled = false, children, ...props },
   ref
 ) {
-  return <View {...props} ref={ref} />;
+  return (
+    <CheckboxGroupContext.Provider value={{ value, onChange, isDisabled }}>
+      <View ref={ref} gap={8} {...props}>
+        {children}
+      </View>
+    </CheckboxGroupContext.Provider>
+  );
 });
 
-const LabelWrapper = React.forwardRef<React.ComponentRef<typeof Text>, TextProps>(function LabelWrapper(
-  { ...props },
+export interface CheckboxProps extends Omit<React.ComponentPropsWithoutRef<typeof XStack>, "onChange"> {
+  value?: string;
+  isChecked?: boolean;
+  checked?: boolean;
+  onChange?: (checked: boolean) => void;
+  isDisabled?: boolean;
+  isInvalid?: boolean;
+  className?: string;
+}
+
+/**
+ * Accessible checkbox input allowing selection of individual or grouped
+ * options.
+ */
+export const Checkbox = forwardRef<React.ElementRef<typeof XStack>, CheckboxProps>(function Checkbox(
+  {
+    value,
+    isChecked: explicitChecked,
+    checked: explicitCheckedAlt,
+    onChange,
+    isDisabled: explicitDisabled,
+    isInvalid,
+    children,
+    ...props
+  },
   ref
 ) {
-  return <Text {...props} ref={ref} />;
-});
+  const groupContext = useContext(CheckboxGroupContext);
 
-const StyledUIIcon = styled(UIIcon, {
-  className: "style",
-});
+  const isChecked =
+    groupContext && value !== undefined
+      ? Boolean(groupContext.value?.includes(value))
+      : Boolean(explicitChecked ?? explicitCheckedAlt ?? false);
 
-const SCOPE = "CHECKBOX";
-const UICheckbox = createCheckbox({
-  // @ts-expect-error : internal implementation for r-19/react-native-web
-  Root: Platform.OS === "web" ? withStyleContext(View, SCOPE) : withStyleContext(Pressable, SCOPE),
-  Group: View,
-  Icon: StyledUIIcon,
-  Label: LabelWrapper,
-  Indicator: IndicatorWrapper,
-});
+  const isDisabled = Boolean(groupContext?.isDisabled || explicitDisabled);
 
-/**
- * Base layout and state styles for the root Checkbox container. Configures row
- * alignment, cursor states, and disabled opacity levels.
- */
-const checkboxStyle = tva({
-  base: "group/checkbox flex-row items-center justify-start gap-2 web:cursor-pointer data-[disabled=true]:cursor-not-allowed data-[disabled=true]:opacity-50",
-});
-
-/**
- * Visual presentation styles for the Checkbox indicator element. Handles
- * borders, focus-visible rings, checked background fills, and invalid states.
- */
-const checkboxIndicatorStyle = tva({
-  base: "justify-center items-center w-4 h-4 shrink-0 rounded border border-input dark:bg-input/30   shadow-xs web:outline-none web:data-[focus-visible=true]:ring-[3px] web:data-[focus-visible=true]:ring-ring/50 web:data-[focus-visible=true]:border-ring data-[checked=true]:bg-primary  data-[checked=true]:border-primary dark:data-[checked=true]:bg-primary dark:data-[checked=true]:border-primary data-[invalid=true]:ring-destructive/20 data-[invalid=true]:border-destructive data-[disabled=true]:cursor-not-allowed data-[disabled=true]:opacity-50",
-});
-
-/**
- * Typography and cursor styles for the Checkbox text label. Adjusts font
- * weight, text selection, and dimmed contrast when disabled.
- */
-const checkboxLabelStyle = tva({
-  base: "text-foreground text-sm font-medium font-body web:select-none web:cursor-pointer data-[disabled=true]:cursor-not-allowed data-[disabled=true]:opacity-50",
-});
-
-/**
- * Dimensions and color styling for the checkmark icon inside CheckboxIndicator.
- * Applies theme-aware foreground fills and standardized icon proportions.
- */
-const checkboxIconStyle = tva({
-  base: "text-primary-foreground fill-none h-3.5 w-3.5",
-});
-
-/**
- * Contextual wrapper managing multi-select state across child Checkbox items.
- * Coordinates shared values, change listeners, and validation status.
- */
-const CheckboxGroup = UICheckbox.Group;
-type ICheckboxProps = React.ComponentPropsWithoutRef<typeof UICheckbox> & VariantProps<typeof checkboxStyle>;
-
-/**
- * Accessible multi-state checkbox component supporting controlled form states.
- * Synchronizes with style contexts across web and native mobile platforms.
- */
-const Checkbox = React.forwardRef<React.ComponentRef<typeof UICheckbox>, ICheckboxProps>(function Checkbox(
-  { className, ...props },
-  ref
-) {
-  return <UICheckbox className={checkboxStyle({ class: className })} {...props} context={{}} ref={ref} />;
-});
-
-type ICheckboxIndicatorProps = React.ComponentPropsWithoutRef<typeof UICheckbox.Indicator> &
-  VariantProps<typeof checkboxIndicatorStyle>;
-
-/**
- * Visual container displaying checkbox checkmark status and border states.
- * Renders background fills, focus rings, and validation feedback borders.
- */
-const CheckboxIndicator = React.forwardRef<React.ComponentRef<typeof UICheckbox.Indicator>, ICheckboxIndicatorProps>(
-  function CheckboxIndicator({ className, ...props }, ref) {
-    return <UICheckbox.Indicator className={checkboxIndicatorStyle({ class: className })} {...props} ref={ref} />;
-  }
-);
-
-type ICheckboxLabelProps = React.ComponentPropsWithoutRef<typeof UICheckbox.Label> &
-  VariantProps<typeof checkboxLabelStyle>;
-
-/**
- * Interactive text label associated with a parent Checkbox input control.
- * Toggles parent selection state upon tap while supporting disabled styles.
- */
-const CheckboxLabel = React.forwardRef<React.ComponentRef<typeof UICheckbox.Label>, ICheckboxLabelProps>(
-  function CheckboxLabel({ className, ...props }, ref) {
-    return <UICheckbox.Label className={checkboxLabelStyle({ class: className })} {...props} ref={ref} />;
-  }
-);
-
-type ICheckboxIconProps = React.ComponentPropsWithoutRef<typeof UICheckbox.Icon> &
-  VariantProps<typeof checkboxIconStyle> & {
-    className?: string;
-    as?: React.ElementType;
-    height?: number;
-    width?: number;
-    size?: number | string;
+  const toggle = () => {
+    if (isDisabled) return;
+    if (groupContext && value !== undefined && groupContext.onChange) {
+      const current = groupContext.value ?? [];
+      const next = current.includes(value) ? current.filter((v) => v !== value) : [...current, value];
+      groupContext.onChange(next);
+    } else {
+      onChange?.(!isChecked);
+    }
   };
 
-/**
- * Checkmark icon rendered within CheckboxIndicator when selected. Displays
- * customizable iconography scaled to indicator size.
- */
-const CheckboxIcon = React.forwardRef<React.ComponentRef<typeof UICheckbox.Icon>, ICheckboxIconProps>(
-  function CheckboxIcon({ className, size, ...props }, ref) {
-    if (typeof size === "number") {
-      return <UICheckbox.Icon ref={ref} {...props} className={checkboxIconStyle({ class: className })} size={size} />;
-    } else if ((props.height !== undefined || props.width !== undefined) && size === undefined) {
-      return <UICheckbox.Icon ref={ref} {...props} className={checkboxIconStyle({ class: className })} />;
-    }
+  return (
+    <CheckboxContext.Provider value={{ isChecked, isDisabled, toggle }}>
+      <XStack
+        ref={ref}
+        alignItems="center"
+        gap={8}
+        cursor={isDisabled ? "not-allowed" : "pointer"}
+        opacity={isDisabled ? 0.5 : 1}
+        onPress={toggle}
+        role="checkbox"
+        aria-checked={isChecked}
+        {...props}
+      >
+        {children}
+      </XStack>
+    </CheckboxContext.Provider>
+  );
+});
 
-    return <UICheckbox.Icon className={checkboxIconStyle({ class: className })} {...props} ref={ref} />;
+export interface CheckboxIndicatorProps extends React.ComponentPropsWithoutRef<typeof View> {
+  className?: string;
+}
+
+/** Visual box displaying check state and border focus outline. */
+export const CheckboxIndicator = forwardRef<React.ElementRef<typeof View>, CheckboxIndicatorProps>(
+  function CheckboxIndicator({ children, ...props }, ref) {
+    const { isChecked } = useContext(CheckboxContext);
+
+    return (
+      <View
+        ref={ref}
+        width={18}
+        height={18}
+        borderRadius={4}
+        borderWidth={1}
+        borderColor={isChecked ? "$color" : "$borderColor"}
+        backgroundColor={isChecked ? "$color" : "$background"}
+        alignItems="center"
+        justifyContent="center"
+        {...props}
+      >
+        {children}
+      </View>
+    );
   }
 );
+
+export interface CheckboxLabelProps extends React.ComponentPropsWithoutRef<typeof Paragraph> {
+  className?: string;
+}
+
+/** Descriptive label accompanying the Checkbox input. */
+export const CheckboxLabel = forwardRef<React.ElementRef<typeof Paragraph>, CheckboxLabelProps>(function CheckboxLabel(
+  { children, ...props },
+  ref
+) {
+  return (
+    <Paragraph ref={ref} fontSize={14} fontWeight="500" userSelect="none" {...props}>
+      {children}
+    </Paragraph>
+  );
+});
+
+export interface CheckboxIconProps {
+  as?: React.ElementType;
+  size?: number | string;
+  height?: number;
+  width?: number;
+  color?: string;
+  className?: string;
+  [key: string]: any;
+}
+
+/** Checkmark icon displayed inside the CheckboxIndicator when checked. */
+export const CheckboxIcon = forwardRef<any, CheckboxIconProps>(function CheckboxIcon(
+  { as: Component, size = 12, height, width, color = "$background", ...props },
+  ref
+) {
+  const { isChecked } = useContext(CheckboxContext);
+  if (!isChecked) return null;
+
+  const dim = height ?? width ?? (typeof size === "number" ? size : 12);
+  if (Component) {
+    return <Component ref={ref} size={dim} width={dim} height={dim} color={color} {...props} />;
+  }
+  return null;
+});
 
 Checkbox.displayName = "Checkbox";
 CheckboxIndicator.displayName = "CheckboxIndicator";
 CheckboxLabel.displayName = "CheckboxLabel";
 CheckboxIcon.displayName = "CheckboxIcon";
-
-export { Checkbox, CheckboxIndicator, CheckboxLabel, CheckboxIcon, CheckboxGroup };
+CheckboxGroup.displayName = "CheckboxGroup";

@@ -1,30 +1,18 @@
-"use client";
-import { ActivityIndicator } from "react-native";
 import React from "react";
-import { tva } from "@gluestack-ui/utils/nativewind-utils";
-import { styled } from "nativewind";
+import { Spinner as TamaguiSpinner, styled } from "tamagui";
 
-const StyledActivityIndicator = styled(ActivityIndicator, {
-  className: { target: "style", nativeStyleToProp: { color: true } } as any,
-});
-const spinnerStyle = tva({});
+export interface SpinnerProps extends React.ComponentPropsWithoutRef<typeof TamaguiSpinner> {
+  className?: string;
+}
 
-const Spinner = React.forwardRef<
-  React.ComponentRef<typeof ActivityIndicator>,
-  React.ComponentProps<typeof ActivityIndicator>
->(function Spinner({ className, color, focusable = false, "aria-label": ariaLabel = "loading", ...props }, ref) {
-  return (
-    <StyledActivityIndicator
-      ref={ref}
-      focusable={focusable}
-      aria-label={ariaLabel}
-      {...props}
-      color={color}
-      className={spinnerStyle({ class: className })}
-    />
-  );
+/**
+ * Spinner component indicating asynchronous operations in progress. Powered by
+ * Tamagui Spinner primitive.
+ */
+export const Spinner = styled(TamaguiSpinner, {
+  name: "Spinner",
+  size: "small",
+  color: "$color",
 });
 
-Spinner.displayName = "Spinner";
-
-export { Spinner };
+export default Spinner;
