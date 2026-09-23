@@ -107,7 +107,6 @@ import {
 } from "@spendspot/ui-components/bottomsheet";
 
 // Providers
-import { GluestackUIProvider } from "@spendspot/ui-components/gluestack-ui-provider";
 import { Provider } from "@spendspot/ui-components/provider";
 
 /**
@@ -1246,17 +1245,15 @@ export default function ComponentShowcase() {
         </AlertDialogContent>
       </AlertDialog>
 
-      {/* Provider & GluestackUIProvider in-line containment showcase */}
+      {/* Provider in-line containment showcase */}
       <Card size="sm" className="mt-4">
         <VStack space="xs">
-          <Heading size="xs">Nested Provider Demonstration</Heading>
-          <GluestackUIProvider mode="light">
-            <Provider mode="light">
-              <Text size="xs" className="text-muted-foreground">
-                Verified: GluestackUIProvider & Provider nested context operational.
-              </Text>
-            </Provider>
-          </GluestackUIProvider>
+          <Heading size="xs">Tamagui Provider Demonstration</Heading>
+          <Provider mode="light">
+            <Text size="xs" className="text-muted-foreground">
+              Verified: Tamagui Provider design tokens and theme context operational.
+            </Text>
+          </Provider>
         </VStack>
       </Card>
     </ScrollView>

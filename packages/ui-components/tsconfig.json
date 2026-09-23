@@ -22,7 +22,7 @@
     "rootDir": "../..",
     "strict": true,
     "typeRoots": ["../../node_modules/@types", "../../apps/mobile-app/node_modules/@types", "./node_modules/@types"],
-    "types": ["react"]
+    "types": ["react", "node"]
   },
   "exclude": ["dist/**", "node_modules/**"],
   "extends": "../../tsconfig.base.json",

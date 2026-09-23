@@ -56,6 +56,9 @@
     ]
   },
   "resolutions": {
+    "@tamagui/config": "^2.7.7",
+    "@tamagui/core": "^2.7.7",
+    "@tamagui/web": "^2.7.7",
     "@types/react": "~19.2.2",
     "@types/react-dom": "~19.2.2",
     "expo": "~57.0.24",
@@ -71,9 +74,13 @@
     "react-native-safe-area-context": "~5.7.0",
     "react-native-screens": "~4.26.0",
     "react-native-svg": "15.15.4",
-    "react-native-worklets": "0.10.1"
+    "react-native-worklets": "0.10.1",
+    "tamagui": "^2.7.7"
   },
   "overrides": {
+    "@tamagui/config": "^2.7.7",
+    "@tamagui/core": "^2.7.7",
+    "@tamagui/web": "^2.7.7",
     "@types/react": "~19.2.2",
     "@types/react-dom": "~19.2.2",
     "expo": "~57.0.24",
@@ -89,7 +96,8 @@
     "react-native-safe-area-context": "~5.7.0",
     "react-native-screens": "~4.26.0",
     "react-native-svg": "15.15.4",
-    "react-native-worklets": "0.10.1"
+    "react-native-worklets": "0.10.1",
+    "tamagui": "^2.7.7"
   },
   "devDependencies": {
     "@commitlint/cli": "^21.2.2",

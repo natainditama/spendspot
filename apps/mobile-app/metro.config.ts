@@ -16,6 +16,25 @@ config.resolver.nodeModulesPaths = [
   path.resolve(monorepoRoot, "node_modules"),
 ];
 
+// Ensure singleton resolution for react and tamagui packages to prevent duplicate contexts
+const SINGLETON_PACKAGES = ["react", "react-native", "tamagui", "@tamagui/core", "@tamagui/web", "@tamagui/config"];
+
+const extraNodeModules: Record<string, string> = {};
+for (const pkg of SINGLETON_PACKAGES) {
+  try {
+    extraNodeModules[pkg] = path.dirname(
+      require.resolve(`${pkg}/package.json`, { paths: [projectRoot, monorepoRoot] })
+    );
+  } catch {
+    // Package not found or non-standard export
+  }
+}
+
+(config.resolver as any).extraNodeModules = {
+  ...((config.resolver as any).extraNodeModules || {}),
+  ...extraNodeModules,
+};
+
 const nativewindConfig = withNativewind(config as any) as MetroConfig;
 const originalResolveRequest = nativewindConfig.resolver?.resolveRequest;
 
