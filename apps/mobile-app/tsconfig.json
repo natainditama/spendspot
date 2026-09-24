@@ -16,7 +16,7 @@
         "../../packages/core-logic/src/types/*.ts",
         "../../packages/core-logic/src/*"
       ],
-      "@spendspot/ui-components/*": ["../../packages/ui-components/src/*/index.tsx"],
+      "@spendspot/ui-components/*": ["../../packages/ui-components/src/*/index", "../../packages/ui-components/src/*"],
       "react-native": ["./node_modules/react-native"],
       "react-native/*": ["./node_modules/react-native/*"]
     },

@@ -4,11 +4,9 @@
   "private": true,
   "description": "Shared React Native UI component library for SpendSpot",
   "exports": {
-    "./*": "./src/*/index.tsx",
-    "./button": "./src/button/index.tsx",
-    "./checkbox": "./src/checkbox/index.tsx",
-    "./input": "./src/input/index.tsx",
-    "./provider": "./src/provider/index.tsx"
+    "./metro": "./src/metro/index.ts",
+    "./config": "./src/config/index.ts",
+    "./*": "./src/*/index.tsx"
   },
   "scripts": {
     "build": "tsc --noEmit",
@@ -20,9 +18,11 @@
   "dependencies": {
     "@spendspot/core-logic": "workspace:*",
     "@tamagui/button": "^2.7.7",
+    "@tamagui/checkbox": "^2.7.7",
     "@tamagui/config": "^2.7.7",
     "@tamagui/core": "^2.7.7",
     "@tamagui/lucide-icons": "^2.0.0-rc.26",
+    "@tamagui/metro-plugin": "^2.7.7",
     "tamagui": "^2.7.7"
   },
   "devDependencies": {

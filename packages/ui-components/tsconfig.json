@@ -15,7 +15,7 @@
         "../core-logic/src/types/*.ts",
         "../core-logic/src/*"
       ],
-      "@spendspot/ui-components/*": ["./src/*/index.tsx"],
+      "@spendspot/ui-components/*": ["./src/*/index", "./src/*"],
       "react-native": ["../../apps/mobile-app/node_modules/react-native"],
       "react-native/*": ["../../apps/mobile-app/node_modules/react-native/*"]
     },
