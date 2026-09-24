@@ -1,23 +1,14 @@
 import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { Appearance, StyleSheet, View, type ViewProps } from "react-native";
 import { TamaguiProvider, Theme } from "tamagui";
-import { config } from "../tamagui.config";
-
-/**
- * Color appearance theme modes supported by the UI component library. Supports
- * light, dark, or automated operating system preference.
- */
-export type ModeType = "light" | "dark" | "system";
+import { config } from "../config";
 
 const RootProviderContext = createContext<boolean>(false);
+export type ModeType = "light" | "dark" | "system";
 
 /**
- * Tamagui design system provider for SpendSpot. Supplies typed design tokens,
- * responsive media queries, and adaptive themes.
- *
- * Automatically detects if already nested inside a root TamaguiProvider to
- * prevent duplicate PortalProviders and hydration warnings, smoothly delegating
- * to Theme.
+ * Theme-aware TamaguiProvider for SpendSpot. Delegates nested instances to
+ * avoid duplicate PortalProvider root hosts and hydration warnings.
  */
 export function Provider({
   mode = "system",
@@ -31,7 +22,6 @@ export function Provider({
   style?: ViewProps["style"];
 }) {
   const isAlreadyInRoot = useContext(RootProviderContext);
-
   const [systemScheme, setSystemScheme] = useState<"light" | "dark">(() =>
     Appearance.getColorScheme() === "dark" ? "dark" : "light"
   );
@@ -80,4 +70,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Provider;
+export { config, tamaguiConfig } from "../config";
