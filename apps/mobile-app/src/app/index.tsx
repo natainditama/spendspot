@@ -1,5 +1,6 @@
 import React from "react";
-import { ScrollView, Text } from "react-native";
+import { ScrollView } from "react-native";
+import { Button } from "@spendspot/ui-components/button";
 
 /**
  * Comprehensive Showcase demonstrating all 41 SpendSpot UI Components.
@@ -8,7 +9,7 @@ import { ScrollView, Text } from "react-native";
 export default function ComponentShowcase() {
   return (
     <ScrollView>
-      <Text>Hello</Text>
+      <Button>Hello</Button>
     </ScrollView>
   );
 }

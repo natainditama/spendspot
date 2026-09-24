@@ -31,7 +31,7 @@ export function withUIComponents<T extends { resolver?: any; watchFolders?: any 
     ])
   );
 
-  const SINGLETON_PACKAGES = ["react", "react-native", "tamagui", "@tamagui/core", "@tamagui/web", "@tamagui/config"];
+  const SINGLETON_PACKAGES = ["react", "react-native", "@tamagui/core", "@tamagui/web", "@tamagui/config"];
   const extraNodeModules: Record<string, string> = {
     ...(resolver.extraNodeModules || {}),
   };

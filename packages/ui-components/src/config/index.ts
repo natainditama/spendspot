@@ -1,5 +1,5 @@
 import { defaultConfig } from "@tamagui/config/v5";
-import { createTamagui } from "tamagui";
+import { createTamagui } from "@tamagui/core";
 
 // Light theme: shadcn ui hex tokens aligned with DESIGN.md
 const lightTheme = {
