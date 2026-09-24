@@ -57,7 +57,6 @@ import {
   SelectDragIndicator,
   SelectItem,
 } from "@spendspot/ui-components/select";
-import { DateTimePicker } from "@spendspot/ui-components/date-time-picker";
 import {
   FormControl,
   FormControlLabel,
@@ -96,15 +95,6 @@ import {
   AlertDialogBody,
   AlertDialogFooter,
 } from "@spendspot/ui-components/alert-dialog";
-import {
-  BottomSheet,
-  BottomSheetTrigger,
-  BottomSheetPortal,
-  BottomSheetContent,
-  BottomSheetDragIndicator,
-  BottomSheetItem,
-  BottomSheetItemText,
-} from "@spendspot/ui-components/bottomsheet";
 
 // Providers
 import { Provider } from "@spendspot/ui-components/provider";
@@ -121,7 +111,6 @@ export default function ComponentShowcase() {
   const [checkboxValues, setCheckboxValues] = useState<string[]>(["item1"]);
   const [radioValue, setRadioValue] = useState("option1");
   const [selectValue, setSelectValue] = useState("idr");
-  const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
   const [isSkeletonLoaded, setIsSkeletonLoaded] = useState(false);
 
   // Overlay interactive states
@@ -159,7 +148,7 @@ export default function ComponentShowcase() {
   ];
 
   return (
-    <ScrollView className="flex-1 bg-background" contentContainerClassName="p-4 pb-20 gap-6">
+    <ScrollView className="flex-1 bg-background">
       {/* Header Banner */}
       <VStack space="sm" className="bg-muted/40 p-4 rounded-xl border border-border">
         <HStack className="items-center justify-between gap-2">
@@ -876,22 +865,6 @@ export default function ComponentShowcase() {
             </VStack>
           </Card>
 
-          {/* DateTimePicker Component */}
-          <Card size="default">
-            <VStack space="sm">
-              <Heading size="sm">DateTimePicker (Modes: date, time, datetime)</Heading>
-              <Text size="xs" className="text-muted-foreground">
-                Interactive date and time selectors
-              </Text>
-              <DateTimePicker
-                mode="date"
-                value={selectedDate}
-                onChange={setSelectedDate}
-                placeholder="Pick transaction date"
-              />
-            </VStack>
-          </Card>
-
           {/* FormControl Component */}
           <Card size="default">
             <VStack space="sm">
@@ -1113,37 +1086,6 @@ export default function ComponentShowcase() {
                   Actionsheet State: Open
                 </Text>
               )}
-            </VStack>
-          </Card>
-
-          {/* BottomSheet Component */}
-          <Card size="default">
-            <VStack space="sm">
-              <Heading size="sm">BottomSheet Component</Heading>
-              <Text size="xs" className="text-muted-foreground">
-                Gorhom native gesture-driven bottomsheet
-              </Text>
-              <BottomSheet>
-                <BottomSheetTrigger>
-                  <Box className="bg-primary p-3 rounded-lg items-center">
-                    <Text size="sm" bold className="text-primary-foreground">
-                      Swipe Up / Open BottomSheet
-                    </Text>
-                  </Box>
-                </BottomSheetTrigger>
-                <BottomSheetPortal snapPoints={["40%"]}>
-                  <BottomSheetContent className="p-4 gap-3">
-                    <BottomSheetDragIndicator />
-                    <Heading size="md">Native Bottom Sheet</Heading>
-                    <BottomSheetItem onPress={() => console.log("Item 1")}>
-                      <BottomSheetItemText>Export PDF Statement</BottomSheetItemText>
-                    </BottomSheetItem>
-                    <BottomSheetItem onPress={() => console.log("Item 2")}>
-                      <BottomSheetItemText>Sync Cloud Backups</BottomSheetItemText>
-                    </BottomSheetItem>
-                  </BottomSheetContent>
-                </BottomSheetPortal>
-              </BottomSheet>
             </VStack>
           </Card>
 
