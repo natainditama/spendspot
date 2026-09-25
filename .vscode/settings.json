@@ -16,11 +16,6 @@
     "http",
     "net"
   ],
-  "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": "explicit"
-  },
-  "editor.defaultFormatter": "esbenp.prettier-vscode",
-  "editor.formatOnSave": true,
   "json.schemas": [
     {
       "fileMatch": ["renovate.json", ".renovaterc.json"],

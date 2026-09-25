@@ -2,17 +2,16 @@
   "$schema": "https://json.schemastore.org/prettierrc.json",
   "arrowParens": "always",
   "bracketSpacing": true,
-  "endOfLine": "auto",
+  "endOfLine": "lf",
   "importOrder": ["<BUILTIN_MODULES>", "<THIRD_PARTY_MODULES>", "", "^@spendspot/(.*)$", "", "^@/(.*)$", "", "^[./]"],
   "importOrderParserPlugins": ["typescript", "jsx"],
   "jsdocEmptyCommentStrategy": "keep",
   "jsdocPrintWidth": 80,
   "plugins": [
-    "@ianvs/prettier-plugin-sort-imports",
-    "@lebedevna/prettier-plugin-sql",
-    "prettier-plugin-jsdoc",
     "prettier-plugin-sort-json",
-    "prettier-plugin-packagejson"
+    "prettier-plugin-packagejson",
+    "@lebedevna/prettier-plugin-sql",
+    "@ianvs/prettier-plugin-sort-imports"
   ],
   "printWidth": 120,
   "semi": true,

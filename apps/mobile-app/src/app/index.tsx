@@ -1,6 +1,16 @@
 import React from "react";
-import { ScrollView } from "react-native";
+
 import { Button } from "@spendspot/ui-components/button";
+import {
+  NativeSelect,
+  NativeSelectContent,
+  NativeSelectGroup,
+  NativeSelectItem,
+  NativeSelectLabel,
+  NativeSelectTrigger,
+  NativeSelectValue,
+} from "@spendspot/ui-components/native-select";
+import { YStack } from "@spendspot/ui-components/stacks";
 
 /**
  * Comprehensive Showcase demonstrating all 41 SpendSpot UI Components.
@@ -8,8 +18,33 @@ import { Button } from "@spendspot/ui-components/button";
  */
 export default function ComponentShowcase() {
   return (
-    <ScrollView>
-      <Button>Hello</Button>
-    </ScrollView>
+    <YStack margin="$4" gap="$4">
+      <Button theme="primary">Primary</Button>
+      <Button theme="outline" variant="outlined">
+        Outline
+      </Button>
+      <Button theme="secondary">Secondary</Button>
+      <Button theme="ghost">Ghost</Button>
+      <Button theme="destructive">Destructive</Button>
+      <NativeSelect defaultValue="">
+        <NativeSelectTrigger>
+          <NativeSelectValue placeholder="Select a fruit..." />
+        </NativeSelectTrigger>
+        <NativeSelectContent>
+          <NativeSelectGroup>
+            <NativeSelectLabel>Fruits</NativeSelectLabel>
+            <NativeSelectItem value="apple" index={0}>
+              Apple
+            </NativeSelectItem>
+            <NativeSelectItem value="banana" index={1}>
+              Banana
+            </NativeSelectItem>
+            <NativeSelectItem value="mango" index={2}>
+              Mango
+            </NativeSelectItem>
+          </NativeSelectGroup>
+        </NativeSelectContent>
+      </NativeSelect>
+    </YStack>
   );
 }

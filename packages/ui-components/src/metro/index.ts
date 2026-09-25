@@ -1,5 +1,5 @@
-import path from "node:path";
 import { createRequire } from "node:module";
+import path from "node:path";
 
 const req = createRequire(import.meta.url);
 
@@ -9,8 +9,8 @@ export interface WithUIComponentsOptions {
 }
 
 /**
- * SpendSpot UI Components Metro bundler enhancer and singleton resolver. Wraps
- * Metro config with monorepo workspace paths and Tamagui compiler plugin.
+ * SpendSpot UI Components Metro bundler enhancer and singleton resolver.
+ * Wraps metro config with monorepo workspace paths and Tamagui compiler plugin.
  */
 export function withUIComponents<T extends { resolver?: any; watchFolders?: any }>(
   config: T,

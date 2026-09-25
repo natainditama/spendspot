@@ -1,62 +1,44 @@
-import React, { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
-import { Appearance, StyleSheet, View, type ViewProps } from "react-native";
-import { TamaguiProvider, Theme } from "tamagui";
+import { TamaguiProvider, Theme } from "@tamagui/core";
+import { PortalProvider } from "@tamagui/portal";
+import React, { createContext, useContext } from "react";
+import { StyleSheet, View, type ViewProps } from "react-native";
+
 import { config } from "../config";
 
 const RootProviderContext = createContext<boolean>(false);
-export type ModeType = "light" | "dark" | "system";
 
 /**
- * Theme-aware TamaguiProvider for SpendSpot. Delegates nested instances to
- * avoid duplicate PortalProvider root hosts and hydration warnings.
+ * Configuration properties for the SpendSpot application root provider.
+ * Supports passing custom children elements and additional root container styles.
  */
-export function Provider({
-  mode = "system",
-  defaultTheme,
-  children,
-  style,
-}: {
-  mode?: ModeType;
-  defaultTheme?: "light" | "dark";
+export interface ProviderProps {
   children?: React.ReactNode;
   style?: ViewProps["style"];
-}) {
+}
+
+/**
+ * SpendSpot application provider that locks all rendering to the light theme.
+ * Prevents duplicate TamaguiProvider roots and enforces unified cross-platform design context.
+ */
+export function Provider({ children, style }: ProviderProps) {
   const isAlreadyInRoot = useContext(RootProviderContext);
-  const [systemScheme, setSystemScheme] = useState<"light" | "dark">(() =>
-    Appearance.getColorScheme() === "dark" ? "dark" : "light"
-  );
 
-  const handleSystemChange = useCallback((preferences: Appearance.AppearancePreferences) => {
-    setSystemScheme(preferences.colorScheme === "dark" ? "dark" : "light");
-  }, []);
-
-  useEffect(() => {
-    if (mode !== "system") return;
-    const subscription = Appearance.addChangeListener(handleSystemChange);
-    return () => subscription.remove();
-  }, [mode, handleSystemChange]);
-
-  const activeTheme = useMemo<"light" | "dark">(
-    () => defaultTheme ?? (mode === "system" ? systemScheme : mode),
-    [defaultTheme, mode, systemScheme]
-  );
-
-  // If already nested within a root Provider, do not instantiate a second TamaguiProvider
-  // to avoid duplicate PortalProvider root hosts and hydration mismatches. Instead, apply the Theme.
   if (isAlreadyInRoot) {
     return (
-      <Theme name={activeTheme}>
-        <View style={[styles.root, style]}>{children}</View>
-      </Theme>
+      <View style={[styles.root, style]}>
+        <Theme name="light">{children}</Theme>
+      </View>
     );
   }
 
   return (
     <RootProviderContext.Provider value={true}>
-      <TamaguiProvider config={config} defaultTheme={activeTheme}>
-        <Theme name={activeTheme}>
-          <View style={[styles.root, style]}>{children}</View>
-        </Theme>
+      <TamaguiProvider config={config} defaultTheme="light">
+        <PortalProvider shouldAddRootHost>
+          <View style={[styles.root, style]}>
+            <Theme name="light">{children}</Theme>
+          </View>
+        </PortalProvider>
       </TamaguiProvider>
     </RootProviderContext.Provider>
   );
@@ -70,4 +52,5 @@ const styles = StyleSheet.create({
   },
 });
 
-export { config, tamaguiConfig } from "../config";
+export { config } from "../config";
+export { PortalProvider } from "@tamagui/portal";

@@ -55,38 +55,6 @@
       "prettier --write --ignore-unknown"
     ]
   },
-  "resolutions": {
-    "@types/react": "~19.2.2",
-    "@types/react-dom": "~19.2.2",
-    "expo": "~57.0.24",
-    "expo-constants": "~57.0.19",
-    "expo-linking": "~57.0.10",
-    "expo-router": "~57.0.23",
-    "react": "19.2.3",
-    "react-dom": "19.2.3",
-    "react-native": "0.86.3",
-    "react-native-gesture-handler": "~2.32.0",
-    "react-native-reanimated": "4.5.1",
-    "react-native-safe-area-context": "~5.7.0",
-    "react-native-screens": "~4.26.0",
-    "react-native-worklets": "0.10.1"
-  },
-  "overrides": {
-    "@types/react": "~19.2.2",
-    "@types/react-dom": "~19.2.2",
-    "expo": "~57.0.24",
-    "expo-constants": "~57.0.19",
-    "expo-linking": "~57.0.10",
-    "expo-router": "~57.0.23",
-    "react": "19.2.3",
-    "react-dom": "19.2.3",
-    "react-native": "0.86.3",
-    "react-native-gesture-handler": "~2.32.0",
-    "react-native-reanimated": "4.5.1",
-    "react-native-safe-area-context": "~5.7.0",
-    "react-native-screens": "~4.26.0",
-    "react-native-worklets": "0.10.1"
-  },
   "devDependencies": {
     "@commitlint/cli": "^21.2.2",
     "@commitlint/config-conventional": "^21.2.2",
@@ -103,7 +71,6 @@
     "husky": "^9.1.7",
     "lint-staged": "^17.5.1",
     "prettier": "^3.9.6",
-    "prettier-plugin-jsdoc": "^1.8.1",
     "prettier-plugin-packagejson": "^3.0.2",
     "prettier-plugin-sort-json": "^4.2.0",
     "typescript": "~6.0.3",

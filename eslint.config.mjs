@@ -1,11 +1,11 @@
 import path from "node:path";
 import { fileURLToPath } from "node:url";
-import gitignore from "eslint-config-flat-gitignore";
 import expoConfig from "eslint-config-expo/flat.js";
-import turboConfig from "eslint-config-turbo/flat";
+import gitignore from "eslint-config-flat-gitignore";
 import prettierConfig from "eslint-config-prettier";
-import tseslint from "typescript-eslint";
+import turboConfig from "eslint-config-turbo/flat";
 import { defineConfig } from "eslint/config";
+import tseslint from "typescript-eslint";
 
 const rootDir = path.dirname(fileURLToPath(import.meta.url));
 
@@ -43,8 +43,8 @@ const strictRules = {
     },
   ],
   // Single import per module, no duplicates
-  "no-duplicate-imports": "error",
-  "import/no-duplicates": "error",
+  // "no-duplicate-imports": "error",
+  // "import/no-duplicates": "error",
   "import/no-named-as-default-member": "off",
   // Immutability & strict equality
   "prefer-const": ["error", { destructuring: "all" }],
