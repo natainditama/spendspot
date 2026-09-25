@@ -1,5 +1,6 @@
-import rootConfig from "../../eslint.config.mjs";
 import { defineConfig } from "eslint/config";
+
+import rootConfig from "../../eslint.config.mjs";
 
 /**
  * Filters monorepo root ESLint rules for the edge-api workspace. Strips out

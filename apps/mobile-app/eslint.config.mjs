@@ -1,6 +1,7 @@
 // https://docs.expo.dev/guides/using-eslint/
-import rootConfig from "../../eslint.config.mjs";
 import { defineConfig } from "eslint/config";
+
+import rootConfig from "../../eslint.config.mjs";
 
 /**
  * Mobile-app ESLint configuration extending the SpendSpot monorepo root config.

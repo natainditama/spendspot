@@ -1,5 +1,6 @@
-import rootConfig from "../../eslint.config.mjs";
 import { defineConfig } from "eslint/config";
+
+import rootConfig from "../../eslint.config.mjs";
 
 /**
  * UI components ESLint configuration extending the root config. Applies shared

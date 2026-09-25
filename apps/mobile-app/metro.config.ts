@@ -1,4 +1,5 @@
 import { getDefaultConfig } from "expo/metro-config";
+
 import { withUIComponents } from "@spendspot/ui-components/metro";
 
 const projectRoot = __dirname;

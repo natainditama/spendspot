@@ -5,7 +5,6 @@
  * Runs expo-doctor and suppresses false-positive duplicate dependency warnings
  * from Bun's isolated linker while preserving real compatibility failures.
  */
-
 import { execSync } from "node:child_process";
 import { exit } from "node:process";
 
