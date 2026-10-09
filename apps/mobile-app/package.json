@@ -21,6 +21,7 @@
     "@spendspot/ui-components": "workspace:*",
     "expo": "~57.0.25",
     "expo-constants": "~57.0.19",
+    "expo-image": "^57.0.5",
     "expo-linking": "~57.0.11",
     "expo-router": "~57.0.23",
     "expo-splash-screen": "~57.0.9",
