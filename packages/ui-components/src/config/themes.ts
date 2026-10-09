@@ -16,8 +16,12 @@ export const lightTheme = {
   // Action
   primary: "#18181b",
   primaryForeground: "#fafafa",
+  primaryHover: "#27272a",
+  primaryPress: "#3f3f46",
   secondary: "#f4f4f5",
   secondaryForeground: "#18181b",
+  secondaryHover: "#e4e4e7",
+  secondaryPress: "#d4d4d8",
 
   // Utility
   muted: "#f4f4f5",
@@ -28,6 +32,10 @@ export const lightTheme = {
   // Feedback
   destructive: "#e11d48",
   destructiveForeground: "#fafafa",
+  destructiveSubtle: "rgba(225, 29, 72, 0.1)",
+  destructiveSubtleHover: "rgba(225, 29, 72, 0.2)",
+  destructiveSubtlePress: "rgba(225, 29, 72, 0.3)",
+  destructiveRing: "rgba(225, 29, 72, 0.4)",
 
   // Borders & inputs
   border: "#e4e4e7",
@@ -90,6 +98,7 @@ export const lightTheme = {
   color04: "rgba(9, 9, 11, 0.4)",
   color06: "rgba(9, 9, 11, 0.6)",
   color08: "rgba(9, 9, 11, 0.8)",
+  overlay: "rgba(0, 0, 0, 0.5)",
 };
 
 /**

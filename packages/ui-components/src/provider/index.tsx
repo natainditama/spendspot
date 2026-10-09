@@ -1,31 +1,21 @@
-import { TamaguiProvider, Theme } from "@tamagui/core";
+import { TamaguiProvider, Theme, View } from "@tamagui/core";
 import { PortalProvider } from "@tamagui/portal";
 import React, { createContext, useContext } from "react";
-import { StyleSheet, View, type ViewProps } from "react-native";
 
 import { config } from "../config";
 
 const RootProviderContext = createContext<boolean>(false);
 
 /**
- * Configuration properties for the SpendSpot application root provider.
- * Supports passing custom children elements and additional root container styles.
- */
-export interface ProviderProps {
-  children?: React.ReactNode;
-  style?: ViewProps["style"];
-}
-
-/**
  * SpendSpot application provider that locks all rendering to the light theme.
  * Prevents duplicate TamaguiProvider roots and enforces unified cross-platform design context.
  */
-export function Provider({ children, style }: ProviderProps) {
+export const Provider = ({ children }: ProviderProps) => {
   const isAlreadyInRoot = useContext(RootProviderContext);
 
   if (isAlreadyInRoot) {
     return (
-      <View style={[styles.root, style]}>
+      <View flex={1} background="$background">
         <Theme name="light">{children}</Theme>
       </View>
     );
@@ -35,22 +25,19 @@ export function Provider({ children, style }: ProviderProps) {
     <RootProviderContext.Provider value={true}>
       <TamaguiProvider config={config} defaultTheme="light">
         <PortalProvider shouldAddRootHost>
-          <View style={[styles.root, style]}>
+          <View flex={1} background="$background">
             <Theme name="light">{children}</Theme>
           </View>
         </PortalProvider>
       </TamaguiProvider>
     </RootProviderContext.Provider>
   );
-}
+};
 
-const styles = StyleSheet.create({
-  root: {
-    flex: 1,
-    height: "100%",
-    width: "100%",
-  },
-});
+Provider.displayName = "Provider";
+export interface ProviderProps {
+  children?: React.ReactNode;
+}
 
 export { config } from "../config";
 export { PortalProvider } from "@tamagui/portal";
