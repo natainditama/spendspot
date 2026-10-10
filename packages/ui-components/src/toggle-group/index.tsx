@@ -1,4 +1,5 @@
 import { withStaticProperties } from "@tamagui/core";
+import { SizableText } from "@tamagui/text";
 import { ToggleGroup as TamaguiToggleGroup } from "@tamagui/toggle-group";
 import type { ToggleGroupMultipleProps, ToggleGroupSingleProps } from "@tamagui/toggle-group";
 import React from "react";
@@ -44,7 +45,9 @@ export const ToggleGroupRoot = ({
     </ToggleGroupContext.Provider>
   );
 };
+
 ToggleGroupRoot.displayName = "ToggleGroupRoot";
+export type ToggleGroupRootProps = React.ComponentPropsWithoutRef<typeof TamaguiToggleGroup>;
 
 /**
  * Individual toggle button item within a ToggleGroup container.
@@ -90,7 +93,22 @@ export const ToggleGroupItem = ({ variant: itemVariant, size: itemSize, children
       }}
       {...props}
     >
-      {children}
+      {React.Children.map(children, (child) => {
+        if (typeof child === "string" || typeof child === "number") {
+          return (
+            <SizableText
+              size={isSm ? "$1" : isLg ? "$3" : "$2"}
+              fontSize={isSm ? "$xs" : isLg ? "$base" : "$sm"}
+              lineHeight={isSm ? "$xs" : isLg ? "$base" : "$sm"}
+              fontWeight="500"
+              color="$foreground"
+            >
+              {child}
+            </SizableText>
+          );
+        }
+        return child;
+      })}
     </TamaguiToggleGroup.Item>
   );
 };
@@ -117,3 +135,5 @@ export type ToggleGroupProps = (
   variant?: ToggleGroupVariant;
   size?: ToggleGroupSize;
 };
+
+export { useToggleGroupItem } from "@tamagui/toggle-group";

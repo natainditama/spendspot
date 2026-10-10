@@ -5,6 +5,7 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
 import { Provider as UIProvider } from "@spendspot/ui-components/provider";
+import { Toaster } from "@spendspot/ui-components/toast";
 
 /**
  * Root application layout provider orchestrating design system context and
@@ -18,6 +19,7 @@ export default function RootLayout() {
         <StatusBar style="auto" />
         <UIProvider>
           <Stack />
+          <Toaster />
         </UIProvider>
       </SafeAreaProvider>
     </GestureHandlerRootView>

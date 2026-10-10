@@ -16,6 +16,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@expo/ui": "^57.0.22",
     "@spendspot/core-logic": "workspace:*",
     "@tamagui/accordion": "^2.7.7",
     "@tamagui/alert-dialog": "^2.7.7",
@@ -33,6 +34,7 @@
     "@tamagui/lucide-icons-2": "^2.7.7",
     "@tamagui/menu": "^2.7.7",
     "@tamagui/metro-plugin": "^2.7.7",
+    "@tamagui/native": "^2.7.7",
     "@tamagui/popover": "^2.7.7",
     "@tamagui/portal": "^2.7.7",
     "@tamagui/progress": "^2.7.7",

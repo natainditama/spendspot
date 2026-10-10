@@ -1,13 +1,9 @@
 import { styled, withStaticProperties } from "@tamagui/core";
 import type { GetProps } from "@tamagui/core";
 import { SizableText } from "@tamagui/text";
-import { Tooltip as TamaguiTooltip, TooltipGroup } from "@tamagui/tooltip";
+import { Tooltip as TamaguiTooltip, TooltipGroup as TamaguiTooltipGroup } from "@tamagui/tooltip";
 import type { TooltipProps as TamaguiTooltipProps } from "@tamagui/tooltip";
 import React from "react";
-
-export type TooltipProviderProps = Partial<React.ComponentPropsWithoutRef<typeof TooltipGroup>> & {
-  delayDuration?: number;
-};
 
 /**
  * Global provider coordinating hover delays and grouped tooltip behavior.
@@ -22,30 +18,109 @@ export const TooltipProvider = ({
   const resolvedDelay = delayDuration !== undefined ? delayDuration : delay;
 
   return (
-    <TooltipGroup delay={resolvedDelay} {...props}>
+    <TamaguiTooltipGroup delay={resolvedDelay} {...props}>
       {children}
-    </TooltipGroup>
+    </TamaguiTooltipGroup>
   );
 };
+
 TooltipProvider.displayName = "TooltipProvider";
+export type TooltipProviderProps = Partial<React.ComponentPropsWithoutRef<typeof TamaguiTooltipGroup>> & {
+  delayDuration?: number;
+};
+
+interface TooltipContextValue {
+  open: boolean;
+  setOpen: (open: boolean) => void;
+  toggle: () => void;
+}
+
+const TooltipContext = React.createContext<TooltipContextValue>({
+  open: false,
+  setOpen: () => {},
+  toggle: () => {},
+});
 
 /**
- * Root container coordinating hover/focus state for a floating tooltip label.
- * Manages presentation timing, positioning calculations, and accessibility.
+ * Root container coordinating hover/focus/tap state for a floating tooltip label.
+ * Supports hover on desktop and tap-to-toggle with auto-dismiss on touch devices.
  */
-export const TooltipRoot = (props: React.ComponentPropsWithoutRef<typeof TamaguiTooltip>) => {
-  return <TamaguiTooltip {...props} />;
+export const TooltipRoot = ({ children, open: openProp, onOpenChange: onOpenChangeProp, ...props }: TooltipProps) => {
+  const [uncontrolledOpen, setUncontrolledOpen] = React.useState(false);
+  const isControlled = openProp !== undefined;
+  const open = isControlled ? openProp : uncontrolledOpen;
+  const timerRef = React.useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const setOpen = React.useCallback(
+    (nextOpen: boolean) => {
+      if (!isControlled) {
+        setUncontrolledOpen(nextOpen);
+      }
+      onOpenChangeProp?.(nextOpen);
+
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+        timerRef.current = null;
+      }
+
+      // Auto-dismiss on mobile after 3 seconds when opened via press
+      if (nextOpen) {
+        timerRef.current = setTimeout(() => {
+          if (!isControlled) {
+            setUncontrolledOpen(false);
+          }
+          onOpenChangeProp?.(false);
+        }, 3000);
+      }
+    },
+    [isControlled, onOpenChangeProp]
+  );
+
+  const toggle = React.useCallback(() => {
+    setOpen(!open);
+  }, [open, setOpen]);
+
+  React.useEffect(() => {
+    return () => {
+      if (timerRef.current) {
+        clearTimeout(timerRef.current);
+      }
+    };
+  }, []);
+
+  return (
+    <TooltipContext.Provider value={{ open, setOpen, toggle }}>
+      <TamaguiTooltip open={open} onOpenChange={setOpen} {...props}>
+        {children}
+      </TamaguiTooltip>
+    </TooltipContext.Provider>
+  );
 };
 
 TooltipRoot.displayName = "TooltipRoot";
-export type TooltipRootProps = React.ComponentPropsWithoutRef<typeof TamaguiTooltip>;
+export type TooltipRootProps = TooltipProps;
 
 /**
- * Target element triggering the tooltip floating label on hover or long-press.
- * Unstyled trigger delegating focus and hover interactions to the tooltip.
+ * Target element triggering the tooltip floating label on hover or tap.
+ * Automatically delegates press events to toggle tooltip presentation on touch devices.
  */
-export const TooltipTrigger = (props: React.ComponentPropsWithoutRef<typeof TamaguiTooltip.Trigger>) => {
-  return <TamaguiTooltip.Trigger {...props} />;
+export const TooltipTrigger = ({
+  children,
+  ...props
+}: React.ComponentPropsWithoutRef<typeof TamaguiTooltip.Trigger>) => {
+  const { toggle } = React.useContext(TooltipContext);
+
+  return (
+    <TamaguiTooltip.Trigger
+      onPress={(e: any) => {
+        toggle();
+        (children as any)?.props?.onPress?.(e);
+      }}
+      {...props}
+    >
+      {children}
+    </TamaguiTooltip.Trigger>
+  );
 };
 
 TooltipTrigger.displayName = "TooltipTrigger";
@@ -58,7 +133,7 @@ const TooltipContentFrame = styled(TamaguiTooltip.Content, {
   paddingHorizontal: "$3",
   paddingVertical: "$1.5",
   elevation: "$3",
-  zIndex: 50,
+  zIndex: 1000,
 });
 TooltipContentFrame.displayName = "TooltipContentFrame";
 
@@ -85,14 +160,48 @@ TooltipContent.displayName = "TooltipContent";
 export type TooltipContentProps = GetProps<typeof TooltipContentFrame>;
 
 /**
+ * Visual arrow indicator pointing toward the tooltip trigger target.
+ * Automatically aligns with tooltip position and popover arrow geometry.
+ */
+export const TooltipArrow = (props: React.ComponentPropsWithoutRef<typeof TamaguiTooltip.Arrow>) => {
+  return <TamaguiTooltip.Arrow backgroundColor="$foreground" {...props} />;
+};
+
+TooltipArrow.displayName = "TooltipArrow";
+export type TooltipArrowProps = React.ComponentPropsWithoutRef<typeof TamaguiTooltip.Arrow>;
+
+/**
+ * Custom positioning anchor target separating trigger press from attachment point.
+ * Used when tooltip bubble should attach to an element distinct from its trigger.
+ */
+export const TooltipAnchor = (props: React.ComponentPropsWithoutRef<typeof TamaguiTooltip.Anchor>) => {
+  return <TamaguiTooltip.Anchor {...props} />;
+};
+
+TooltipAnchor.displayName = "TooltipAnchor";
+export type TooltipAnchorProps = React.ComponentPropsWithoutRef<typeof TamaguiTooltip.Anchor>;
+
+export const TooltipGroup = ({ children, ...props }: React.ComponentPropsWithoutRef<typeof TamaguiTooltipGroup>) => {
+  return <TamaguiTooltipGroup {...props}>{children}</TamaguiTooltipGroup>;
+};
+
+TooltipGroup.displayName = "TooltipGroup";
+export type TooltipGroupProps = React.ComponentPropsWithoutRef<typeof TamaguiTooltipGroup>;
+
+/**
  * Composite Tooltip component for displaying accessible contextual helper text.
  * Supports compound syntax as well as flat individual named sub-component exports.
  */
 export const Tooltip = withStaticProperties(TooltipRoot, {
   Trigger: TooltipTrigger,
   Content: TooltipContent,
+  Arrow: TooltipArrow,
+  Anchor: TooltipAnchor,
   Provider: TooltipProvider,
+  Group: TooltipGroup,
 });
 
 Tooltip.displayName = "Tooltip";
 export type TooltipProps = TamaguiTooltipProps;
+
+export { closeOpenTooltips } from "@tamagui/tooltip";

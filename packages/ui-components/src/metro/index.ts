@@ -12,10 +12,10 @@ export interface WithUIComponentsOptions {
  * SpendSpot UI Components Metro bundler enhancer and singleton resolver.
  * Wraps metro config with monorepo workspace paths and Tamagui compiler plugin.
  */
-export function withUIComponents<T extends { resolver?: any; watchFolders?: any }>(
+export const withUIComponents = <T extends { resolver?: any; watchFolders?: any }>(
   config: T,
   options: WithUIComponentsOptions
-): T {
+): T => {
   const { projectRoot, disableTamaguiCompiler = false } = options;
   const monorepoRoot = path.resolve(projectRoot, "../..");
   const uiComponentsRoot = path.resolve(monorepoRoot, "packages/ui-components");
@@ -64,4 +64,4 @@ export function withUIComponents<T extends { resolver?: any; watchFolders?: any 
     console.warn("[@spendspot/ui-components] withTamagui compiler fallback to runtime mode:", err);
     return config;
   }
-}
+};
