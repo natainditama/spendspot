@@ -36,6 +36,17 @@ export const lightTheme = {
   destructiveSubtleHover: "rgba(225, 29, 72, 0.2)",
   destructiveSubtlePress: "rgba(225, 29, 72, 0.3)",
   destructiveRing: "rgba(225, 29, 72, 0.4)",
+  success: "#10b981",
+  successForeground: "#fafafa",
+  successSubtle: "rgba(16, 185, 129, 0.12)",
+
+  // Maps & Visual Metrics
+  routeLine: "#94a3b8",
+  gridLine: "#e2e8f0",
+  mapOverlay: "rgba(148, 163, 184, 0.15)",
+  mapOverlayOuter: "rgba(148, 163, 184, 0.08)",
+  gaugeBackground: "#e4e4e7",
+  gaugeProgress: "#18181b",
 
   // Borders & inputs
   border: "#e4e4e7",

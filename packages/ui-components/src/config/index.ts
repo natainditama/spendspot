@@ -1,5 +1,6 @@
+import { createAnimations } from "@tamagui/animations-reanimated";
 import { shorthands } from "@tamagui/config/v5";
-import { animations } from "@tamagui/config/v5-reanimated";
+import { animations as v5Animations } from "@tamagui/config/v5-reanimated";
 import { createTamagui } from "@tamagui/core";
 
 import { fonts } from "./fonts";
@@ -7,6 +8,14 @@ import { media } from "./media";
 import { settings } from "./settings";
 import { themes } from "./themes";
 import { tokens } from "./tokens";
+
+export const animations = createAnimations({
+  ...(v5Animations as any).animations,
+  "150ms": {
+    type: "timing",
+    duration: 150,
+  },
+});
 
 /**
  * SpendSpot Tamagui configuration initialized with customized themes.

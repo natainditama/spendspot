@@ -1,0 +1,54 @@
+{
+  "actions": {
+    "readyToRide": "Ready to Ride",
+    "alreadyHaveAccount": "I already have an account"
+  },
+  "navigation": {
+    "title": "SpendSpot",
+    "back": "Back",
+    "skip": "Skip"
+  },
+  "pagination": {
+    "tablistLabel": "Onboarding slides pagination",
+    "slideLabel": "Slide {{current}} of {{total}}"
+  },
+  "slides": {
+    "commute": {
+      "title": "Spend smarter on every commute.",
+      "description": "Auto-detect your favorite transit spots, track daily travel caps, and get smart AI spending advice.",
+      "map": {
+        "accuracy": "Accuracy 12m",
+        "station": "MRT Bundaran HI",
+        "arrivalStatus": "Arrived • Log Rp 14.000?",
+        "confirm": "Confirm"
+      }
+    },
+    "budget": {
+      "title": "Real–time daily limits at a glance.",
+      "description": "Dynamic circular meters notify you before you exceed local transport caps or bus-line budgets.",
+      "badge": "• On Track",
+      "capLabel": "DAILY COMMUTE CAP",
+      "spentDisplay": "Rp 32.500",
+      "limitDisplay": "/ 50.000",
+      "gaugePercentage": "65%",
+      "gaugeLabel": "Cap Used",
+      "safeBufferLabel": "Safe Buffer",
+      "safeBufferCurrency": "Rp",
+      "safeBufferAmount": "17.500",
+      "safeBufferBadge": "Buffer",
+      "remainingTripsLabel": "Remaining Trips",
+      "remainingTripsValue": "1–2 Rides"
+    },
+    "copilot": {
+      "title": "Private AI tuned for your journeys.",
+      "description": "Ask fast queries on ride-hailing tradeoffs, train passes, and weekly savings without data sharing.",
+      "headerLabel": "PRIVATE AI ADVISOR",
+      "copilotTitle": "Transit Copilot",
+      "quotaBadge": "✦ 20 AI queries/day",
+      "userMessage": "Can I take GrabCar or should I take MRT to stay within today's transit cap?",
+      "aiName": "SpendSpot AI",
+      "aiResponse": "Taking MRT (Rp 14.000) keeps you within your Rp 50.000 limit with Rp 3.500 buffer remaining. GrabCar (~Rp 38.000) will exceed your daily cap by Rp 20.500.",
+      "securityBadge": "On-device AI • 100% encrypted & private"
+    }
+  }
+}

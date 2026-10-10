@@ -1,0 +1,54 @@
+{
+  "actions": {
+    "readyToRide": "Mulai Perjalanan",
+    "alreadyHaveAccount": "Saya sudah punya akun"
+  },
+  "navigation": {
+    "title": "SpendSpot",
+    "back": "Kembali",
+    "skip": "Lewati"
+  },
+  "pagination": {
+    "tablistLabel": "Paginasi slide onboarding",
+    "slideLabel": "Slide {{current}} dari {{total}}"
+  },
+  "slides": {
+    "commute": {
+      "title": "Kelola pengeluaran cerdas di setiap perjalanan.",
+      "description": "Deteksi otomatis titik transit favorit, pantau batas harian, dan dapatkan saran AI pengeluaran yang cerdas.",
+      "map": {
+        "accuracy": "Akurasi 12m",
+        "station": "MRT Bundaran HI",
+        "arrivalStatus": "Tiba • Catat Rp 14.000?",
+        "confirm": "Konfirmasi"
+      }
+    },
+    "budget": {
+      "title": "Pantau batas harian secara langsung.",
+      "description": "Pengukur melingkar dinamis memberi notifikasi sebelum Anda melebihi batas transportasi lokal atau anggaran rute.",
+      "badge": "• Sesuai Rencana",
+      "capLabel": "BATAS KOMUTASI HARIAN",
+      "spentDisplay": "Rp 32.500",
+      "limitDisplay": "/ 50.000",
+      "gaugePercentage": "65%",
+      "gaugeLabel": "Batas Terpakai",
+      "safeBufferLabel": "Saldo Aman",
+      "safeBufferCurrency": "Rp",
+      "safeBufferAmount": "17.500",
+      "safeBufferBadge": "Buffer",
+      "remainingTripsLabel": "Sisa Perjalanan",
+      "remainingTripsValue": "1–2 Perjalanan"
+    },
+    "copilot": {
+      "title": "AI privat yang disesuaikan untuk perjalanan Anda.",
+      "description": "Tanyakan perbandingan biaya transportasi, tiket bulanan, dan tips hemat mingguan tanpa membagikan data pribadi.",
+      "headerLabel": "ASISTEN AI PRIVAT",
+      "copilotTitle": "Transit Copilot",
+      "quotaBadge": "✦ 20 kueri AI/hari",
+      "userMessage": "Bisa naik GrabCar atau sebaiknya naik MRT agar tetap dalam batas komutasi hari ini?",
+      "aiName": "SpendSpot AI",
+      "aiResponse": "Naik MRT (Rp 14.000) membuat Anda tetap di dalam batas Rp 50.000 dengan sisa saldo aman Rp 3.500. GrabCar (~Rp 38.000) akan melebihi batas harian sebesar Rp 20.500.",
+      "securityBadge": "On-device AI • 100% terenkripsi & privat"
+    }
+  }
+}

@@ -4,8 +4,10 @@
   "private": true,
   "description": "Shared business logic and state management for SpendSpot",
   "exports": {
+    "./components/*": "./src/components/*",
     "./hooks/*": "./src/hooks/*",
     "./constants/*": "./src/constants/*",
+    "./i18n": "./src/i18n/index.ts",
     "./utils/*": "./src/lib/utils/*",
     "./types/*": "./src/types/*"
   },
@@ -17,6 +19,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@spendspot/ui-components": "workspace:*",
     "@supabase/supabase-js": "^2.116.0",
     "i18next": "^26.0.0",
     "pino": "^10.3.1",
@@ -24,6 +27,7 @@
     "react-i18next": "^17.0.0"
   },
   "peerDependencies": {
-    "react": ">=18.0.0"
+    "react": ">=18.0.0",
+    "react-native": ">=0.74.0"
   }
 }

@@ -3,8 +3,10 @@ import { initReactI18next } from "react-i18next";
 
 import enUSAuth from "./en-US/auth.json";
 import enUSCommon from "./en-US/common.json";
+import enUSOnboarding from "./en-US/onboarding.json";
 import idIDAuth from "./id-ID/auth.json";
 import idIDCommon from "./id-ID/common.json";
+import idIDOnboarding from "./id-ID/onboarding.json";
 
 /**
  * BCP 47 locale code identifiers supported by the SpendSpot platform. Restricts
@@ -16,7 +18,7 @@ export type SupportedLocale = "en-US" | "id-ID";
  * Default locale identifier applied when no user preference is configured.
  * Establishes Bahasa Indonesia as primary target regional setting.
  */
-export const DEFAULT_LOCALE: SupportedLocale = "id-ID";
+export const DEFAULT_LOCALE: SupportedLocale = "en-US";
 
 /**
  * Secondary fallback locale applied when missing translations occur. Guarantees
@@ -26,16 +28,18 @@ export const FALLBACK_LOCALE: SupportedLocale = "en-US";
 
 /**
  * Static i18next translation resource catalog grouped by locale and namespace.
- * Aggregates localized authentication and common interface messaging.
+ * Aggregates localized authentication, onboarding, and common interface messaging.
  */
 export const resources = {
   "en-US": {
     common: enUSCommon,
     auth: enUSAuth,
+    onboarding: enUSOnboarding,
   },
   "id-ID": {
     common: idIDCommon,
     auth: idIDAuth,
+    onboarding: idIDOnboarding,
   },
 } as const satisfies Record<SupportedLocale, Record<string, unknown>>;
 

@@ -1,4 +1,5 @@
 import { Image } from "expo-image";
+import { useRouter } from "expo-router";
 import { ScrollView } from "react-native";
 
 import {
@@ -91,9 +92,25 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@spend
  * Systematically exhibits every size, variant, color action, and state.
  */
 export default function ComponentShowcase() {
+  const router = useRouter();
+
   return (
     <ScrollView>
       <YStack flex={1} gap="$4" padding="$4" paddingVertical="$8" backgroundColor="$background">
+        <Card backgroundColor="$primary">
+          <CardHeader>
+            <CardTitle color="white">Screen 01: Onboarding Intro</CardTitle>
+            <CardDescription color="rgba(255, 255, 255, 0.85)">
+              Explore the onboarding value proposition carousel with map preview, budget gauge, and AI Copilot.
+            </CardDescription>
+          </CardHeader>
+          <CardFooter>
+            <Button variant="secondary" onPress={() => router.push("/onboarding")} width="100%">
+              Open Onboarding Screen
+            </Button>
+          </CardFooter>
+        </Card>
+
         <XStack gap="$2" flexWrap="wrap">
           <Badge>Badge</Badge>
           <Badge variant="secondary">Secondary</Badge>
