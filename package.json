@@ -61,7 +61,7 @@
     "@ianvs/prettier-plugin-sort-imports": "^4.7.1",
     "@lebedevna/prettier-plugin-sql": "^0.3.2",
     "@types/node": "^26.5.1",
-    "@types/react": "~19.2.2",
+    "@types/react": "~19.3.0",
     "eslint": "^9.0.0",
     "eslint-config-expo": "~57.0.2",
     "eslint-config-flat-gitignore": "^2.4.0",
