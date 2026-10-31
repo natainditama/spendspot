@@ -63,7 +63,7 @@
     "@types/node": "^26.5.1",
     "@types/react": "~19.2.2",
     "eslint": "^9.0.0",
-    "eslint-config-expo": "~57.0.2",
+    "eslint-config-expo": "~58.0.0",
     "eslint-config-flat-gitignore": "^2.4.0",
     "eslint-config-prettier": "^10.1.8",
     "eslint-config-turbo": "^2.10.13",
