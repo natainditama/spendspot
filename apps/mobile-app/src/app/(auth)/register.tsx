@@ -4,6 +4,7 @@ import { Linking } from "react-native";
 
 import { AuthRegisterScreen } from "@spendspot/core-logic/components/auth/auth-register-screen";
 import { PRIVACY_URL, TERMS_URL } from "@spendspot/core-logic/constants/compliance-policies";
+import { signUpWithEmail } from "@spendspot/core-logic/services/auth-service";
 import { toast } from "@spendspot/ui-components/toast";
 
 /**
@@ -14,17 +15,30 @@ export default function RegisterRoute() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleRegister = ({ fullName, email }: { fullName: string; email: string; password: string }) => {
+  const handleRegister = async ({
+    fullName,
+    email,
+    password,
+  }: {
+    fullName: string;
+    email: string;
+    password: string;
+  }) => {
     setIsLoading(true);
-    // Simulating registration flow
-    setTimeout(() => {
-      setIsLoading(false);
+    const result = await signUpWithEmail({ fullName, email, password });
+    setIsLoading(false);
+
+    if (result.success) {
       toast.success("Account Created!", {
-        description: `Welcome to SpendSpot, ${fullName}! Confirmation sent to ${email}.`,
+        description: `Welcome to SpendSpot, ${fullName}!`,
       });
 
       router.replace("/(setup)" as never);
-    }, 600);
+    } else {
+      toast.error("Registration Failed", {
+        description: result.message ?? "Could not create account",
+      });
+    }
   };
 
   const handleGoogleRegister = () => {

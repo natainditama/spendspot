@@ -4,6 +4,7 @@ import { Linking } from "react-native";
 
 import { AuthLoginScreen } from "@spendspot/core-logic/components/auth/auth-login-screen";
 import { PRIVACY_URL, TERMS_URL } from "@spendspot/core-logic/constants/compliance-policies";
+import { signInWithEmail } from "@spendspot/core-logic/services/auth-service";
 import { toast } from "@spendspot/ui-components/toast";
 
 /**
@@ -14,17 +15,21 @@ export default function LoginRoute() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleLogin = ({ email }: { email: string; password: string }) => {
+  const handleLogin = async ({ email, password }: { email: string; password: string }) => {
     setIsLoading(true);
-    // Simulating authentication flow
-    setTimeout(() => {
-      setIsLoading(false);
+    const result = await signInWithEmail({ email, password });
+    setIsLoading(false);
+
+    if (result.success) {
       toast.success("Welcome back!", {
         description: `Logged in as ${email}`,
       });
-
       router.replace("/(dashboard)" as never);
-    }, 600);
+    } else {
+      toast.error("Sign In Failed", {
+        description: result.message ?? "Invalid email or password",
+      });
+    }
   };
 
   const handleGoogleLogin = () => {

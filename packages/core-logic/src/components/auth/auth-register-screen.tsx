@@ -95,7 +95,7 @@ export const AuthRegisterScreen = ({
     }
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     setHasSubmitted(true);
     const schema = createRegisterSchema(translate);
     const result = schema.safeParse({ fullName, email, password });
@@ -114,7 +114,7 @@ export const AuthRegisterScreen = ({
     }
 
     setErrors({});
-    onRegister?.({
+    await onRegister?.({
       fullName: fullName.trim(),
       email: email.trim(),
       password,

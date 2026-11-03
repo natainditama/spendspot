@@ -4,6 +4,7 @@ import { Platform, Pressable } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import i18n from "@spendspot/core-logic/i18n";
+import { UserOnlyProvider } from "@spendspot/core-logic/providers/user-only-provider";
 import { lightTheme } from "@spendspot/ui-components/config";
 import { Bell, Home, Map, Sliders, Sparkles, TrendingUp, User } from "@spendspot/ui-components/icons";
 import { XStack, YStack } from "@spendspot/ui-components/stacks";
@@ -76,87 +77,89 @@ export default function DashboardLayout() {
   const tabHeight = 60 + bottomPadding;
 
   return (
-    <Tabs
-      screenOptions={{
-        ...dashboardScreenOptions,
-        headerRight: () => <DashboardHeaderRight />,
-        tabBarActiveTintColor: lightTheme.foreground,
-        tabBarInactiveTintColor: lightTheme.mutedForeground,
-        tabBarStyle: {
-          backgroundColor: lightTheme.background,
-          borderTopColor: lightTheme.border,
-          borderTopWidth: 1,
-          height: tabHeight,
-          paddingBottom: bottomPadding,
-          paddingTop: 8,
-          elevation: 0,
-          shadowOffset: {
-            width: 0,
-            height: 0,
+    <UserOnlyProvider>
+      <Tabs
+        screenOptions={{
+          ...dashboardScreenOptions,
+          headerRight: () => <DashboardHeaderRight />,
+          tabBarActiveTintColor: lightTheme.foreground,
+          tabBarInactiveTintColor: lightTheme.mutedForeground,
+          tabBarStyle: {
+            backgroundColor: lightTheme.background,
+            borderTopColor: lightTheme.border,
+            borderTopWidth: 1,
+            height: tabHeight,
+            paddingBottom: bottomPadding,
+            paddingTop: 8,
+            elevation: 0,
+            shadowOffset: {
+              width: 0,
+              height: 0,
+            },
           },
-        },
-        tabBarButton: (props) => {
-          const { ref: _ref, ...rest } = props as any;
+          tabBarButton: (props) => {
+            const { ref: _ref, ...rest } = props as any;
 
-          return (
-            <Pressable
-              {...rest}
-              android_ripple={{ color: "transparent" }}
-              style={({ pressed }) => [rest.style, { opacity: pressed ? 0.7 : 1 }]}
-            />
-          );
-        },
-        tabBarLabelStyle: {
-          fontSize: 10,
-          fontWeight: "600",
-        },
-      }}
-    >
-      <Tabs.Screen
-        name="index"
-        options={{
-          ...dashboardScreenOptions,
-          title: i18n.t("home-dashboard:header.title", "Home"),
-          tabBarLabel: i18n.t("home-dashboard:nav.home", "Home"),
-          tabBarIcon: ({ color, size }) => <Home size={size} color={color as any} />,
+            return (
+              <Pressable
+                {...rest}
+                android_ripple={{ color: "transparent" }}
+                style={({ pressed }) => [rest.style, { opacity: pressed ? 0.7 : 1 }]}
+              />
+            );
+          },
+          tabBarLabelStyle: {
+            fontSize: 10,
+            fontWeight: "600",
+          },
         }}
-      />
-      <Tabs.Screen
-        name="spots"
-        options={{
-          ...dashboardScreenOptions,
-          title: i18n.t("home-dashboard:nav.spots", "Spots & Map"),
-          tabBarLabel: i18n.t("home-dashboard:nav.spots", "Spots"),
-          tabBarIcon: ({ color, size }) => <Map size={size} color={color as any} />,
-        }}
-      />
-      <Tabs.Screen
-        name="analytics"
-        options={{
-          ...dashboardScreenOptions,
-          title: i18n.t("home-dashboard:nav.analytics", "Analytics"),
-          tabBarLabel: i18n.t("home-dashboard:nav.analytics", "Analytics"),
-          tabBarIcon: ({ color, size }) => <TrendingUp size={size} color={color as any} />,
-        }}
-      />
-      <Tabs.Screen
-        name="advisor"
-        options={{
-          ...dashboardScreenOptions,
-          title: i18n.t("home-dashboard:nav.advisor", "AI Advisor"),
-          tabBarLabel: i18n.t("home-dashboard:nav.advisor", "Advisor"),
-          tabBarIcon: ({ color, size }) => <Sparkles size={size} color={color as any} />,
-        }}
-      />
-      <Tabs.Screen
-        name="settings"
-        options={{
-          ...dashboardScreenOptions,
-          title: i18n.t("home-dashboard:nav.settings", "Settings"),
-          tabBarLabel: i18n.t("home-dashboard:nav.settings", "Settings"),
-          tabBarIcon: ({ color, size }) => <Sliders size={size} color={color as any} />,
-        }}
-      />
-    </Tabs>
+      >
+        <Tabs.Screen
+          name="index"
+          options={{
+            ...dashboardScreenOptions,
+            title: i18n.t("home-dashboard:header.title", "Home"),
+            tabBarLabel: i18n.t("home-dashboard:nav.home", "Home"),
+            tabBarIcon: ({ color, size }) => <Home size={size} color={color as any} />,
+          }}
+        />
+        <Tabs.Screen
+          name="spots"
+          options={{
+            ...dashboardScreenOptions,
+            title: i18n.t("geofence-map:header.title", "Spot and Map"),
+            tabBarLabel: i18n.t("home-dashboard:nav.spots", "Spots & Map"),
+            tabBarIcon: ({ color, size }) => <Map size={size} color={color as any} />,
+          }}
+        />
+        <Tabs.Screen
+          name="analytics"
+          options={{
+            ...dashboardScreenOptions,
+            title: i18n.t("home-dashboard:nav.analytics", "Analytics"),
+            tabBarLabel: i18n.t("home-dashboard:nav.analytics", "Analytics"),
+            tabBarIcon: ({ color, size }) => <TrendingUp size={size} color={color as any} />,
+          }}
+        />
+        <Tabs.Screen
+          name="advisor"
+          options={{
+            ...dashboardScreenOptions,
+            title: i18n.t("home-dashboard:nav.advisor", "AI Advisor"),
+            tabBarLabel: i18n.t("home-dashboard:nav.advisor", "Advisor"),
+            tabBarIcon: ({ color, size }) => <Sparkles size={size} color={color as any} />,
+          }}
+        />
+        <Tabs.Screen
+          name="settings"
+          options={{
+            ...dashboardScreenOptions,
+            title: i18n.t("home-dashboard:nav.settings", "Settings"),
+            tabBarLabel: i18n.t("home-dashboard:nav.settings", "Settings"),
+            tabBarIcon: ({ color, size }) => <Sliders size={size} color={color as any} />,
+          }}
+        />
+      </Tabs>
+    </UserOnlyProvider>
   );
 }

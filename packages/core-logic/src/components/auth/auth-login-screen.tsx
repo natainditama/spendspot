@@ -78,7 +78,7 @@ export const AuthLoginScreen = ({
     }
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     setHasSubmitted(true);
     const schema = createLoginSchema(translate);
     const result = schema.safeParse({ email, password });
@@ -97,7 +97,7 @@ export const AuthLoginScreen = ({
     }
 
     setErrors({});
-    onLogin?.({ email: email.trim(), password });
+    await onLogin?.({ email: email.trim(), password });
   };
 
   return (

@@ -1,5 +1,3 @@
-/** SpendSpot Database Definitions 1:1 Mapping with Supabase PostgreSQL Schema */
-
 export type PaymentMethodType = "CASH" | "QRIS" | "DEBIT_CARD" | "CREDIT_CARD" | "E_WALLET" | "BANK_TRANSFER" | "OTHER";
 
 export type ExpenseCategoryType =

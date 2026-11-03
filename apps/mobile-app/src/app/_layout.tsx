@@ -5,6 +5,7 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 
 import i18n, { initializeI18n } from "@spendspot/core-logic/i18n";
+import { AuthSessionProvider } from "@spendspot/core-logic/providers/auth-session-provider";
 import { lightTheme } from "@spendspot/ui-components/config";
 import { Provider as UIProvider } from "@spendspot/ui-components/provider";
 import { Toaster } from "@spendspot/ui-components/toast";
@@ -67,23 +68,25 @@ export default function RootLayout() {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaProvider style={{ flex: 1 }}>
         <StatusBar style="dark" />
-        <UIProvider>
-          <ThemeProvider value={navigationTheme}>
-            <Stack
-              screenOptions={{
-                ...screenOptions,
-                title: appName,
-              }}
-            >
-              <Stack.Screen name="index" options={{ headerShown: false }} />
-              <Stack.Screen name="onboarding" options={{ headerShown: false }} />
-              <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-              <Stack.Screen name="(setup)" options={{ headerShown: false }} />
-              <Stack.Screen name="(dashboard)" options={{ headerShown: false }} />
-            </Stack>
-            <Toaster />
-          </ThemeProvider>
-        </UIProvider>
+        <AuthSessionProvider>
+          <UIProvider>
+            <ThemeProvider value={navigationTheme}>
+              <Stack
+                screenOptions={{
+                  ...screenOptions,
+                  title: appName,
+                }}
+              >
+                <Stack.Screen name="index" options={{ headerShown: false }} />
+                <Stack.Screen name="onboarding" options={{ headerShown: false }} />
+                <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+                <Stack.Screen name="(setup)" options={{ headerShown: false }} />
+                <Stack.Screen name="(dashboard)" options={{ headerShown: false }} />
+              </Stack>
+              <Toaster position="top-center" />
+            </ThemeProvider>
+          </UIProvider>
+        </AuthSessionProvider>
       </SafeAreaProvider>
     </GestureHandlerRootView>
   );

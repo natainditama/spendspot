@@ -16,7 +16,7 @@ export interface AuthLoginScreenProps {
   /** Optional prefilled email address for returning users */
   initialEmail?: string;
   /** Callback triggered when user submits email and password credentials */
-  onLogin?: (credentials: LoginFormValues) => void;
+  onLogin?: (credentials: LoginFormValues) => void | Promise<void>;
   /** Callback triggered when user taps the Google SSO authentication button */
   onGoogleLogin?: () => void;
   /** Callback triggered when user taps 'Forgot password?' */
@@ -41,7 +41,7 @@ export interface AuthRegisterScreenProps {
   /** Optional prefilled initial email */
   initialEmail?: string;
   /** Callback triggered when user submits registration credentials */
-  onRegister?: (data: RegisterFormValues) => void;
+  onRegister?: (data: RegisterFormValues) => void | Promise<void>;
   /** Callback triggered when user taps the Google sign-up SSO button */
   onGoogleRegister?: () => void;
   /** Callback triggered when user taps 'Log in' to navigate to login */
