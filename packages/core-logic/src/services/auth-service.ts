@@ -1,12 +1,48 @@
 import type { Session, User } from "@supabase/supabase-js";
+import Constants, { AppOwnership, ExecutionEnvironment } from "expo-constants";
+import * as Linking from "expo-linking";
+import * as WebBrowser from "expo-web-browser";
 
 import type { LoginFormValues, RegisterFormValues } from "../components/auth/types";
 import { supabase } from "../lib/supabase";
+import { resolveDeviceCurrency, resolveDeviceLocale } from "../lib/utils/device-locale";
 import { formatValidationErrors } from "../lib/utils/format-errors";
 import type { UserProfile } from "../types/database";
 import type { BaseResponse, ErrorResponse, ServiceResponse, SuccessResponse } from "../types/response";
 
+WebBrowser.maybeCompleteAuthSession();
+
 export type { BaseResponse, ErrorResponse, ServiceResponse, SuccessResponse };
+
+/**
+ * Parses query strings and hash fragments from an OAuth redirect URL.
+ */
+function extractParamsFromUrl(url: string): Record<string, string> {
+  const params: Record<string, string> = {};
+
+  try {
+    const queryString = url.includes("?") ? url.split("?")[1]?.split("#")[0] : "";
+    const hashString = url.includes("#") ? url.split("#")[1] : "";
+
+    if (queryString) {
+      const searchParams = new URLSearchParams(queryString);
+      searchParams.forEach((val, key) => {
+        params[key] = val;
+      });
+    }
+
+    if (hashString) {
+      const hashParams = new URLSearchParams(hashString);
+      hashParams.forEach((val, key) => {
+        params[key] = val;
+      });
+    }
+  } catch {
+    // Fail silently and return whatever was parsed
+  }
+
+  return params;
+}
 
 /**
  * Authenticates an existing user using email and password credentials.
@@ -50,13 +86,14 @@ export async function signInWithEmail({
 
 /**
  * Registers a new user account with email, password, and full name metadata.
- * Safely inserts or updates the public profile row in public.users.
+ * Designed for immediate access without requiring email verification.
+ * Automatically initiates session and provisions the user profile in public.users.
  */
 export async function signUpWithEmail({
   fullName,
   email,
   password,
-}: RegisterFormValues): Promise<ServiceResponse<{ user: User; session: Session | null }>> {
+}: RegisterFormValues): Promise<ServiceResponse<{ user: User; session: Session }>> {
   try {
     const trimmedEmail = email.trim();
     const trimmedName = fullName.trim();
@@ -85,22 +122,50 @@ export async function signUpWithEmail({
       };
     }
 
-    // Client-side fallback: ensure user row in public.users exists
-    if (data.session) {
-      try {
-        await supabase.from("users").upsert(
-          {
-            user_id: data.user.id,
-            email: trimmedEmail,
-            full_name: trimmedName,
-            preferred_currency: "IDR",
-            preferred_language: "id",
-          },
-          { onConflict: "user_id" }
-        );
-      } catch {
-        // Ignored if database trigger handle_new_user already handled profile insertion
+    let session = data.session;
+
+    // If Supabase project has email confirmation enabled in dashboard, attempt immediate
+    // sign-in to bypass verification requirement if allowed, or restore session
+    if (!session) {
+      const { data: signInData } = await supabase.auth.signInWithPassword({
+        email: trimmedEmail,
+        password,
+      });
+
+      if (signInData?.session) {
+        session = signInData.session;
       }
+    }
+
+    // Provision or update user profile record in public.users
+    try {
+      const preferredCurrency = resolveDeviceCurrency();
+      const preferredLanguage = resolveDeviceLocale();
+
+      await supabase.from("users").upsert(
+        {
+          user_id: data.user.id,
+          email: trimmedEmail,
+          full_name: trimmedName,
+          preferred_currency: preferredCurrency,
+          preferred_language: preferredLanguage,
+        },
+        { onConflict: "user_id" }
+      );
+    } catch {
+      // Ignored if database trigger handle_new_user already handled profile insertion
+    }
+
+    if (!session) {
+      // When Supabase strictly enforces confirmation at server level
+      return {
+        success: true,
+        message: "Account created successfully. You can now log in.",
+        data: {
+          user: data.user,
+          session: null as unknown as Session,
+        },
+      };
     }
 
     return {
@@ -108,11 +173,169 @@ export async function signUpWithEmail({
       message: "Successfully registered account",
       data: {
         user: data.user,
-        session: data.session,
+        session,
       },
     };
   } catch (err) {
     return formatValidationErrors(err, "An unexpected error occurred during registration.");
+  }
+}
+
+/**
+ * Resolves the appropriate OAuth redirect URI.
+ * In development / Expo Go, dynamically targets the Metro bundler deep link (`exp://<hostUri>/--/auth/callback`).
+ * In standalone / production builds, targets the native app scheme (`spendspot://auth/callback`).
+ */
+export function getAuthRedirectUri(): string {
+  const isExpoGo =
+    Constants.appOwnership === AppOwnership.Expo || Constants.executionEnvironment === ExecutionEnvironment.StoreClient;
+  const hostUri = Constants.expoConfig?.hostUri || Constants.expoGoConfig?.debuggerHost;
+
+  if (isExpoGo || (__DEV__ && hostUri)) {
+    if (hostUri) {
+      return `exp://${hostUri}/--/auth/callback`;
+    }
+
+    if (Constants.linkingUri && Constants.linkingUri.startsWith("exp://")) {
+      const cleanUri = Constants.linkingUri.replace(/\/--($|\/.*$)/, "").replace(/\/+$/, "");
+      return `${cleanUri}/--/auth/callback`;
+    }
+  }
+
+  // Standalone / Production APK uses the native custom scheme
+  return Linking.createURL("auth/callback");
+}
+
+/**
+ * Authenticates the user with Google OAuth using Chrome Custom Tabs on Android / WebBrowser,
+ * compatible with Expo Go and standalone builds without native code requirements.
+ */
+export async function signInWithGoogle(): Promise<ServiceResponse<{ user: User; session: Session }>> {
+  try {
+    // Generate valid redirect URL for Expo Go (e.g. exp://...) or production scheme (spendspot://...)
+    const redirectUri = getAuthRedirectUri();
+    console.log("[SpendSpot Auth] Initiating Google OAuth with redirectUri:", redirectUri);
+
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: redirectUri,
+        skipBrowserRedirect: true,
+      },
+    });
+
+    if (error) {
+      return formatValidationErrors(error, "Google sign in failed");
+    }
+
+    if (!data.url) {
+      return {
+        success: false,
+        message: "Could not generate Google authentication URL.",
+        errors: {
+          auth: "No OAuth URL returned from Supabase authentication endpoint.",
+        },
+      };
+    }
+
+    // Launch in-app browser session
+    const authResult = await WebBrowser.openAuthSessionAsync(data.url, redirectUri);
+    if (authResult.type !== "success" || !authResult.url) {
+      const isCanceled = authResult.type === "cancel" || authResult.type === "dismiss";
+
+      return {
+        success: false,
+        message: isCanceled ? "Google sign-in was canceled." : "Google sign-in could not be completed.",
+        errors: {
+          auth: authResult.type,
+        },
+      };
+    }
+
+    // Extract authorization tokens or PKCE code from response URL
+    const params = extractParamsFromUrl(authResult.url);
+    console.log("[SpendSpot Auth] OAuth callback URL parsed params:", Object.keys(params));
+
+    if (params.error || params.error_description) {
+      const errorMessage = params.error_description || params.error || "Authentication provider returned an error.";
+
+      return {
+        success: false,
+        message: decodeURIComponent(errorMessage.replace(/\+/g, " ")),
+        errors: {
+          auth: params.error,
+        },
+      };
+    }
+
+    let session: Session | null = null;
+    let user: User | null = null;
+
+    if (params.code) {
+      const { data: exchangeData, error: exchangeError } = await supabase.auth.exchangeCodeForSession(params.code);
+      if (exchangeError) return formatValidationErrors(exchangeError, "Failed to exchange auth code for session.");
+
+      session = exchangeData.session;
+      user = exchangeData.user;
+    } else if (params.access_token && params.refresh_token) {
+      const { data: sessionData, error: sessionError } = await supabase.auth.setSession({
+        access_token: params.access_token,
+        refresh_token: params.refresh_token,
+      });
+
+      if (sessionError) return formatValidationErrors(sessionError, "Failed to set session from tokens.");
+      session = sessionData.session;
+      user = sessionData.user;
+    } else {
+      // Fallback: Check active session from client
+      const { data: currentSession } = await supabase.auth.getSession();
+      session = currentSession.session;
+      user = currentSession.session?.user ?? null;
+    }
+
+    if (!session || !user) {
+      return {
+        success: false,
+        message: "Failed to establish user session after Google sign-in.",
+        errors: {
+          auth: "Session or user not found after callback completion.",
+        },
+      };
+    }
+
+    // Provision or update user profile in public.users
+    try {
+      const meta = user.user_metadata || {};
+      const fullName = (meta.full_name as string) || (meta.name as string) || "SpendSpot User";
+      const avatarUrl = (meta.avatar_url as string) || null;
+      const preferredCurrency = resolveDeviceCurrency();
+      const preferredLanguage = resolveDeviceLocale();
+
+      await supabase.from("users").upsert(
+        {
+          user_id: user.id,
+          email: user.email ?? "",
+          full_name: fullName,
+          avatar_url: avatarUrl,
+          preferred_currency: preferredCurrency,
+          preferred_language: preferredLanguage,
+        },
+        { onConflict: "user_id" }
+      );
+    } catch {
+      // Ignored if database trigger handle_new_user already handled profile insertion
+    }
+
+    return {
+      success: true,
+      message: "Successfully authenticated with Google",
+      data: {
+        user,
+        session,
+      },
+    };
+  } catch (err) {
+    return formatValidationErrors(err, "An unexpected error occurred during Google sign-in.");
   }
 }
 

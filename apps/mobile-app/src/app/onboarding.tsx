@@ -2,10 +2,12 @@ import { useRouter } from "expo-router";
 import React from "react";
 
 import { OnboardingScreen } from "@spendspot/core-logic/components/onboarding/onboarding-screen";
+import { GuestOnlyProvider } from "@spendspot/core-logic/providers/guest-only-provider";
 
 /**
  * Onboarding route for the mobile application.
  * Displays the high-converting introduction carousel based on Google Stitch screen 01.
+ * Restricted to guest users; authenticated users automatically redirect to (dashboard).
  */
 export default function OnboardingRoute() {
   const router = useRouter();
@@ -27,11 +29,13 @@ export default function OnboardingRoute() {
   };
 
   return (
-    <OnboardingScreen
-      onBack={handleBack}
-      onReadyToRide={handleReadyToRide}
-      onAlreadyHaveAccount={handleAlreadyHaveAccount}
-      onSkip={handleBack}
-    />
+    <GuestOnlyProvider redirectTo="/(dashboard)">
+      <OnboardingScreen
+        onBack={handleBack}
+        onReadyToRide={handleReadyToRide}
+        onAlreadyHaveAccount={handleAlreadyHaveAccount}
+        onSkip={handleBack}
+      />
+    </GuestOnlyProvider>
   );
 }

@@ -4,7 +4,7 @@ import { Linking } from "react-native";
 
 import { AuthLoginScreen } from "@spendspot/core-logic/components/auth/auth-login-screen";
 import { PRIVACY_URL, TERMS_URL } from "@spendspot/core-logic/constants/compliance-policies";
-import { signInWithEmail } from "@spendspot/core-logic/services/auth-service";
+import { useAuthSession } from "@spendspot/core-logic/providers/auth-session-provider";
 import { toast } from "@spendspot/ui-components/toast";
 
 /**
@@ -13,11 +13,12 @@ import { toast } from "@spendspot/ui-components/toast";
  */
 export default function LoginRoute() {
   const router = useRouter();
+  const { signIn, signInWithGoogle } = useAuthSession();
   const [isLoading, setIsLoading] = useState(false);
 
   const handleLogin = async ({ email, password }: { email: string; password: string }) => {
     setIsLoading(true);
-    const result = await signInWithEmail({ email, password });
+    const result = await signIn({ email, password });
     setIsLoading(false);
 
     if (result.success) {
@@ -27,21 +28,28 @@ export default function LoginRoute() {
       router.replace("/(dashboard)" as never);
     } else {
       toast.error("Sign In Failed", {
-        description: result.message ?? "Invalid email or password",
+        description: result.error ?? "Invalid email or password",
       });
     }
   };
 
-  const handleGoogleLogin = () => {
+  const handleGoogleLogin = async () => {
     setIsLoading(true);
-    setTimeout(() => {
-      setIsLoading(false);
+    const result = await signInWithGoogle();
+    setIsLoading(false);
+
+    if (result.success) {
       toast.success("Google Sign-In", {
         description: "Authenticated successfully with Google",
       });
-
       router.replace("/(dashboard)" as never);
-    }, 600);
+    } else {
+      if (result.error && !result.error.toLowerCase().includes("cancel")) {
+        toast.error("Google Sign-In Failed", {
+          description: result.error,
+        });
+      }
+    }
   };
 
   const handleForgotPassword = () => {

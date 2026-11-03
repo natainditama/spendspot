@@ -4,7 +4,7 @@ import { Linking } from "react-native";
 
 import { AuthRegisterScreen } from "@spendspot/core-logic/components/auth/auth-register-screen";
 import { PRIVACY_URL, TERMS_URL } from "@spendspot/core-logic/constants/compliance-policies";
-import { signUpWithEmail } from "@spendspot/core-logic/services/auth-service";
+import { useAuthSession } from "@spendspot/core-logic/providers/auth-session-provider";
 import { toast } from "@spendspot/ui-components/toast";
 
 /**
@@ -13,6 +13,7 @@ import { toast } from "@spendspot/ui-components/toast";
  */
 export default function RegisterRoute() {
   const router = useRouter();
+  const { signUp, signInWithGoogle } = useAuthSession();
   const [isLoading, setIsLoading] = useState(false);
 
   const handleRegister = async ({
@@ -25,7 +26,7 @@ export default function RegisterRoute() {
     password: string;
   }) => {
     setIsLoading(true);
-    const result = await signUpWithEmail({ fullName, email, password });
+    const result = await signUp({ fullName, email, password });
     setIsLoading(false);
 
     if (result.success) {
@@ -36,21 +37,28 @@ export default function RegisterRoute() {
       router.replace("/(setup)" as never);
     } else {
       toast.error("Registration Failed", {
-        description: result.message ?? "Could not create account",
+        description: result.error ?? "Could not create account",
       });
     }
   };
 
-  const handleGoogleRegister = () => {
+  const handleGoogleRegister = async () => {
     setIsLoading(true);
-    setTimeout(() => {
-      setIsLoading(false);
-      toast.success("Google Sign-Up", {
-        description: "Registered successfully with Google",
-      });
+    const result = await signInWithGoogle();
+    setIsLoading(false);
 
+    if (result.success) {
+      toast.success("Google Sign-Up", {
+        description: "Authenticated successfully with Google",
+      });
       router.replace("/(setup)" as never);
-    }, 600);
+    } else {
+      if (result.error && !result.error.toLowerCase().includes("cancel")) {
+        toast.error("Google Sign-Up Failed", {
+          description: result.error,
+        });
+      }
+    }
   };
 
   const handleNavigateToLogin = () => {

@@ -3,7 +3,13 @@ import React, { createContext, useContext, useEffect, useState, type ReactNode }
 
 import type { LoginFormValues, RegisterFormValues } from "../components/auth/types";
 import { supabase } from "../lib/supabase";
-import { getUserProfile, signInWithEmail, signOutUser, signUpWithEmail } from "../services/auth-service";
+import {
+  getUserProfile,
+  signInWithEmail,
+  signInWithGoogle,
+  signOutUser,
+  signUpWithEmail,
+} from "../services/auth-service";
 import type { UserProfile } from "../types/database";
 
 export interface AuthContextType {
@@ -21,6 +27,8 @@ export interface AuthContextType {
   signIn: (credentials: LoginFormValues) => Promise<{ success: boolean; error?: string }>;
   /** Registers a new account via email, password, and full name */
   signUp: (values: RegisterFormValues) => Promise<{ success: boolean; error?: string }>;
+  /** Signs in or registers via Google OAuth */
+  signInWithGoogle: () => Promise<{ success: boolean; error?: string }>;
   /** Signs out of current active session */
   signOut: () => Promise<void>;
   /** Refreshes profile row from public.users */
@@ -105,39 +113,65 @@ export function AuthSessionProvider({ children }: AuthSessionProviderProps) {
 
   const signIn = async (credentials: LoginFormValues): Promise<{ success: boolean; error?: string }> => {
     setIsLoading(true);
-    const result = await signInWithEmail(credentials);
-    setIsLoading(false);
+    try {
+      const result = await signInWithEmail(credentials);
 
-    if (!result.success || !result.data) {
-      return { success: false, error: result.message ?? "Sign in failed" };
+      if (!result.success || !result.data) {
+        return { success: false, error: result.message ?? "Sign in failed" };
+      }
+
+      setSession(result.data.session);
+      setUser(result.data.user);
+      const userProfile = await getUserProfile(result.data.user.id);
+      setProfile(userProfile);
+
+      return { success: true };
+    } finally {
+      setIsLoading(false);
     }
-
-    setSession(result.data.session);
-    setUser(result.data.user);
-    const userProfile = await getUserProfile(result.data.user.id);
-    setProfile(userProfile);
-
-    return { success: true };
   };
 
   const signUp = async (values: RegisterFormValues): Promise<{ success: boolean; error?: string }> => {
     setIsLoading(true);
-    const result = await signUpWithEmail(values);
-    setIsLoading(false);
+    try {
+      const result = await signUpWithEmail(values);
 
-    if (!result.success || !result.data) {
-      return { success: false, error: result.message ?? "Sign up failed" };
+      if (!result.success || !result.data) {
+        return { success: false, error: result.message ?? "Sign up failed" };
+      }
+
+      setSession(result.data.session);
+      setUser(result.data.user);
+
+      if (result.data.session) {
+        const userProfile = await getUserProfile(result.data.user.id);
+        setProfile(userProfile);
+      }
+
+      return { success: true };
+    } finally {
+      setIsLoading(false);
     }
+  };
 
-    setSession(result.data.session);
-    setUser(result.data.user);
+  const handleGoogleSignIn = async (): Promise<{ success: boolean; error?: string }> => {
+    setIsLoading(true);
+    try {
+      const result = await signInWithGoogle();
 
-    if (result.data.session) {
+      if (!result.success || !result.data) {
+        return { success: false, error: result.message ?? "Google sign-in failed" };
+      }
+
+      setSession(result.data.session);
+      setUser(result.data.user);
       const userProfile = await getUserProfile(result.data.user.id);
       setProfile(userProfile);
-    }
 
-    return { success: true };
+      return { success: true };
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const signOut = async () => {
@@ -157,6 +191,7 @@ export function AuthSessionProvider({ children }: AuthSessionProviderProps) {
     isAuthenticated: Boolean(session && user),
     signIn,
     signUp,
+    signInWithGoogle: handleGoogleSignIn,
     signOut,
     refreshProfile,
   };

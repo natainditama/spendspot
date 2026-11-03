@@ -18,7 +18,7 @@ export interface AuthLoginScreenProps {
   /** Callback triggered when user submits email and password credentials */
   onLogin?: (credentials: LoginFormValues) => void | Promise<void>;
   /** Callback triggered when user taps the Google SSO authentication button */
-  onGoogleLogin?: () => void;
+  onGoogleLogin?: () => void | Promise<void>;
   /** Callback triggered when user taps 'Forgot password?' */
   onForgotPassword?: () => void;
   /** Callback triggered when user taps 'Sign up' to navigate to registration */
@@ -43,7 +43,7 @@ export interface AuthRegisterScreenProps {
   /** Callback triggered when user submits registration credentials */
   onRegister?: (data: RegisterFormValues) => void | Promise<void>;
   /** Callback triggered when user taps the Google sign-up SSO button */
-  onGoogleRegister?: () => void;
+  onGoogleRegister?: () => void | Promise<void>;
   /** Callback triggered when user taps 'Log in' to navigate to login */
   onNavigateToLogin?: () => void;
   /** Callback triggered when user taps 'Terms of Service' */
