@@ -1,0 +1,31 @@
+{
+  "actions": {
+    "adjustSlider": "Adjust slider",
+    "continue": "Enable Location & Continue",
+    "seeAll": "See All"
+  },
+  "budget": {
+    "alertThreshold": "We'll alert you at 80% ({{threshold}}) and 100% threshold.",
+    "dailyCap": "Daily Cap",
+    "estimatedMonthlyCap": "Estimated Monthly Cap",
+    "perDay": "/ day",
+    "perMonth": "/ month",
+    "sectionTitle": "Expense Budgets"
+  },
+  "currency": {
+    "eurName": "Euro",
+    "idrName": "Indonesian Rupiah",
+    "sectionTitle": "PREFERRED CURRENCY",
+    "sgdName": "Singapore Dollar",
+    "usdName": "US Dollar"
+  },
+  "header": {
+    "screenTitle": "Expense Budgets",
+    "subtitle": "Configure your currency, daily travel limit, and commute geofencing.",
+    "title": "Set your commute baseline"
+  },
+  "privacy": {
+    "description": "SpendSpot triggers expense logging only when you arrive within 30m to 300m of your saved transit spots. Your live GPS coordinates are never stored or uploaded.",
+    "title": "Always-on Commute Awareness"
+  }
+}

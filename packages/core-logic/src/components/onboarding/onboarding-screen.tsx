@@ -105,8 +105,7 @@ export const OnboardingScreen = ({
   return (
     <YStack
       flex={1}
-      gap="$4"
-      minHeight="100%"
+      gap="$6"
       paddingVertical="$6"
       paddingHorizontal="$0"
       backgroundColor="$background"

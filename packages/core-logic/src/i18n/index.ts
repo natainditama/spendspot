@@ -3,10 +3,14 @@ import { initReactI18next } from "react-i18next";
 
 import enUSAuth from "./en-US/auth.json";
 import enUSCommon from "./en-US/common.json";
+import enUSHomeDashboard from "./en-US/home-dashboard.json";
 import enUSOnboarding from "./en-US/onboarding.json";
+import enUSSetupWizard from "./en-US/setup-wizard.json";
 import idIDAuth from "./id-ID/auth.json";
 import idIDCommon from "./id-ID/common.json";
+import idIDHomeDashboard from "./id-ID/home-dashboard.json";
 import idIDOnboarding from "./id-ID/onboarding.json";
+import idIDSetupWizard from "./id-ID/setup-wizard.json";
 
 /**
  * BCP 47 locale code identifiers supported by the SpendSpot platform. Restricts
@@ -35,11 +39,15 @@ export const resources = {
     common: enUSCommon,
     auth: enUSAuth,
     onboarding: enUSOnboarding,
+    "setup-wizard": enUSSetupWizard,
+    "home-dashboard": enUSHomeDashboard,
   },
   "id-ID": {
     common: idIDCommon,
     auth: idIDAuth,
     onboarding: idIDOnboarding,
+    "setup-wizard": idIDSetupWizard,
+    "home-dashboard": idIDHomeDashboard,
   },
 } as const satisfies Record<SupportedLocale, Record<string, unknown>>;
 

@@ -1,0 +1,31 @@
+{
+  "actions": {
+    "adjustSlider": "Sesuaikan slider",
+    "continue": "Aktifkan Lokasi & Lanjutkan",
+    "seeAll": "Lihat Semua"
+  },
+  "budget": {
+    "alertThreshold": "Kami akan mengingatkan Anda saat mencapai batas 80% ({{threshold}}) dan 100%.",
+    "dailyCap": "Batas Harian",
+    "estimatedMonthlyCap": "Estimasi Batas Bulanan",
+    "perDay": "/ hari",
+    "perMonth": "/ bulan",
+    "sectionTitle": "Anggaran Pengeluaran"
+  },
+  "currency": {
+    "eurName": "Euro",
+    "idrName": "Rupiah Indonesia",
+    "sectionTitle": "MATA UANG UTAMA",
+    "sgdName": "Dolar Singapura",
+    "usdName": "Dolar AS"
+  },
+  "header": {
+    "screenTitle": "Anggaran Pengeluaran",
+    "subtitle": "Atur mata uang, batas perjalanan harian, dan geofencing perjalanan Anda.",
+    "title": "Atur batas dasar perjalanan"
+  },
+  "privacy": {
+    "description": "SpendSpot memicu pencatatan pengeluaran hanya saat Anda tiba dalam radius 30m hingga 300m dari titik transit tersimpan. Koordinat GPS langsung Anda tidak pernah disimpan atau diunggah.",
+    "title": "Kesadaran Perjalanan Selalu Aktif"
+  }
+}
