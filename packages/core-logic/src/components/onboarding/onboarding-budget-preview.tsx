@@ -82,7 +82,7 @@ const CircularGaugeGroup = ({ percentage, label }: CircularGaugeGroupProps) => {
  * Visual card for Slide 2 illustrating daily commute limits with a circular gauge meter.
  * Features top-centered 35% empty gap and 65% active progress arc around the bottom.
  */
-export const OnboardingBudgetGaugePreview = () => {
+export const OnboardingBudgetPreview = () => {
   const { t } = useTranslation("onboarding");
 
   return (
@@ -98,7 +98,7 @@ export const OnboardingBudgetGaugePreview = () => {
       borderColor="$border"
       justifyContent="space-between"
       backgroundColor="$secondary"
-      testID="onboarding-budget-gauge-preview"
+      testID="onboarding-budget-preview"
     >
       {/* Header section with cap indicator & status badge */}
       <YStack gap="$1" alignItems="flex-start" justifyContent="space-between" width="100%" marginTop="$2">
@@ -155,4 +155,4 @@ export const OnboardingBudgetGaugePreview = () => {
   );
 };
 
-OnboardingBudgetGaugePreview.displayName = "OnboardingBudgetGaugePreview";
+OnboardingBudgetPreview.displayName = "OnboardingBudgetPreview";

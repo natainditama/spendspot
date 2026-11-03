@@ -10,8 +10,8 @@ import { Label } from "@spendspot/ui-components/label";
 import { XStack, YStack, ZStack } from "@spendspot/ui-components/stacks";
 import { Paragraph, SizableText } from "@spendspot/ui-components/typography";
 
-import { AuthDivider } from "./auth-divider";
-import { AuthLegalFooter } from "./auth-legal-footer";
+import { AuthLegalNoticeFooter } from "./auth-legal-notice-footer";
+import { AuthSocialDivider } from "./auth-social-divider";
 import type { AuthLoginScreenProps, LoginFormErrors, LoginFormValues } from "./types";
 
 /**
@@ -264,7 +264,7 @@ export const AuthLoginScreen = ({
             </Button>
 
             {/* Social Authentication Divider */}
-            <AuthDivider labelKey="signIn.orContinueWith" />
+            <AuthSocialDivider labelKey="signIn.orContinueWith" />
 
             {/* Google SSO Button */}
             <Button
@@ -308,7 +308,7 @@ export const AuthLoginScreen = ({
               </Pressable>
             </XStack>
 
-            <AuthLegalFooter mode="signIn" onTermsPress={onTermsPress} onPrivacyPress={onPrivacyPress} />
+            <AuthLegalNoticeFooter mode="signIn" onTermsPress={onTermsPress} onPrivacyPress={onPrivacyPress} />
           </YStack>
         </YStack>
       </ScrollView>

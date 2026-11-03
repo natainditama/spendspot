@@ -3,10 +3,8 @@ import React, { useState } from "react";
 import { Linking } from "react-native";
 
 import { AuthRegisterScreen } from "@spendspot/core-logic/components/auth/auth-register-screen";
+import { PRIVACY_URL, TERMS_URL } from "@spendspot/core-logic/constants/compliance-policies";
 import { toast } from "@spendspot/ui-components/toast";
-
-const TERMS_URL = "https://spendspot.natatama.com/terms";
-const PRIVACY_URL = "https://spendspot.natatama.com/privacy";
 
 /**
  * Registration route screen within the (auth) group.

@@ -1,12 +1,12 @@
 import React, { useCallback, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
-import { Dimensions, FlatList, NativeScrollEvent, NativeSyntheticEvent } from "react-native";
+import { Dimensions, FlatList, NativeScrollEvent, NativeSyntheticEvent, ScrollView } from "react-native";
 
 import { Button } from "@spendspot/ui-components/button";
 import { YStack } from "@spendspot/ui-components/stacks";
 import { Paragraph, SizableText } from "@spendspot/ui-components/typography";
 
-import { OnboardingBudgetGaugePreview } from "./onboarding-budget-gauge-preview";
+import { OnboardingBudgetPreview } from "./onboarding-budget-preview";
 import { OnboardingCommutePreview } from "./onboarding-commute-preview";
 import { OnboardingCopilotPreview } from "./onboarding-copilot-preview";
 import { OnboardingPagination } from "./onboarding-pagination";
@@ -43,7 +43,7 @@ export const OnboardingScreen = ({
       },
       {
         id: "budget",
-        preview: <OnboardingBudgetGaugePreview />,
+        preview: <OnboardingBudgetPreview />,
         title: t("slides.budget.title"),
         description: t("slides.budget.description"),
       },
@@ -103,88 +103,106 @@ export const OnboardingScreen = ({
   }, [activeIndex, slides.length, handleSelectIndex, onReadyToRide]);
 
   return (
-    <YStack
-      flex={1}
-      gap="$6"
-      paddingVertical="$6"
-      paddingHorizontal="$0"
-      backgroundColor="$background"
-      justifyContent="center"
-      alignItems="stretch"
-      width="100%"
+    <ScrollView
+      contentContainerStyle={{ flexGrow: 1 }}
+      showsVerticalScrollIndicator={false}
+      nestedScrollEnabled={true}
+      keyboardShouldPersistTaps="handled"
       testID={testID}
     >
-      {/* Centered Carousel Visual Previews Area */}
-      <YStack gap="$2" width="100%">
-        <FlatList
-          ref={flatListRef}
-          data={slides}
-          bounces={false}
-          horizontal={true}
-          keyExtractor={(item) => item.id}
-          showsHorizontalScrollIndicator={false}
-          onScroll={handleScroll}
-          onMomentumScrollEnd={handleMomentumScrollEnd}
-          scrollEventThrottle={16}
-          snapToOffsets={snapOffsets}
-          snapToAlignment="center"
-          decelerationRate="fast"
-          disableIntervalMomentum={true}
-          contentContainerStyle={{
-            paddingHorizontal: SIDE_INSET,
-            alignItems: "center",
-          }}
-          ItemSeparatorComponent={() => <YStack width={ITEM_SPACING} />}
-          getItemLayout={(_, index) => ({
-            length: SLIDE_ITEM_WIDTH + ITEM_SPACING,
-            offset: (SLIDE_ITEM_WIDTH + ITEM_SPACING) * index,
-            index,
-          })}
-          renderItem={({ item }) => (
-            <YStack width={SLIDE_ITEM_WIDTH} height={340}>
-              {item.preview}
-            </YStack>
-          )}
-        />
-        {/* Animated Pagination Capsule Indicator */}
-        <OnboardingPagination totalSlides={slides.length} activeIndex={activeIndex} onSelectIndex={handleSelectIndex} />
-      </YStack>
+      <YStack
+        flex={1}
+        gap="$6"
+        paddingVertical="$6"
+        paddingHorizontal="$0"
+        backgroundColor="$background"
+        justifyContent="center"
+        alignItems="stretch"
+        width="100%"
+      >
+        {/* Centered Carousel Visual Previews Area */}
+        <YStack gap="$2" width="100%">
+          <FlatList
+            ref={flatListRef}
+            data={slides}
+            bounces={false}
+            horizontal={true}
+            keyExtractor={(item) => item.id}
+            showsHorizontalScrollIndicator={false}
+            onScroll={handleScroll}
+            onMomentumScrollEnd={handleMomentumScrollEnd}
+            scrollEventThrottle={16}
+            snapToOffsets={snapOffsets}
+            snapToAlignment="center"
+            decelerationRate="fast"
+            disableIntervalMomentum={true}
+            contentContainerStyle={{
+              paddingHorizontal: SIDE_INSET,
+              alignItems: "center",
+            }}
+            ItemSeparatorComponent={() => <YStack width={ITEM_SPACING} />}
+            getItemLayout={(_, index) => ({
+              length: SLIDE_ITEM_WIDTH + ITEM_SPACING,
+              offset: (SLIDE_ITEM_WIDTH + ITEM_SPACING) * index,
+              index,
+            })}
+            renderItem={({ item }) => (
+              <YStack width={SLIDE_ITEM_WIDTH} height={340}>
+                {item.preview}
+              </YStack>
+            )}
+          />
+          {/* Animated Pagination Capsule Indicator */}
+          <OnboardingPagination
+            totalSlides={slides.length}
+            activeIndex={activeIndex}
+            onSelectIndex={handleSelectIndex}
+          />
+        </YStack>
 
-      {/* Dynamic Value Proposition Typography */}
-      <YStack gap="$2.5" paddingHorizontal="$6" marginBottom="$4">
-        <SizableText size="$8" fontWeight="800" color="$foreground" maxWidth="90%" letterSpacing={0} numberOfLines={2}>
-          {currentSlide.title}
-        </SizableText>
-        <Paragraph size="$3" fontWeight="400" color="$mutedForeground" letterSpacing={0.2} numberOfLines={2}>
-          {currentSlide.description}
-        </Paragraph>
-      </YStack>
+        {/* Dynamic Value Proposition Typography */}
+        <YStack gap="$2.5" paddingHorizontal="$6" marginBottom="$4">
+          <SizableText
+            size="$8"
+            fontWeight="800"
+            color="$foreground"
+            maxWidth="90%"
+            letterSpacing={0}
+            numberOfLines={2}
+          >
+            {currentSlide.title}
+          </SizableText>
+          <Paragraph size="$3" fontWeight="400" color="$mutedForeground" letterSpacing={0.2} numberOfLines={2}>
+            {currentSlide.description}
+          </Paragraph>
+        </YStack>
 
-      {/* Bottom Call-to-Action Buttons */}
-      <YStack gap="$2.5" paddingHorizontal="$6">
-        <Button
-          width="100%"
-          buttonSize="lg"
-          variant="primary"
-          onPress={handleReadyToRidePress}
-          accessibilityRole="button"
-          accessibilityLabel={t("actions.readyToRide")}
-        >
-          {t("actions.readyToRide")}
-        </Button>
+        {/* Bottom Call-to-Action Buttons */}
+        <YStack gap="$2.5" paddingHorizontal="$6">
+          <Button
+            width="100%"
+            buttonSize="lg"
+            variant="primary"
+            onPress={handleReadyToRidePress}
+            accessibilityRole="button"
+            accessibilityLabel={t("actions.readyToRide")}
+          >
+            {t("actions.readyToRide")}
+          </Button>
 
-        <Button
-          width="100%"
-          buttonSize="lg"
-          variant="secondary"
-          onPress={onAlreadyHaveAccount}
-          accessibilityRole="button"
-          accessibilityLabel={t("actions.alreadyHaveAccount")}
-        >
-          {t("actions.alreadyHaveAccount")}
-        </Button>
+          <Button
+            width="100%"
+            buttonSize="lg"
+            variant="secondary"
+            onPress={onAlreadyHaveAccount}
+            accessibilityRole="button"
+            accessibilityLabel={t("actions.alreadyHaveAccount")}
+          >
+            {t("actions.alreadyHaveAccount")}
+          </Button>
+        </YStack>
       </YStack>
-    </YStack>
+    </ScrollView>
   );
 };
 

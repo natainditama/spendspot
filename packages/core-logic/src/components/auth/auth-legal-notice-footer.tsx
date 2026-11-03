@@ -5,10 +5,11 @@ import { Linking, Pressable } from "react-native";
 import { XStack, YStack } from "@spendspot/ui-components/stacks";
 import { Paragraph, SizableText } from "@spendspot/ui-components/typography";
 
-export const TERMS_URL = "https://spendspot.natatama.com/terms";
-export const PRIVACY_URL = "https://spendspot.natatama.com/privacy";
+import { PRIVACY_URL, TERMS_URL } from "../../constants/compliance-policies";
 
-interface AuthLegalFooterProps {
+export { PRIVACY_URL, TERMS_URL };
+
+export interface AuthLegalNoticeFooterProps {
   mode: "signIn" | "signUp";
   onTermsPress?: () => void;
   onPrivacyPress?: () => void;
@@ -25,7 +26,7 @@ const handleDefaultPrivacy = () => {
 /**
  * Centered legal compliance disclosure caption with interactive terms and privacy links.
  */
-export const AuthLegalFooter = ({ mode, onTermsPress, onPrivacyPress }: AuthLegalFooterProps) => {
+export const AuthLegalNoticeFooter = ({ mode, onTermsPress, onPrivacyPress }: AuthLegalNoticeFooterProps) => {
   const { t } = useTranslation("auth");
   const prefixKey = mode === "signIn" ? "signIn.termsNotice" : "signUp.termsNotice";
 
@@ -91,4 +92,4 @@ export const AuthLegalFooter = ({ mode, onTermsPress, onPrivacyPress }: AuthLega
   );
 };
 
-AuthLegalFooter.displayName = "AuthLegalFooter";
+AuthLegalNoticeFooter.displayName = "AuthLegalNoticeFooter";

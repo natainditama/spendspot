@@ -21,7 +21,7 @@ export default function SetupWizardRoute() {
         description: `Daily limit set to ${data.currency} ${data.dailyCap.toLocaleString()}`,
       });
 
-      router.replace("/(dashboard)/index");
+      router.replace("/(dashboard)" as never);
     }, 600);
   };
 

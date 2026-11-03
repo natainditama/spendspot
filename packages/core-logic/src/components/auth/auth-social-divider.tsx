@@ -5,14 +5,14 @@ import { Separator } from "@spendspot/ui-components/separator";
 import { XStack } from "@spendspot/ui-components/stacks";
 import { SizableText } from "@spendspot/ui-components/typography";
 
-interface AuthDividerProps {
+export interface AuthSocialDividerProps {
   labelKey?: string;
 }
 
 /**
  * Hairline horizontal divider with centered localized text matching shadcn UI specifications.
  */
-export const AuthDivider = ({ labelKey = "signIn.orContinueWith" }: AuthDividerProps) => {
+export const AuthSocialDivider = ({ labelKey = "signIn.orContinueWith" }: AuthSocialDividerProps) => {
   const { t } = useTranslation("auth");
 
   return (
@@ -26,4 +26,4 @@ export const AuthDivider = ({ labelKey = "signIn.orContinueWith" }: AuthDividerP
   );
 };
 
-AuthDivider.displayName = "AuthDivider";
+AuthSocialDivider.displayName = "AuthSocialDivider";

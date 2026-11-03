@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
+import { ScrollView } from "react-native";
 
 import { Button } from "@spendspot/ui-components/button";
 import { YStack } from "@spendspot/ui-components/stacks";
@@ -51,60 +52,74 @@ export const SetupWizardScreen = ({
   };
 
   return (
-    <YStack
-      flex={1}
-      gap="$6"
-      paddingVertical="$6"
-      paddingHorizontal="$6"
-      backgroundColor="$background"
-      justifyContent="center"
-      alignItems="stretch"
-      width="100%"
+    <ScrollView
+      contentContainerStyle={{ flexGrow: 1 }}
+      showsVerticalScrollIndicator={false}
+      nestedScrollEnabled={true}
+      keyboardShouldPersistTaps="handled"
       testID={testID}
     >
-      {/* Header Section */}
-      <YStack gap="$1.5">
-        <SizableText size="$7" fontWeight="800" color="$foreground" maxWidth="90%" letterSpacing={0} numberOfLines={1}>
-          {t("header.title")}
-        </SizableText>
-        <Paragraph size="$3" fontWeight="400" color="$mutedForeground" letterSpacing={0.2} numberOfLines={1}>
-          {t("header.subtitle")}
-        </Paragraph>
+      <YStack
+        flex={1}
+        gap="$6"
+        paddingVertical="$6"
+        paddingHorizontal="$6"
+        backgroundColor="$background"
+        justifyContent="center"
+        alignItems="stretch"
+        width="100%"
+      >
+        {/* Header Section */}
+        <YStack gap="$1.5">
+          <SizableText
+            size="$7"
+            fontWeight="800"
+            color="$foreground"
+            maxWidth="90%"
+            letterSpacing={0}
+            numberOfLines={1}
+          >
+            {t("header.title")}
+          </SizableText>
+          <Paragraph size="$3" fontWeight="400" color="$mutedForeground" letterSpacing={0.2} numberOfLines={1}>
+            {t("header.subtitle")}
+          </Paragraph>
+        </YStack>
+
+        {/* Section 1: Preferred Currency Selector */}
+        <SetupCurrencySelector selectedCurrency={currency} onSelectCurrency={handleCurrencySelect} />
+
+        {/* Section 2: Commute & Daily Spending Limit Card */}
+        <SetupBudgetSlider
+          currency={currency}
+          dailyCap={dailyCap}
+          minCap={minCap}
+          maxCap={maxCap}
+          stepCap={stepCap}
+          onChangeDailyCap={handleDailyCapChange}
+        />
+
+        {/* Section 3: Geofence Privacy Awareness Rationale */}
+        <SetupPrivacyCard />
+
+        {/* Bottom Sticky Action Area */}
+        <YStack width="100%">
+          <Button
+            width="100%"
+            height={50}
+            buttonSize="lg"
+            variant="primary"
+            borderRadius="$4"
+            onPress={handleContinuePress}
+            disabled={isLoading}
+            accessibilityRole="button"
+            accessibilityLabel={t("actions.continue")}
+          >
+            {t("actions.continue")}
+          </Button>
+        </YStack>
       </YStack>
-
-      {/* Section 1: Preferred Currency Selector */}
-      <SetupCurrencySelector selectedCurrency={currency} onSelectCurrency={handleCurrencySelect} />
-
-      {/* Section 2: Commute & Daily Spending Limit Card */}
-      <SetupBudgetSlider
-        currency={currency}
-        dailyCap={dailyCap}
-        minCap={minCap}
-        maxCap={maxCap}
-        stepCap={stepCap}
-        onChangeDailyCap={handleDailyCapChange}
-      />
-
-      {/* Section 3: Geofence Privacy Awareness Rationale */}
-      <SetupPrivacyCard />
-
-      {/* Bottom Sticky Action Area */}
-      <YStack width="100%">
-        <Button
-          width="100%"
-          height={50}
-          buttonSize="lg"
-          variant="primary"
-          borderRadius="$4"
-          onPress={handleContinuePress}
-          disabled={isLoading}
-          accessibilityRole="button"
-          accessibilityLabel={t("actions.continue")}
-        >
-          {t("actions.continue")}
-        </Button>
-      </YStack>
-    </YStack>
+    </ScrollView>
   );
 };
 
