@@ -10,7 +10,7 @@ import { OnboardingScreen } from "@spendspot/core-logic/components/onboarding/on
 export default function OnboardingRoute() {
   const router = useRouter();
 
-  const handleFinish = () => {
+  const handleBack = () => {
     if (router.canGoBack()) {
       router.back();
     } else {
@@ -18,12 +18,20 @@ export default function OnboardingRoute() {
     }
   };
 
+  const handleReadyToRide = () => {
+    router.push("/(auth)/register");
+  };
+
+  const handleAlreadyHaveAccount = () => {
+    router.push("/(auth)/login");
+  };
+
   return (
     <OnboardingScreen
-      onBack={handleFinish}
-      onReadyToRide={handleFinish}
-      onAlreadyHaveAccount={handleFinish}
-      onSkip={handleFinish}
+      onBack={handleBack}
+      onReadyToRide={handleReadyToRide}
+      onAlreadyHaveAccount={handleAlreadyHaveAccount}
+      onSkip={handleBack}
     />
   );
 }

@@ -48,6 +48,12 @@ export const lightTheme = {
   gaugeBackground: "#e4e4e7",
   gaugeProgress: "#18181b",
 
+  // Brand & Social
+  googleBlue: "#4285f4",
+  googleRed: "#ea4335",
+  googleYellow: "#fbbc05",
+  googleGreen: "#34a853",
+
   // Borders & inputs
   border: "#e4e4e7",
   input: "#e4e4e7",

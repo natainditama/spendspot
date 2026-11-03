@@ -45,7 +45,8 @@ export default function RootLayout() {
             }}
           >
             <Stack.Screen name="index" options={{ headerBackVisible: false }} />
-            <Stack.Screen name="onboarding" />
+            <Stack.Screen name="onboarding" options={{ headerShown: true }} />
+            <Stack.Screen name="(auth)" options={{ headerShown: false }} />
           </Stack>
           <Toaster />
         </UIProvider>

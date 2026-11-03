@@ -111,6 +111,25 @@ export default function ComponentShowcase() {
           </CardFooter>
         </Card>
 
+        <Card backgroundColor="$primary">
+          <CardHeader>
+            <CardTitle color="white">Screen 02: Authentication Flow</CardTitle>
+            <CardDescription color="rgba(255, 255, 255, 0.85)">
+              Test Screen 02 Login and Registration screens with Google SSO, secure inputs, and validation.
+            </CardDescription>
+          </CardHeader>
+          <CardFooter>
+            <XStack gap="$2" width="100%">
+              <Button flex={1} variant="secondary" onPress={() => router.push("/(auth)/login")}>
+                Log In
+              </Button>
+              <Button flex={1} variant="secondary" onPress={() => router.push("/(auth)/register")}>
+                Register
+              </Button>
+            </XStack>
+          </CardFooter>
+        </Card>
+
         <XStack gap="$2" flexWrap="wrap">
           <Badge>Badge</Badge>
           <Badge variant="secondary">Secondary</Badge>
