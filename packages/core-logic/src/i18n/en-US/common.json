@@ -67,5 +67,15 @@
     "limits": "Budget Limits",
     "biometric": "Biometric Lock (Fingerprint / Face ID)",
     "aiLimit": "Daily AI Quota Remaining"
+  },
+  "validation": {
+    "emailInvalid": "Please enter a valid email address",
+    "emailRequired": "Email address is required",
+    "fullNameMinLength": "Full name must be at least 2 characters",
+    "fullNameRequired": "Full name is required",
+    "passwordMinLength": "Password must be at least 8 characters",
+    "passwordMismatch": "Passwords do not match",
+    "passwordRequired": "Password is required",
+    "required": "This field is required"
   }
 }

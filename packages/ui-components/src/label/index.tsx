@@ -9,6 +9,7 @@ import { Label as TamaguiLabel } from "@tamagui/label";
 export const Label = styled(TamaguiLabel, {
   name: "Label",
   color: "$foreground",
+  paddingVertical: "$1",
   fontSize: "$sm",
   lineHeight: "$sm",
   fontWeight: "500",

@@ -1,8 +1,22 @@
+export interface LoginFormValues {
+  email: string;
+  password: string;
+}
+
+export interface RegisterFormValues {
+  fullName: string;
+  email: string;
+  password: string;
+}
+
+export type LoginFormErrors = Partial<Record<keyof LoginFormValues, string>>;
+export type RegisterFormErrors = Partial<Record<keyof RegisterFormValues, string>>;
+
 export interface AuthLoginScreenProps {
   /** Optional prefilled email address for returning users */
   initialEmail?: string;
   /** Callback triggered when user submits email and password credentials */
-  onLogin?: (credentials: { email: string; password: string }) => void;
+  onLogin?: (credentials: LoginFormValues) => void;
   /** Callback triggered when user taps the Google SSO authentication button */
   onGoogleLogin?: () => void;
   /** Callback triggered when user taps 'Forgot password?' */
@@ -13,6 +27,8 @@ export interface AuthLoginScreenProps {
   onTermsPress?: () => void;
   /** Callback triggered when user taps 'Privacy Policy' */
   onPrivacyPress?: () => void;
+  /** Optional callback triggered when Zod validation fails */
+  onValidationError?: (errors: LoginFormErrors) => void;
   /** Optional loading state for async network operations */
   isLoading?: boolean;
   /** Optional test ID for automated testing */
@@ -25,7 +41,7 @@ export interface AuthRegisterScreenProps {
   /** Optional prefilled initial email */
   initialEmail?: string;
   /** Callback triggered when user submits registration credentials */
-  onRegister?: (data: { fullName: string; email: string; password: string }) => void;
+  onRegister?: (data: RegisterFormValues) => void;
   /** Callback triggered when user taps the Google sign-up SSO button */
   onGoogleRegister?: () => void;
   /** Callback triggered when user taps 'Log in' to navigate to login */
@@ -34,6 +50,8 @@ export interface AuthRegisterScreenProps {
   onTermsPress?: () => void;
   /** Callback triggered when user taps 'Privacy Policy' */
   onPrivacyPress?: () => void;
+  /** Optional callback triggered when Zod validation fails */
+  onValidationError?: (errors: RegisterFormErrors) => void;
   /** Optional loading state for async network operations */
   isLoading?: boolean;
   /** Optional test ID for automated testing */

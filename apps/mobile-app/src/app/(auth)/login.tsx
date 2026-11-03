@@ -1,8 +1,12 @@
 import { useRouter } from "expo-router";
 import React, { useState } from "react";
+import { Linking } from "react-native";
 
 import { AuthLoginScreen } from "@spendspot/core-logic/components/auth/auth-login-screen";
 import { toast } from "@spendspot/ui-components/toast";
+
+const TERMS_URL = "https://spendspot.natatama.com/terms";
+const PRIVACY_URL = "https://spendspot.natatama.com/privacy";
 
 /**
  * Login route screen within the (auth) group.
@@ -21,7 +25,7 @@ export default function LoginRoute() {
         description: `Logged in as ${email}`,
       });
 
-      router.replace("/");
+      router.replace("/(dashboard)" as never);
     }, 600);
   };
 
@@ -33,7 +37,7 @@ export default function LoginRoute() {
         description: "Authenticated successfully with Google",
       });
 
-      router.replace("/");
+      router.replace("/(dashboard)" as never);
     }, 600);
   };
 
@@ -48,14 +52,18 @@ export default function LoginRoute() {
   };
 
   const handleTermsPress = () => {
-    toast("Terms of Service", {
-      description: "Opening Terms of Service...",
+    Linking.openURL(TERMS_URL).catch(() => {
+      toast.error("Could not open Terms of Service URL", {
+        description: "Please check your internet connection or try again later.",
+      });
     });
   };
 
   const handlePrivacyPress = () => {
-    toast("Privacy Policy", {
-      description: "Opening Privacy Policy...",
+    Linking.openURL(PRIVACY_URL).catch(() => {
+      toast.error("Could not open Privacy Policy URL", {
+        description: "Please check your internet connection or try again later.",
+      });
     });
   };
 

@@ -67,5 +67,15 @@
     "limits": "Batas Anggaran",
     "biometric": "Kunci Biometrik (Fingerprint / Face ID)",
     "aiLimit": "Sisa Kuota AI Harian"
+  },
+  "validation": {
+    "emailInvalid": "Format alamat email tidak valid",
+    "emailRequired": "Alamat email wajib diisi",
+    "fullNameMinLength": "Nama lengkap minimal harus 2 karakter",
+    "fullNameRequired": "Nama lengkap wajib diisi",
+    "passwordMinLength": "Kata sandi minimal harus 8 karakter",
+    "passwordMismatch": "Konfirmasi kata sandi tidak cocok",
+    "passwordRequired": "Kata sandi wajib diisi",
+    "required": "Kolom ini wajib diisi"
   }
 }

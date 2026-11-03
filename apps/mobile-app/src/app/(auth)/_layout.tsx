@@ -1,21 +1,19 @@
 import { Stack } from "expo-router";
 import React from "react";
 
-import { lightTheme } from "@spendspot/ui-components/config";
+import { screenOptions } from "../_layout";
 
 /**
  * Authentication route group layout configuring seamless Stack navigation
  * for login, registration, and future credential recovery screens.
+ * Inherits standard screenOptions from the root layout.
  */
 export default function AuthLayout() {
   return (
     <Stack
       screenOptions={{
+        ...screenOptions,
         headerShown: false,
-        animation: "fade_from_bottom",
-        contentStyle: {
-          backgroundColor: lightTheme.background,
-        },
       }}
     >
       <Stack.Screen name="login" options={{ title: "Log In" }} />

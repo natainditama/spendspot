@@ -16,7 +16,7 @@ export const AuthDivider = ({ labelKey = "signIn.orContinueWith" }: AuthDividerP
   const { t } = useTranslation("auth");
 
   return (
-    <XStack alignItems="center" justifyContent="center" width="100%" gap="$3" marginVertical="$4">
+    <XStack alignItems="center" justifyContent="center" width="100%" gap="$2" marginVertical="$2">
       <Separator flex={1} borderColor="$border" />
       <SizableText size="$1" fontWeight="600" color="$mutedForeground" letterSpacing={1} numberOfLines={1}>
         {t(labelKey, "OR CONTINUE WITH")}

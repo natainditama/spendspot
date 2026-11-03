@@ -105,10 +105,14 @@ export const OnboardingScreen = ({
   return (
     <YStack
       flex={1}
-      paddingVertical="$4"
+      gap="$4"
+      minHeight="100%"
+      paddingVertical="$6"
+      paddingHorizontal="$0"
       backgroundColor="$background"
       justifyContent="center"
-      gap="$4"
+      alignItems="stretch"
+      width="100%"
       testID={testID}
     >
       {/* Centered Carousel Visual Previews Area */}
@@ -158,7 +162,7 @@ export const OnboardingScreen = ({
       </YStack>
 
       {/* Bottom Call-to-Action Buttons */}
-      <YStack gap="$2.5" paddingHorizontal="$6" marginBottom="$8">
+      <YStack gap="$2.5" paddingHorizontal="$6">
         <Button
           width="100%"
           buttonSize="lg"
