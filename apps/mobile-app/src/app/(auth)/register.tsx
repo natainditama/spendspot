@@ -20,6 +20,7 @@ export default function RegisterRoute() {
       toast.success("Account Created!", {
         description: `Welcome to SpendSpot, ${fullName}! Confirmation sent to ${email}.`,
       });
+
       router.replace("/");
     }, 600);
   };
@@ -31,12 +32,13 @@ export default function RegisterRoute() {
       toast.success("Google Sign-Up", {
         description: "Registered successfully with Google",
       });
+
       router.replace("/");
     }, 600);
   };
 
   const handleNavigateToLogin = () => {
-    router.push("/(auth)/login");
+    router.replace("/(auth)/login");
   };
 
   const handleTermsPress = () => {

@@ -103,7 +103,14 @@ export const OnboardingScreen = ({
   }, [activeIndex, slides.length, handleSelectIndex, onReadyToRide]);
 
   return (
-    <YStack flex={1} paddingVertical="$4" backgroundColor="$background" justifyContent="space-between" testID={testID}>
+    <YStack
+      flex={1}
+      paddingVertical="$4"
+      backgroundColor="$background"
+      justifyContent="center"
+      gap="$4"
+      testID={testID}
+    >
       {/* Centered Carousel Visual Previews Area */}
       <YStack gap="$2" width="100%">
         <FlatList

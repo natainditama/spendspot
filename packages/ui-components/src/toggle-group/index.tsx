@@ -53,7 +53,13 @@ export type ToggleGroupRootProps = React.ComponentPropsWithoutRef<typeof Tamagui
  * Individual toggle button item within a ToggleGroup container.
  * Toggles active selection state and inherits container variant styling.
  */
-export const ToggleGroupItem = ({ variant: itemVariant, size: itemSize, children, ...props }: ToggleGroupItemProps) => {
+export const ToggleGroupItem = ({
+  variant: itemVariant,
+  size: itemSize,
+  value,
+  children,
+  ...props
+}: ToggleGroupItemProps) => {
   const context = React.useContext(ToggleGroupContext);
   const variant = itemVariant || context.variant;
   const size = itemSize || context.size;
@@ -65,6 +71,7 @@ export const ToggleGroupItem = ({ variant: itemVariant, size: itemSize, children
 
   return (
     <TamaguiToggleGroup.Item
+      value={value}
       unstyled
       height={height}
       minHeight={height}

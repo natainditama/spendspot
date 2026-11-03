@@ -255,9 +255,16 @@ export type SelectLabelProps = React.ComponentPropsWithoutRef<typeof TamaguiSele
  * Selectable option styled after shadcn UI item states and accent feedback.
  * Automatically aligns checkmark indicator and applies hover/press accent fills.
  */
-export const SelectItem = ({ children, ...props }: React.ComponentPropsWithoutRef<typeof TamaguiSelect.Item>) => {
+export const SelectItem = ({
+  children,
+  value,
+  index,
+  ...props
+}: React.ComponentPropsWithoutRef<typeof TamaguiSelect.Item>) => {
   return (
     <TamaguiSelect.Item
+      value={value}
+      index={index}
       borderRadius="$md"
       paddingHorizontal="$1.5"
       paddingVertical="$2.5"

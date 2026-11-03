@@ -28,6 +28,7 @@ export default function RootLayout() {
           <Stack
             screenOptions={{
               headerShown: true,
+              animation: "fade_from_bottom",
               headerBackVisible: true,
               headerTitleAlign: "center",
               title: appName,
@@ -44,8 +45,8 @@ export default function RootLayout() {
               },
             }}
           >
-            <Stack.Screen name="index" options={{ headerBackVisible: false }} />
-            <Stack.Screen name="onboarding" options={{ headerShown: true }} />
+            <Stack.Screen name="index" options={{ headerShown: false }} />
+            <Stack.Screen name="onboarding" options={{ headerShown: false }} />
             <Stack.Screen name="(auth)" options={{ headerShown: false }} />
           </Stack>
           <Toaster />

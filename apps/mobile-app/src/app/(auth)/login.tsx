@@ -20,6 +20,7 @@ export default function LoginRoute() {
       toast.success("Welcome back!", {
         description: `Logged in as ${email}`,
       });
+
       router.replace("/");
     }, 600);
   };
@@ -31,6 +32,7 @@ export default function LoginRoute() {
       toast.success("Google Sign-In", {
         description: "Authenticated successfully with Google",
       });
+
       router.replace("/");
     }, 600);
   };
@@ -42,7 +44,7 @@ export default function LoginRoute() {
   };
 
   const handleNavigateToRegister = () => {
-    router.push("/(auth)/register");
+    router.replace("/(auth)/register");
   };
 
   const handleTermsPress = () => {

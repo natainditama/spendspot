@@ -57,7 +57,7 @@ export const AuthRegisterScreen = ({
           paddingVertical="$6"
           paddingHorizontal="$6"
           backgroundColor="$background"
-          justifyContent="space-between"
+          justifyContent="center"
           alignItems="center"
           width="100%"
         >

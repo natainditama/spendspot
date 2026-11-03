@@ -251,10 +251,12 @@ export type DropdownMenuRadioGroupProps = React.ComponentPropsWithoutRef<typeof 
  */
 export const DropdownMenuRadioItem = ({
   children,
+  value,
   ...props
 }: React.ComponentPropsWithoutRef<typeof Menu.RadioItem>) => {
   return (
     <Menu.RadioItem
+      value={value}
       borderRadius="$sm"
       paddingHorizontal="$2"
       paddingVertical="$1.5"
