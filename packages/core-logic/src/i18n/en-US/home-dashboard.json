@@ -1,0 +1,41 @@
+{
+  "geofence": {
+    "detectedDetails": "Detected: {{radius}} • {{payment}}",
+    "locationTitle": "Currently at: {{spot}}",
+    "loggedTicket": "Logged ({{amount}})",
+    "logTicket": "Log Ticket ({{amount}})",
+    "platformTag": "Platform 2 • Lebak Bulus",
+    "savedBadge": "Saved"
+  },
+  "header": {
+    "category": "SPENDSPOT LIVE",
+    "currencyBadge": "IDR (Rp)",
+    "greeting": "Good morning, {{name}}",
+    "title": "Home"
+  },
+  "hero": {
+    "dailyCapLabel": "Daily Cap: {{amount}}",
+    "remainingToday": "{{amount}} remaining today",
+    "spentTodayLabel": "SPENT TODAY",
+    "warningSubtitle": "80% daily transport cap reached",
+    "warningTitle": "Approaching Commute Limit"
+  },
+  "nav": {
+    "advisor": "AI Advisor",
+    "analytics": "Analytics",
+    "home": "Home",
+    "settings": "Settings",
+    "spots": "Spots & Map"
+  },
+  "quickActions": {
+    "addExpense": "Add Exp",
+    "aiBadge": "16",
+    "askAI": "Ask AI",
+    "newSpot": "New Spot",
+    "scanReceipt": "Scan"
+  },
+  "recent": {
+    "seeAll": "See All",
+    "title": "Today's Expenses"
+  }
+}

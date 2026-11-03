@@ -17,7 +17,7 @@ import type { AuthLoginScreenProps, LoginFormErrors, LoginFormValues } from "./t
 /**
  * Creates dynamic localized Zod validation schema for user login credentials.
  */
-const createLoginSchema = (translate: (key: string, fallback?: string) => string) =>
+export const createLoginSchema = (translate: (key: string, fallback?: string) => string) =>
   z.object({
     email: z
       .email({ message: translate("validation.emailInvalid") })

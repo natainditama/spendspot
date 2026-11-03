@@ -1,0 +1,41 @@
+{
+  "geofence": {
+    "detectedDetails": "Terdeteksi: {{radius}} • {{payment}}",
+    "locationTitle": "Saat ini di: {{spot}}",
+    "loggedTicket": "Dicatat ({{amount}})",
+    "logTicket": "Catat Tiket ({{amount}})",
+    "platformTag": "Peron 2 • Lebak Bulus",
+    "savedBadge": "Tersimpan"
+  },
+  "header": {
+    "category": "SPENDSPOT LIVE",
+    "currencyBadge": "IDR (Rp)",
+    "greeting": "Selamat pagi, {{name}}",
+    "title": "Beranda"
+  },
+  "hero": {
+    "dailyCapLabel": "Batas Harian: {{amount}}",
+    "remainingToday": "Sisa {{amount}} hari ini",
+    "spentTodayLabel": "PENGELUARAN HARI INI",
+    "warningSubtitle": "Telah mencapai 80% batas transportasi harian",
+    "warningTitle": "Mendekati Batas Perjalanan"
+  },
+  "nav": {
+    "advisor": "Penasihat AI",
+    "analytics": "Analitik",
+    "home": "Beranda",
+    "settings": "Pengaturan",
+    "spots": "Titik & Peta"
+  },
+  "quickActions": {
+    "addExpense": "Tambah",
+    "aiBadge": "16",
+    "askAI": "Tanya AI",
+    "newSpot": "Titik Baru",
+    "scanReceipt": "Pindai"
+  },
+  "recent": {
+    "seeAll": "Lihat Semua",
+    "title": "Pengeluaran Hari Ini"
+  }
+}

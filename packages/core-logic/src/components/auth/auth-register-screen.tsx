@@ -17,7 +17,7 @@ import type { AuthRegisterScreenProps, RegisterFormErrors, RegisterFormValues } 
 /**
  * Creates dynamic localized Zod validation schema for user account registration.
  */
-const createRegisterSchema = (translate: (key: string, fallback?: string) => string) =>
+export const createRegisterSchema = (translate: (key: string, fallback?: string) => string) =>
   z.object({
     fullName: z
       .string()

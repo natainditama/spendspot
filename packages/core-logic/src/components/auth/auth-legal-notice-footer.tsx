@@ -7,8 +7,6 @@ import { Paragraph, SizableText } from "@spendspot/ui-components/typography";
 
 import { PRIVACY_URL, TERMS_URL } from "../../constants/compliance-policies";
 
-export { PRIVACY_URL, TERMS_URL };
-
 export interface AuthLegalNoticeFooterProps {
   mode: "signIn" | "signUp";
   onTermsPress?: () => void;
