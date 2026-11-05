@@ -3,11 +3,13 @@ import { initReactI18next } from "react-i18next";
 
 import enUSAuth from "./en-US/auth.json";
 import enUSCommon from "./en-US/common.json";
+import enUSGeofenceMap from "./en-US/geofence-map.json";
 import enUSHomeDashboard from "./en-US/home-dashboard.json";
 import enUSOnboarding from "./en-US/onboarding.json";
 import enUSSetupWizard from "./en-US/setup-wizard.json";
 import idIDAuth from "./id-ID/auth.json";
 import idIDCommon from "./id-ID/common.json";
+import idIDGeofenceMap from "./id-ID/geofence-map.json";
 import idIDHomeDashboard from "./id-ID/home-dashboard.json";
 import idIDOnboarding from "./id-ID/onboarding.json";
 import idIDSetupWizard from "./id-ID/setup-wizard.json";
@@ -41,6 +43,7 @@ export const resources = {
     onboarding: enUSOnboarding,
     "setup-wizard": enUSSetupWizard,
     "home-dashboard": enUSHomeDashboard,
+    "geofence-map": enUSGeofenceMap,
   },
   "id-ID": {
     common: idIDCommon,
@@ -48,6 +51,7 @@ export const resources = {
     onboarding: idIDOnboarding,
     "setup-wizard": idIDSetupWizard,
     "home-dashboard": idIDHomeDashboard,
+    "geofence-map": idIDGeofenceMap,
   },
 } as const satisfies Record<SupportedLocale, Record<string, unknown>>;
 

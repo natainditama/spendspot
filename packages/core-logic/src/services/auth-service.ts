@@ -1,6 +1,8 @@
 import type { Session, User } from "@supabase/supabase-js";
 import Constants, { AppOwnership, ExecutionEnvironment } from "expo-constants";
 import * as Linking from "expo-linking";
+import * as Location from "expo-location";
+import * as Notifications from "expo-notifications";
 import * as WebBrowser from "expo-web-browser";
 
 import type { LoginFormValues, RegisterFormValues } from "../components/auth/types";
@@ -13,6 +15,66 @@ import type { BaseResponse, ErrorResponse, ServiceResponse, SuccessResponse } fr
 WebBrowser.maybeCompleteAuthSession();
 
 export type { BaseResponse, ErrorResponse, ServiceResponse, SuccessResponse };
+
+export interface SetupCompletionStatus {
+  isCompleted: boolean;
+  hasLocationPermission: boolean;
+  hasNotificationPermission: boolean;
+  hasCurrency: boolean;
+  hasDailyCap: boolean;
+  hasMonthlyCap: boolean;
+}
+
+/**
+ * Checks whether the user has completed the onboarding setup wizard.
+ * Verifies that:
+ * 1. Location foreground permission is granted
+ * 2. Push notification permission is granted
+ * 3. Currency is selected in user profile
+ * 4. dailyCap (daily_limit) is configured (> 0)
+ * 5. monthlyCap (monthly_limit) is configured (> 0)
+ */
+export async function checkUserSetupStatus(
+  userId?: string | null,
+  cachedProfile?: UserProfile | null
+): Promise<SetupCompletionStatus> {
+  let hasLocationPermission = false;
+  let hasNotificationPermission = false;
+
+  try {
+    const locStatus = await Location.getForegroundPermissionsAsync();
+    hasLocationPermission = locStatus.status === "granted";
+  } catch {
+    hasLocationPermission = false;
+  }
+
+  try {
+    const notifStatus = await Notifications.getPermissionsAsync();
+    hasNotificationPermission = notifStatus.status === "granted";
+  } catch {
+    hasNotificationPermission = false;
+  }
+
+  let profile = cachedProfile;
+  if (!profile && userId) {
+    profile = await getUserProfile(userId);
+  }
+
+  const hasCurrency = Boolean(profile?.preferred_currency);
+  const hasDailyCap = typeof profile?.daily_limit === "number" && profile.daily_limit > 0;
+  const hasMonthlyCap = typeof profile?.monthly_limit === "number" && profile.monthly_limit > 0;
+
+  const isCompleted = hasLocationPermission && hasNotificationPermission && hasCurrency && hasDailyCap && hasMonthlyCap;
+
+  return {
+    isCompleted,
+    hasLocationPermission,
+    hasNotificationPermission,
+    hasCurrency,
+    hasDailyCap,
+    hasMonthlyCap,
+  };
+}
 
 /**
  * Parses query strings and hash fragments from an OAuth redirect URL.
@@ -50,7 +112,7 @@ function extractParamsFromUrl(url: string): Record<string, string> {
 export async function signInWithEmail({
   email,
   password,
-}: LoginFormValues): Promise<ServiceResponse<{ user: User; session: Session }>> {
+}: LoginFormValues): Promise<ServiceResponse<{ user: User; session: Session; isSetupCompleted: boolean }>> {
   try {
     const { data, error } = await supabase.auth.signInWithPassword({
       email: email.trim(),
@@ -71,12 +133,15 @@ export async function signInWithEmail({
       };
     }
 
+    const setupStatus = await checkUserSetupStatus(data.user.id);
+
     return {
       success: true,
       message: "Successfully signed in",
       data: {
         user: data.user,
         session: data.session,
+        isSetupCompleted: setupStatus.isCompleted,
       },
     };
   } catch (err) {
@@ -93,7 +158,7 @@ export async function signUpWithEmail({
   fullName,
   email,
   password,
-}: RegisterFormValues): Promise<ServiceResponse<{ user: User; session: Session }>> {
+}: RegisterFormValues): Promise<ServiceResponse<{ user: User; session: Session; isSetupCompleted: boolean }>> {
   try {
     const trimmedEmail = email.trim();
     const trimmedName = fullName.trim();
@@ -164,9 +229,12 @@ export async function signUpWithEmail({
         data: {
           user: data.user,
           session: null as unknown as Session,
+          isSetupCompleted: false,
         },
       };
     }
+
+    const setupStatus = await checkUserSetupStatus(data.user.id);
 
     return {
       success: true,
@@ -174,6 +242,7 @@ export async function signUpWithEmail({
       data: {
         user: data.user,
         session,
+        isSetupCompleted: setupStatus.isCompleted,
       },
     };
   } catch (err) {
@@ -210,7 +279,9 @@ export function getAuthRedirectUri(): string {
  * Authenticates the user with Google OAuth using Chrome Custom Tabs on Android / WebBrowser,
  * compatible with Expo Go and standalone builds without native code requirements.
  */
-export async function signInWithGoogle(): Promise<ServiceResponse<{ user: User; session: Session }>> {
+export async function signInWithGoogle(): Promise<
+  ServiceResponse<{ user: User; session: Session; isSetupCompleted: boolean }>
+> {
   try {
     // Generate valid redirect URL for Expo Go (e.g. exp://...) or production scheme (spendspot://...)
     const redirectUri = getAuthRedirectUri();
@@ -326,12 +397,15 @@ export async function signInWithGoogle(): Promise<ServiceResponse<{ user: User; 
       // Ignored if database trigger handle_new_user already handled profile insertion
     }
 
+    const setupStatus = await checkUserSetupStatus(user.id);
+
     return {
       success: true,
       message: "Successfully authenticated with Google",
       data: {
         user,
         session,
+        isSetupCompleted: setupStatus.isCompleted,
       },
     };
   } catch (err) {

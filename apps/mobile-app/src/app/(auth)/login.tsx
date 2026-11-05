@@ -25,7 +25,12 @@ export default function LoginRoute() {
       toast.success("Welcome back!", {
         description: `Logged in as ${email}`,
       });
-      router.replace("/(dashboard)" as never);
+
+      if (result.isSetupCompleted) {
+        router.replace("/(dashboard)" as never);
+      } else {
+        router.replace("/(setup)" as never);
+      }
     } else {
       toast.error("Sign In Failed", {
         description: result.error ?? "Invalid email or password",
@@ -42,7 +47,12 @@ export default function LoginRoute() {
       toast.success("Google Sign-In", {
         description: "Authenticated successfully with Google",
       });
-      router.replace("/(dashboard)" as never);
+
+      if (result.isSetupCompleted) {
+        router.replace("/(dashboard)" as never);
+      } else {
+        router.replace("/(setup)" as never);
+      }
     } else {
       if (result.error && !result.error.toLowerCase().includes("cancel")) {
         toast.error("Google Sign-In Failed", {

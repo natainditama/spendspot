@@ -1,7 +1,8 @@
 import React from "react";
 import { useTranslation } from "react-i18next";
 
-import { YStack } from "@spendspot/ui-components/stacks";
+import { ShieldCheck } from "@spendspot/ui-components/icons";
+import { XStack, YStack } from "@spendspot/ui-components/stacks";
 import { Paragraph, SizableText } from "@spendspot/ui-components/typography";
 
 /**
@@ -13,7 +14,7 @@ export const SetupPrivacyCard = () => {
 
   return (
     <YStack
-      gap="$1.5"
+      gap="$2"
       padding="$4"
       width="100%"
       borderRadius="$5"
@@ -21,9 +22,12 @@ export const SetupPrivacyCard = () => {
       borderColor="$border"
       backgroundColor="$secondary"
     >
-      <SizableText size="$3" fontWeight="700" color="$foreground" letterSpacing={0.2} numberOfLines={1}>
-        {t("privacy.title")}
-      </SizableText>
+      <XStack alignItems="center" gap="$2">
+        <ShieldCheck size={20} color="$primary" />
+        <SizableText size="$3" fontWeight="700" color="$foreground" letterSpacing={0.2} numberOfLines={1}>
+          {t("privacy.title")}
+        </SizableText>
+      </XStack>
       <Paragraph
         size="$2"
         fontWeight="300"

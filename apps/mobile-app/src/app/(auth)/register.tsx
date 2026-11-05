@@ -34,7 +34,11 @@ export default function RegisterRoute() {
         description: `Welcome to SpendSpot, ${fullName}!`,
       });
 
-      router.replace("/(setup)" as never);
+      if (result.isSetupCompleted) {
+        router.replace("/(dashboard)" as never);
+      } else {
+        router.replace("/(setup)" as never);
+      }
     } else {
       toast.error("Registration Failed", {
         description: result.error ?? "Could not create account",
@@ -51,7 +55,12 @@ export default function RegisterRoute() {
       toast.success("Google Sign-Up", {
         description: "Authenticated successfully with Google",
       });
-      router.replace("/(setup)" as never);
+
+      if (result.isSetupCompleted) {
+        router.replace("/(dashboard)" as never);
+      } else {
+        router.replace("/(setup)" as never);
+      }
     } else {
       if (result.error && !result.error.toLowerCase().includes("cancel")) {
         toast.error("Google Sign-Up Failed", {

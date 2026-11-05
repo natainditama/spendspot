@@ -2,7 +2,7 @@ import { Stack } from "expo-router";
 import React from "react";
 
 import i18n from "@spendspot/core-logic/i18n";
-import { GuestOnlyProvider } from "@spendspot/core-logic/providers/guest-only-provider";
+import { UserOnlyProvider } from "@spendspot/core-logic/providers/user-only-provider";
 
 import { screenOptions } from "../_layout";
 
@@ -10,14 +10,14 @@ import { screenOptions } from "../_layout";
  * Route group layout for the post-authentication Setup Wizard flow.
  * Coordinates smooth stack navigation with fade_from_bottom animation
  * and localized stack header title.
- * Restricted to guest users via GuestOnlyProvider.
+ * Restricted to authenticated users via UserOnlyProvider.
  * Inherits standard screenOptions from the root layout.
  */
 export default function SetupLayout() {
   const title = i18n.t("setup-wizard:budget.sectionTitle");
 
   return (
-    <GuestOnlyProvider>
+    <UserOnlyProvider>
       <Stack
         screenOptions={{
           ...screenOptions,
@@ -32,6 +32,6 @@ export default function SetupLayout() {
           }}
         />
       </Stack>
-    </GuestOnlyProvider>
+    </UserOnlyProvider>
   );
 }

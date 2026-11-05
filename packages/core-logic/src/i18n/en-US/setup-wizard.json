@@ -24,6 +24,19 @@
     "subtitle": "Configure your currency, daily travel limit, and commute geofencing.",
     "title": "Set your commute baseline"
   },
+  "permissions": {
+    "cancel": "Cancel",
+    "locationDeniedDesc": "SpendSpot requires location permission to detect saved transit spots and log expenses automatically.",
+    "locationDeniedTitle": "Location Access Required",
+    "notificationDeniedDesc": "SpendSpot requires notification permission to alert you when reaching your daily budget threshold.",
+    "notificationDeniedTitle": "Notification Access Required",
+    "openSettings": "Open Settings",
+    "permissionErrorDesc": "Could not request system permissions. Please check your device settings.",
+    "permissionErrorTitle": "Permission Request Failed",
+    "requestAgain": "Grant Permission",
+    "saveFailedTitle": "Failed to Save Preferences",
+    "successTitle": "Preferences Saved!"
+  },
   "privacy": {
     "description": "SpendSpot triggers expense logging only when you arrive within 30m to 300m of your saved transit spots. Your live GPS coordinates are never stored or uploaded.",
     "title": "Always-on Commute Awareness"

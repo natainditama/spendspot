@@ -24,6 +24,19 @@
     "subtitle": "Atur mata uang, batas perjalanan harian, dan geofencing perjalanan Anda.",
     "title": "Atur batas dasar perjalanan"
   },
+  "permissions": {
+    "cancel": "Batal",
+    "locationDeniedDesc": "SpendSpot memerlukan izin lokasi untuk mendeteksi titik transit tersimpan dan mencatat pengeluaran otomatis.",
+    "locationDeniedTitle": "Izin Lokasi Diperlukan",
+    "notificationDeniedDesc": "SpendSpot memerlukan izin notifikasi untuk memberi peringatan saat anggaran harian mencapai batas.",
+    "notificationDeniedTitle": "Izin Notifikasi Diperlukan",
+    "openSettings": "Buka Pengaturan",
+    "permissionErrorDesc": "Tidak dapat meminta izin sistem. Silakan periksa pengaturan perangkat Anda.",
+    "permissionErrorTitle": "Permintaan Izin Gagal",
+    "requestAgain": "Izinkan Akses",
+    "saveFailedTitle": "Gagal Menyimpan Preferensi",
+    "successTitle": "Preferensi Tersimpan!"
+  },
   "privacy": {
     "description": "SpendSpot memicu pencatatan pengeluaran hanya saat Anda tiba dalam radius 30m hingga 300m dari titik transit tersimpan. Koordinat GPS langsung Anda tidak pernah disimpan atau diunggah.",
     "title": "Kesadaran Perjalanan Selalu Aktif"

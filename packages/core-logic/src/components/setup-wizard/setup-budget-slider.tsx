@@ -5,9 +5,14 @@ import { Slider } from "@spendspot/ui-components/slider";
 import { XStack, YStack } from "@spendspot/ui-components/stacks";
 import { Paragraph, SizableText } from "@spendspot/ui-components/typography";
 
+import {
+  BUDGET_ALERT_THRESHOLD_RATIO,
+  CURRENCY_BUDGET_CONFIG,
+  DEFAULT_WORKING_DAYS_PER_MONTH,
+} from "../../constants/budget-configs";
 import { formatCurrency, type CurrencyCode } from "../../lib/utils/format-currency";
 
-interface SetupBudgetSliderProps {
+export interface SetupBudgetSliderProps {
   currency: CurrencyCode;
   dailyCap: number;
   minCap?: number;
@@ -17,23 +22,29 @@ interface SetupBudgetSliderProps {
 }
 
 /**
- * Streamlined Commute & Daily Spending Limit card.
- * Summarized to essential elements: daily limit display, interactive slider,
- * and estimated monthly cap preview without cognitive overwhelm.
+ * Commute & Daily Spending Limit card based on 03_setup_wizard.png.
+ * Features large styled daily limit headline, interactive range slider,
+ * smart 80% threshold reminder, and estimated monthly cap preview.
  */
 export const SetupBudgetSlider = ({
   currency,
   dailyCap,
-  minCap = 20000,
-  maxCap = 500000,
-  stepCap = 5000,
+  minCap,
+  maxCap,
+  stepCap,
   onChangeDailyCap,
 }: SetupBudgetSliderProps) => {
   const { t } = useTranslation("setup-wizard");
+  const fallbackConfig = CURRENCY_BUDGET_CONFIG[currency] ?? CURRENCY_BUDGET_CONFIG.IDR;
+  const effectiveMinCap = minCap ?? fallbackConfig.minCap;
+  const effectiveMaxCap = maxCap ?? fallbackConfig.maxCap;
+  const effectiveStepCap = stepCap ?? fallbackConfig.stepCap;
 
-  const monthlyCap = dailyCap * 25;
+  const monthlyCap = dailyCap * DEFAULT_WORKING_DAYS_PER_MONTH;
+  const alertThreshold = dailyCap * BUDGET_ALERT_THRESHOLD_RATIO;
   const formattedDaily = formatCurrency(dailyCap, currency);
   const formattedMonthly = formatCurrency(monthlyCap, currency);
+  const formattedThreshold = formatCurrency(alertThreshold, currency);
 
   const handleValueChange = (values: number[]) => {
     if (values && values.length > 0 && typeof values[0] === "number") {
@@ -45,9 +56,9 @@ export const SetupBudgetSlider = ({
     <YStack
       gap="$3.5"
       width="100%"
-      padding="$4"
+      padding="$5"
       borderWidth="$px"
-      borderRadius="$4"
+      borderRadius="$5"
       borderColor="$border"
       backgroundColor="$background"
     >
@@ -70,14 +81,27 @@ export const SetupBudgetSlider = ({
       <Slider
         value={[dailyCap]}
         onValueChange={handleValueChange}
-        min={minCap}
-        max={maxCap}
-        step={stepCap}
+        min={effectiveMinCap}
+        max={effectiveMaxCap}
+        step={effectiveStepCap}
         width="100%"
+        marginTop="$1"
       />
 
+      {/* 80% and 100% Threshold Notice */}
+      <Paragraph size="$1" fontWeight="400" color="$mutedForeground" letterSpacing={0.1} numberOfLines={1}>
+        {t("budget.alertThreshold", { threshold: formattedThreshold })}
+      </Paragraph>
+
       {/* Estimated Monthly Cap Summary */}
-      <XStack justifyContent="space-between" alignItems="center" width="100%" paddingTop="$1">
+      <XStack
+        justifyContent="space-between"
+        alignItems="center"
+        width="100%"
+        paddingTop="$3"
+        borderTopWidth="$px"
+        borderColor="$border"
+      >
         <Paragraph size="$2" fontWeight="400" color="$mutedForeground" letterSpacing={0.1} numberOfLines={1}>
           {t("budget.estimatedMonthlyCap")}
         </Paragraph>

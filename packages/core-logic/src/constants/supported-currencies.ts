@@ -14,7 +14,7 @@ export interface CurrencyConfig {
  * Map of supported fiat currencies and their localization standards. Used for
  * currency formatting and conversion logic across the app.
  */
-export const SUPPORTED_CURRENCIES: Record<string, CurrencyConfig> = {
+export const SUPPORTED_CURRENCIES = {
   IDR: {
     code: "IDR",
     symbol: "Rp",
@@ -43,4 +43,4 @@ export const SUPPORTED_CURRENCIES: Record<string, CurrencyConfig> = {
     locale: "de-DE",
     fractionDigits: 2,
   },
-};
+} as const satisfies Record<string, CurrencyConfig>;

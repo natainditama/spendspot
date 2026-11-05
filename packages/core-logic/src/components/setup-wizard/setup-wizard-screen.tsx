@@ -6,6 +6,11 @@ import { Button } from "@spendspot/ui-components/button";
 import { YStack } from "@spendspot/ui-components/stacks";
 import { Paragraph, SizableText } from "@spendspot/ui-components/typography";
 
+import {
+  CURRENCY_BUDGET_CONFIG,
+  DEFAULT_CURRENCY,
+  DEFAULT_WORKING_DAYS_PER_MONTH,
+} from "../../constants/budget-configs";
 import type { CurrencyCode } from "../../lib/utils/format-currency";
 import { SetupBudgetSlider } from "./setup-budget-slider";
 import { SetupCurrencySelector } from "./setup-currency-selector";
@@ -18,11 +23,8 @@ import type { SetupWizardScreenProps } from "./types";
  * Follows industry-standard Tamagui tokens without StyleSheet.create or hardcoded colors.
  */
 export const SetupWizardScreen = ({
-  initialCurrency = "IDR",
-  initialDailyCap = 100000,
-  minCap = 20000,
-  maxCap = 500000,
-  stepCap = 5000,
+  initialCurrency = DEFAULT_CURRENCY,
+  initialDailyCap,
   onCurrencyChange,
   onDailyCapChange,
   onContinue,
@@ -31,11 +33,15 @@ export const SetupWizardScreen = ({
 }: SetupWizardScreenProps) => {
   const { t } = useTranslation("setup-wizard");
   const [currency, setCurrency] = useState<CurrencyCode>(initialCurrency);
-  const [dailyCap, setDailyCap] = useState<number>(initialDailyCap);
+  const currentConfig = CURRENCY_BUDGET_CONFIG[currency] ?? CURRENCY_BUDGET_CONFIG.IDR;
+  const [dailyCap, setDailyCap] = useState<number>(initialDailyCap ?? currentConfig.defaultDailyCap);
 
   const handleCurrencySelect = (code: CurrencyCode) => {
     setCurrency(code);
+    const newConfig = CURRENCY_BUDGET_CONFIG[code] ?? CURRENCY_BUDGET_CONFIG.IDR;
+    setDailyCap(newConfig.defaultDailyCap);
     onCurrencyChange?.(code);
+    onDailyCapChange?.(newConfig.defaultDailyCap);
   };
 
   const handleDailyCapChange = (value: number) => {
@@ -47,7 +53,7 @@ export const SetupWizardScreen = ({
     onContinue?.({
       currency,
       dailyCap,
-      monthlyCap: dailyCap * 25,
+      monthlyCap: dailyCap * DEFAULT_WORKING_DAYS_PER_MONTH,
     });
   };
 
@@ -81,7 +87,7 @@ export const SetupWizardScreen = ({
           >
             {t("header.title")}
           </SizableText>
-          <Paragraph size="$3" fontWeight="400" color="$mutedForeground" letterSpacing={0.2} numberOfLines={1}>
+          <Paragraph size="$3" fontWeight="400" color="$mutedForeground" letterSpacing={0.2} numberOfLines={2}>
             {t("header.subtitle")}
           </Paragraph>
         </YStack>
@@ -93,9 +99,9 @@ export const SetupWizardScreen = ({
         <SetupBudgetSlider
           currency={currency}
           dailyCap={dailyCap}
-          minCap={minCap}
-          maxCap={maxCap}
-          stepCap={stepCap}
+          minCap={currentConfig.minCap}
+          maxCap={currentConfig.maxCap}
+          stepCap={currentConfig.stepCap}
           onChangeDailyCap={handleDailyCapChange}
         />
 
@@ -103,7 +109,7 @@ export const SetupWizardScreen = ({
         <SetupPrivacyCard />
 
         {/* Bottom Sticky Action Area */}
-        <YStack width="100%">
+        <YStack width="100%" marginTop="$2">
           <Button
             width="100%"
             height={50}
