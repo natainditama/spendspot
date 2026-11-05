@@ -134,6 +134,7 @@ export const Button = styled(TamaguiButton, {
         height: "$6.5",
         paddingHorizontal: "$2",
         borderRadius: "$sm",
+        fontSize: "$1",
         gap: "$1",
       },
       sm: {

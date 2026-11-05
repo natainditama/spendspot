@@ -1,4 +1,4 @@
-import { Tabs } from "expo-router";
+import { Tabs, useRouter } from "expo-router";
 import React from "react";
 
 import { HomeDashboardScreen } from "@spendspot/core-logic/components/home-dashboard/home-dashboard-screen";
@@ -12,10 +12,13 @@ import { dashboardScreenOptions } from "./_layout";
  * Inherits standard screenOptions and native header styling from root _layout.tsx.
  */
 export default function HomeDashboardRoute() {
+  const router = useRouter();
+
   const handleLogTicketPress = () => {
-    toast.success("Ticket Logged!", {
-      description: "MRT Bundaran HI (Rp 14.000) recorded to daily commute.",
-    });
+    // toast.success("Ticket Logged!", {
+    //   description: "MRT Bundaran HI (Rp 14.000) recorded to daily commute.",
+    // });
+    router.push("/(dashboard)/log-ticket" as never);
   };
 
   const handleAddExpensePress = () => {

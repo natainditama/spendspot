@@ -1,0 +1,40 @@
+{
+  "bottomSheet": {
+    "title": "Saved Transit Spots",
+    "description": "Geofence areas and auto-payment presets",
+    "addSpot": "Add Spot",
+    "activeNow": "Active Now",
+    "visitedCount": "Visited {{count}} times",
+    "lastVisit": "Last {{time}}",
+    "radiusLabel": "{{radius}}m radius",
+    "autoPayment": "{{method}} Auto",
+    "zoneLabel": "{{radius}}m zone"
+  },
+  "header": {
+    "title": "Spot and Map",
+    "subtitle": "Geofence Commute Radar"
+  },
+  "mapControls": {
+    "zoomIn": "Zoom In",
+    "zoomOut": "Zoom Out",
+    "toggle3D": "3D"
+  },
+  "search": {
+    "placeholder": "Search location or address...",
+    "recenter": "Recenter to GPS",
+    "voiceSearch": "Voice search"
+  },
+  "spots": {
+    "mrt": "MRT Bundaran HI",
+    "office": "SCBD Office Tower",
+    "home": "Home",
+    "starbucks": "Starbucks Thamrin",
+    "tuku": "Kopi Tuku Cipete",
+    "categories": {
+      "transit": "Transit",
+      "workplace": "Workplace",
+      "home": "Home",
+      "foodAndBeverage": "Food & Beverage"
+    }
+  }
+}

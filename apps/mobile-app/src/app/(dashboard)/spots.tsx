@@ -1,62 +1,50 @@
 import { Tabs } from "expo-router";
 import React from "react";
 
-import { Map, Navigation } from "@spendspot/ui-components/icons";
-import { XStack, YStack } from "@spendspot/ui-components/stacks";
-import { Paragraph, SizableText } from "@spendspot/ui-components/typography";
+import { GeofenceMapScreen } from "@spendspot/core-logic/components/geofence-map/geofence-map-screen";
+import type { TransitSpot } from "@spendspot/core-logic/components/geofence-map/types";
+import i18n from "@spendspot/core-logic/i18n";
+import { toast } from "@spendspot/ui-components/toast";
 
 import { dashboardScreenOptions } from "./_layout";
 
 /**
  * Spots & Transit Map route tab (Screen 05).
- * Geofence transit spots, radar radius definitions, and location awareness.
+ * Real-time map viewport, geofence radius rings, and expandable bottom sheet list.
  * Inherits standard screenOptions and native header styling from root _layout.tsx.
  */
 export default function SpotsRoute() {
+  const handleSelectSpot = (spot: TransitSpot) => {
+    toast(spot.name, {
+      description: `${spot.categoryLabel} • ${spot.radiusMeters}m geofence • ${spot.defaultPayment}`,
+    });
+  };
+
+  const handleAddSpotPress = () => {
+    toast("Add Transit Spot", {
+      description: "Define a new commute location with 30m–300m radius.",
+    });
+  };
+
+  const handleRecenterPress = () => {
+    toast("GPS Locked", {
+      description: "Centered on MRT Bundaran HI Station corridor.",
+    });
+  };
+
   return (
     <>
       <Tabs.Screen
         options={{
           ...dashboardScreenOptions,
+          title: i18n.t("geofence-map:header.title", "Spot and Map"),
         }}
       />
-      <YStack flex={1} backgroundColor="$background" alignItems="center" justifyContent="center" padding="$6" gap="$4">
-        <YStack
-          width={72}
-          height={72}
-          borderRadius="$full"
-          backgroundColor="$secondary"
-          alignItems="center"
-          justifyContent="center"
-          borderWidth="$px"
-          borderColor="$border"
-        >
-          <Map size={32} color="$foreground" />
-        </YStack>
-
-        <YStack gap="$1.5" alignItems="center">
-          <SizableText size="$6" fontWeight="800" color="$foreground" textAlign="center">
-            Transit Spots & Geofencing
-          </SizableText>
-          <Paragraph size="$2" color="$mutedForeground" textAlign="center" maxWidth={300}>
-            Explore active commute spots with 30m to 300m arrival radiuses and automatic transit tracking.
-          </Paragraph>
-        </YStack>
-
-        <XStack
-          backgroundColor="$secondary"
-          borderRadius="$full"
-          paddingHorizontal="$3.5"
-          paddingVertical="$1.5"
-          gap="$2"
-          alignItems="center"
-        >
-          <Navigation size={14} color="$foreground" />
-          <SizableText size="$1" fontWeight="700" color="$foreground">
-            MRT Bundaran HI • Lebak Bulus
-          </SizableText>
-        </XStack>
-      </YStack>
+      <GeofenceMapScreen
+        onSelectSpot={handleSelectSpot}
+        onAddSpotPress={handleAddSpotPress}
+        onRecenterPress={handleRecenterPress}
+      />
     </>
   );
 }

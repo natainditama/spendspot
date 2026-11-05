@@ -1,0 +1,40 @@
+{
+  "bottomSheet": {
+    "title": "Saved Transit Spots",
+    "description": "Area geofence dan preset pembayaran otomatis",
+    "addSpot": "Add Spot",
+    "activeNow": "Aktif Sekarang",
+    "visitedCount": "Dikunjungi {{count}} kali",
+    "lastVisit": "Terakhir {{time}}",
+    "radiusLabel": "radius {{radius}}m",
+    "autoPayment": "{{method}} Otomatis",
+    "zoneLabel": "zona {{radius}}m"
+  },
+  "header": {
+    "title": "Spot and Map",
+    "subtitle": "Radar Geofence Komutasi"
+  },
+  "mapControls": {
+    "zoomIn": "Perbesar",
+    "zoomOut": "Perkecil",
+    "toggle3D": "3D"
+  },
+  "search": {
+    "placeholder": "Cari lokasi atau alamat...",
+    "recenter": "Pusatkan kembali ke GPS",
+    "voiceSearch": "Pencarian suara"
+  },
+  "spots": {
+    "mrt": "MRT Bundaran HI",
+    "office": "SCBD Office Tower",
+    "home": "Rumah",
+    "starbucks": "Starbucks Thamrin",
+    "tuku": "Kopi Tuku Cipete",
+    "categories": {
+      "transit": "Transportasi",
+      "workplace": "Tempat Kerja",
+      "home": "Rumah",
+      "foodAndBeverage": "Makanan & Minuman"
+    }
+  }
+}
