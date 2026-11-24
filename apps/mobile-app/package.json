@@ -17,7 +17,7 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@react-native-async-storage/async-storage": "2.2.0",
+    "@react-native-async-storage/async-storage": "3.1.1",
     "@spendspot/core-logic": "workspace:*",
     "@spendspot/ui-components": "workspace:*",
     "expo": "~58.0.26",
