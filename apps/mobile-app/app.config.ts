@@ -29,6 +29,8 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   },
   plugins: [
     "expo-router",
+    "expo-status-bar",
+    "expo-web-browser",
     [
       "expo-splash-screen",
       {
