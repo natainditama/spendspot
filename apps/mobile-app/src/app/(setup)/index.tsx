@@ -6,11 +6,10 @@ import { Linking } from "react-native";
 
 import { SetupWizardScreen } from "@spendspot/core-logic/components/setup-wizard/setup-wizard-screen";
 import type { SetupWizardSubmitData } from "@spendspot/core-logic/components/setup-wizard/types";
-import { CURRENCY_BUDGET_CONFIG, DEFAULT_CURRENCY } from "@spendspot/core-logic/constants/budget-configs";
 import i18n from "@spendspot/core-logic/i18n";
+import { CurrencyCode } from "@spendspot/core-logic/lib/utils/format-currency";
 import { useAuthSession } from "@spendspot/core-logic/providers/auth-session-provider";
 import { saveSetupPreferences } from "@spendspot/core-logic/services/setup-service";
-import type { CurrencyCode } from "@spendspot/core-logic/types";
 import { AlertDialog } from "@spendspot/ui-components/alert-dialog";
 import { Button } from "@spendspot/ui-components/button";
 import { Bell, MapPin } from "@spendspot/ui-components/icons";
@@ -201,11 +200,8 @@ export default function SetupWizardRoute() {
     setPermissionDialog((prev) => ({ ...prev, isOpen: false }));
   };
 
-  const initialCurrency: CurrencyCode = (profile?.preferred_currency as CurrencyCode) || DEFAULT_CURRENCY;
-  const initialDailyCap =
-    profile?.daily_limit ??
-    CURRENCY_BUDGET_CONFIG[initialCurrency]?.defaultDailyCap ??
-    CURRENCY_BUDGET_CONFIG.IDR.defaultDailyCap;
+  const initialCurrency = (profile?.preferred_currency as CurrencyCode) || undefined;
+  const initialDailyCap = profile?.daily_limit ?? undefined;
 
   return (
     <>

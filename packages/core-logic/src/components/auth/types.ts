@@ -35,6 +35,17 @@ export interface AuthLoginScreenProps {
   testID?: string;
 }
 
+export interface AuthForgotDialogProps {
+  /** Controls modal dialog visibility */
+  open: boolean;
+  /** Callback fired when dialog open state changes */
+  onOpenChange: (open: boolean) => void;
+  /** Callback fired when user submits the password reset form */
+  onSubmit: (email: string) => Promise<boolean | void>;
+  /** Optional loading state during async request */
+  isLoading?: boolean;
+}
+
 export interface AuthRegisterScreenProps {
   /** Optional prefilled initial full name */
   initialFullName?: string;
@@ -52,6 +63,24 @@ export interface AuthRegisterScreenProps {
   onPrivacyPress?: () => void;
   /** Optional callback triggered when Zod validation fails */
   onValidationError?: (errors: RegisterFormErrors) => void;
+  /** Optional loading state for async network operations */
+  isLoading?: boolean;
+  /** Optional test ID for automated testing */
+  testID?: string;
+}
+
+export interface ResetPasswordFormValues {
+  password: string;
+  confirmPassword: string;
+}
+
+export type ResetPasswordFormErrors = Partial<Record<keyof ResetPasswordFormValues, string>>;
+
+export interface AuthResetScreenProps {
+  /** Callback triggered when user submits new password */
+  onSubmit: (values: ResetPasswordFormValues) => void | Promise<void>;
+  /** Callback triggered when user cancels or taps back to sign in */
+  onNavigateToLogin?: () => void;
   /** Optional loading state for async network operations */
   isLoading?: boolean;
   /** Optional test ID for automated testing */

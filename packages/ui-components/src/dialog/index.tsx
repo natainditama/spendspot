@@ -70,7 +70,7 @@ const DialogContentFrame = styled(TamaguiDialog.Content, {
   borderRadius: "$xl",
   borderWidth: "$px",
   borderColor: "$border",
-  padding: "$4",
+  padding: "$5",
   gap: "$3",
   width: "100%",
   maxWidth: "$80",
@@ -113,7 +113,7 @@ export type DialogContentProps = GetProps<typeof DialogContentFrame> & {
  */
 export const DialogHeader = styled(YStack, {
   name: "DialogHeader",
-  gap: "$1.5",
+  gap: "$1",
   width: "100%",
 });
 

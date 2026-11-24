@@ -68,16 +68,16 @@ export const screenOptions = {
  * Root Stack navigation container synchronized with native splash screen.
  */
 function RootNavigation() {
-  const { isLoading } = useAuthSession();
+  const { isInitialLoading } = useAuthSession();
   const appName = i18n.t("common:common.appName", "SpendSpot");
 
   useEffect(() => {
-    if (!isLoading) {
+    if (!isInitialLoading) {
       SplashScreen.hideAsync().catch(() => {});
     }
-  }, [isLoading]);
+  }, [isInitialLoading]);
 
-  if (isLoading) {
+  if (isInitialLoading) {
     return null;
   }
 
@@ -94,6 +94,7 @@ function RootNavigation() {
       <Stack.Screen name="(setup)" options={{ headerShown: false }} />
       <Stack.Screen name="(dashboard)" options={{ headerShown: false }} />
       <Stack.Screen name="auth/callback" options={{ headerShown: false }} />
+      <Stack.Screen name="reset-password" options={{ headerShown: false }} />
       <Stack.Screen name="+not-found" options={{ headerShown: false }} />
     </Stack>
   );

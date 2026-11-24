@@ -16,6 +16,20 @@ WebBrowser.maybeCompleteAuthSession();
 
 export type { BaseResponse, ErrorResponse, ServiceResponse, SuccessResponse };
 
+/**
+ * In-memory synchronous recovery flag ensuring that deep-link recovery flows
+ * are acknowledged before any async session exchange triggers route redirects.
+ */
+let isRecoveryFlowActive = false;
+
+export function getIsRecoveryFlow(): boolean {
+  return isRecoveryFlowActive;
+}
+
+export function setIsRecoveryFlow(active: boolean): void {
+  isRecoveryFlowActive = active;
+}
+
 export interface SetupCompletionStatus {
   isCompleted: boolean;
   hasLocationPermission: boolean;
@@ -79,7 +93,7 @@ export async function checkUserSetupStatus(
 /**
  * Parses query strings and hash fragments from an OAuth redirect URL.
  */
-function extractParamsFromUrl(url: string): Record<string, string> {
+export function extractParamsFromUrl(url: string): Record<string, string> {
   const params: Record<string, string> = {};
 
   try {
@@ -285,7 +299,6 @@ export async function signInWithGoogle(): Promise<
   try {
     // Generate valid redirect URL for Expo Go (e.g. exp://...) or production scheme (spendspot://...)
     const redirectUri = getAuthRedirectUri();
-    console.log("[SpendSpot Auth] Initiating Google OAuth with redirectUri:", redirectUri);
 
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: "google",
@@ -325,7 +338,6 @@ export async function signInWithGoogle(): Promise<
 
     // Extract authorization tokens or PKCE code from response URL
     const params = extractParamsFromUrl(authResult.url);
-    console.log("[SpendSpot Auth] OAuth callback URL parsed params:", Object.keys(params));
 
     if (params.error || params.error_description) {
       const errorMessage = params.error_description || params.error || "Authentication provider returned an error.";
@@ -414,10 +426,187 @@ export async function signInWithGoogle(): Promise<
 }
 
 /**
+ * Sends a password recovery / reset link to the user's registered email address.
+ * Directs callback to the app redirect URI (via Expo Go or standalone scheme).
+ */
+export async function sendPasswordResetEmail(email: string): Promise<ServiceResponse<{ email: string }>> {
+  try {
+    const trimmedEmail = email.trim();
+    if (!trimmedEmail) {
+      return {
+        success: false,
+        message: "Email address is required.",
+        errors: {
+          email: "Email address cannot be empty.",
+        },
+      };
+    }
+
+    const redirectUri = getAuthRedirectUri();
+    const { error } = await supabase.auth.resetPasswordForEmail(trimmedEmail, {
+      redirectTo: redirectUri,
+    });
+
+    if (error) {
+      return formatValidationErrors(error, "Failed to send password reset email.");
+    }
+
+    return {
+      success: true,
+      message: "Password reset instructions have been sent to your email.",
+      data: {
+        email: trimmedEmail,
+      },
+    };
+  } catch (err) {
+    return formatValidationErrors(err, "An unexpected error occurred while requesting password reset.");
+  }
+}
+
+/**
+ * Result structure returned by processAuthCallback.
+ */
+export interface AuthCallbackResult {
+  success: boolean;
+  isRecovery?: boolean;
+  isSetupCompleted?: boolean;
+  session?: Session | null;
+  user?: User | null;
+  error?: string;
+}
+
+/**
+ * Updates the password for the currently authenticated user (used in recovery flow).
+ */
+export async function updateUserPassword(newPassword: string): Promise<ServiceResponse<{ user: User | null }>> {
+  try {
+    if (!newPassword || newPassword.length < 8) {
+      return {
+        success: false,
+        message: "Password must be at least 8 characters.",
+        errors: {
+          password: "Password must be at least 8 characters.",
+        },
+      };
+    }
+
+    const { data, error } = await supabase.auth.updateUser({
+      password: newPassword,
+    });
+
+    if (error) {
+      return formatValidationErrors(error, "Failed to update password.");
+    }
+
+    setIsRecoveryFlow(false);
+
+    return {
+      success: true,
+      message: "Password updated successfully.",
+      data: {
+        user: data.user,
+      },
+    };
+  } catch (err) {
+    return formatValidationErrors(err, "An unexpected error occurred while updating password.");
+  }
+}
+
+/**
+ * Processes incoming authentication callback parameters or URLs from deep links
+ * (e.g., OAuth callbacks, magic links, or password reset recovery links).
+ */
+export async function processAuthCallback(urlOrParams: string | Record<string, string>): Promise<AuthCallbackResult> {
+  try {
+    const params = typeof urlOrParams === "string" ? extractParamsFromUrl(urlOrParams) : urlOrParams;
+    const isRecovery = params.type === "recovery";
+    if (isRecovery) {
+      setIsRecoveryFlow(true);
+    }
+
+    if (params.error || params.error_description) {
+      const errorMsg = decodeURIComponent(
+        (params.error_description || params.error || "Authentication error").replace(/\+/g, " ")
+      );
+      console.warn("[SpendSpot Auth:Service] Callback contains error from provider:", errorMsg);
+
+      return {
+        success: false,
+        error: errorMsg,
+      };
+    }
+
+    let session: Session | null = null;
+    let user: User | null = null;
+
+    if (params.code) {
+      const { data, error } = await supabase.auth.exchangeCodeForSession(params.code);
+      if (error) {
+        return { success: false, error: error.message };
+      }
+      session = data.session;
+      user = data.user;
+    } else if (params.access_token && params.refresh_token) {
+      const { data, error } = await supabase.auth.setSession({
+        access_token: params.access_token,
+        refresh_token: params.refresh_token,
+      });
+      if (error) {
+        console.error("[SpendSpot Auth:Service] setSession failed:", error.message);
+        return { success: false, error: error.message };
+      }
+      session = data.session;
+      user = data.user;
+    } else {
+      const { data } = await supabase.auth.getSession();
+      session = data.session;
+      user = data.session?.user ?? null;
+    }
+
+    if (!session || !user) {
+      console.warn("[SpendSpot Auth:Service] Failed to establish authenticated session.");
+      return {
+        success: false,
+        error: "Failed to establish authenticated session.",
+      };
+    }
+
+    // Check if this callback was triggered by a password recovery flow
+    if (isRecovery) {
+      return {
+        success: true,
+        isRecovery: true,
+        session,
+        user,
+      };
+    }
+
+    // For non-recovery callbacks, check setup status
+    const setupStatus = await checkUserSetupStatus(user.id);
+
+    return {
+      success: true,
+      isRecovery: false,
+      isSetupCompleted: setupStatus.isCompleted,
+      session,
+      user,
+    };
+  } catch (err) {
+    const message = err instanceof Error ? err.message : "An error occurred while processing auth callback.";
+    console.error("[SpendSpot Auth:Service] Exception in processAuthCallback:", message);
+    return {
+      success: false,
+      error: message,
+    };
+  }
+}
+
+/**
  * Terminates the current active Supabase user session.
  */
 export async function signOutUser(): Promise<ServiceResponse<null>> {
   try {
+    setIsRecoveryFlow(false);
     const { error } = await supabase.auth.signOut();
 
     if (error) {

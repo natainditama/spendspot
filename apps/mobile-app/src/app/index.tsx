@@ -2,6 +2,7 @@ import { Redirect } from "expo-router";
 import React from "react";
 
 import { useAuthSession } from "@spendspot/core-logic/providers/auth-session-provider";
+import { getIsRecoveryFlow } from "@spendspot/core-logic/services/auth-service";
 
 /**
  * Root entry router gate.
@@ -12,10 +13,15 @@ import { useAuthSession } from "@spendspot/core-logic/providers/auth-session-pro
  * - When unauthenticated: redirects to onboarding carousel
  */
 export default function IndexRoute() {
-  const { isAuthenticated, isLoading, isSetupCompleted } = useAuthSession();
+  const { isAuthenticated, isLoading, isSetupCompleted, isRecoveryMode } = useAuthSession();
+  const isRecovery = isRecoveryMode || getIsRecoveryFlow();
 
   if (isLoading) {
     return null;
+  }
+
+  if (isRecovery) {
+    return <Redirect href="/reset-password" />;
   }
 
   if (isAuthenticated) {
